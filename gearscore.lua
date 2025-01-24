@@ -11,10 +11,10 @@
 
 local clientVersionString = GetBuildInfo()
 local clientBuildMajor = string.byte(clientVersionString, 1)
--- load only on classic/tbc/wotlk
--- if (clientBuildMajor < 49 or clientBuildMajor > 51 or string.byte(clientVersionString, 2) ~= 46) then
---     return
--- end
+-- load only on classic/tbc/wotlk/cata/mop
+if (clientBuildMajor < 49 or clientBuildMajor > 53) then -- or string.byte(clientVersionString, 2) ~= 46
+    return
+end
 
 assert(LibStub, "TacoTip requires LibStub")
 assert(LibStub:GetLibrary("LibClassicInspector", true), "TacoTip requires LibClassicInspector")
@@ -28,7 +28,11 @@ TT_GS = {}
 
 local BRACKET_SIZE = 1000
 
-if (CI:IsWotlk()) then
+if (CI:IsMop()) then
+    BRACKET_SIZE = 4000
+elseif (CI:IsCata()) then
+    BRACKET_SIZE = 2000
+elseif (CI:IsWotlk()) then
     BRACKET_SIZE = 1000
 elseif (CI:IsTBC()) then
     BRACKET_SIZE = 400
