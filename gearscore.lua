@@ -4,6 +4,8 @@
     for Classic/TBC/WOTLK
 
     Based on original GearScoreLite by Mirrikat45 & others
+	
+	Adapted for Cata and MOP by Nailuj1992
 
     Module is WIP and currently part of TacoTip, but it will be released as a public module on a later date
 
@@ -29,9 +31,9 @@ TT_GS = {}
 local BRACKET_SIZE = 1000
 
 if (CI:IsMop()) then
-    BRACKET_SIZE = 4000
+    BRACKET_SIZE = 6000
 elseif (CI:IsCata()) then
-    BRACKET_SIZE = 2000
+    BRACKET_SIZE = 2200
 elseif (CI:IsWotlk()) then
     BRACKET_SIZE = 1000
 elseif (CI:IsTBC()) then

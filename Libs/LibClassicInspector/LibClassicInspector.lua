@@ -2,13 +2,15 @@
 
     LibClassicInspector by kebabstorm
     for Classic/TBC/WOTLK
+	
+	Adapted for Cata and MOP by Nailuj1992
 
     Requires: LibStub, CallbackHandler-1.0, LibDetours-1.0
-    Version: 17 (2023-07-24)
+    Version: 19 (2025-01-24)
 
 --]]
 
-local LCI_VERSION = 17
+local LCI_VERSION = 19
 
 local clientVersionString = GetBuildInfo()
 local clientBuildMajor = string.byte(clientVersionString, 1)
@@ -3388,39 +3390,43 @@ end
 C_ChatInfo.RegisterAddonMessagePrefix(C_PREFIX)
 
 local function sendInfo()
-    -- if (IsInGroup() or IsInGuild()) then
-    --     local s = "02-"
-    --     s = s .. ((isWotlk or isCata or isMop) and GetActiveTalentGroup(false, false) or 1)
-    --     for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
-    --         for i = 1, 3 do  -- GetNumTalentTabs
-    --             for j = 1, GetNumTalents(i, false, false) do
-    --                 s = s .. select(5, GetTalentInfo(i, j, false, false, x))
-    --             end
-    --         end
-    --     end
-    --     -- if ((isWotlk or isCata or isMop)) then
-    --     --     for x = 1, 2 do
-    --     --         for i = 1, 6 do
-    --     --             local z = select(3, GetGlyphSocketInfo(i, x))
-    --     --             if (z) then
-    --     --                 if (z == 55115) then z = 54929 end
-    --     --                 s = s..string.char(glyph_r_tbl[z]+48)
-    --     --             else
-    --     --                 s = s.."0"
-    --     --             end
-    --     --         end
-    --     --     end
-    --     -- end
-    --     if (IsInGroup(LE_PARTY_CATEGORY_HOME)) then
-    --         SendAddonMessage(C_PREFIX, s, "RAID")
-    --     end
-    --     if (IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
-    --         SendAddonMessage(C_PREFIX, s, "INSTANCE_CHAT")
-    --     end
-    --     if (IsInGuild()) then
-    --         SendAddonMessage(C_PREFIX, s, "GUILD")
-    --     end
-    -- end
+    if (IsInGroup() or IsInGuild()) then
+        local s = "02-"
+        s = s .. ((isWotlk or isCata or isMop) and GetActiveTalentGroup(false, false) or 1)
+        for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
+			local maxTabs = 3
+			if (playerClass == "DRUID" and isMop) then
+				maxTabs = 4
+			end
+            for i = 1, maxTabs do  -- GetNumTalentTabs
+                for j = 1, GetNumTalents(i, false, false) do
+                    s = s .. select(5, GetTalentInfo(i, j, false, false, x))
+                end
+            end
+        end
+        if ((isWotlk or isCata or isMop)) then
+            for x = 1, 2 do
+                for i = 1, 6 do
+                    local z = select(3, GetGlyphSocketInfo(i, x))
+                    if (z) then
+                        if (z == 55115) then z = 54929 end
+                        s = s..string.char(glyph_r_tbl[z]+48)
+                    else
+                        s = s.."0"
+                    end
+                end
+            end
+        end
+        if (IsInGroup(LE_PARTY_CATEGORY_HOME)) then
+            SendAddonMessage(C_PREFIX, s, "RAID")
+        end
+        if (IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) then
+            SendAddonMessage(C_PREFIX, s, "INSTANCE_CHAT")
+        end
+        if (IsInGuild()) then
+            SendAddonMessage(C_PREFIX, s, "GUILD")
+        end
+    end
 end
 
 local function inspectQueueTick()
@@ -3675,7 +3681,7 @@ end
 --
 function lib:GetSpecializationName(class, tabIndex, localized)
     assert(class == "WARRIOR" or class == "PALADIN" or class == "HUNTER" or class == "ROGUE" or class == "PRIEST" or class == "SHAMAN" or 
-           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT"), "invalid class")
+           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
     local n = tonumber(tabIndex) or 0
     assert(n > 0 and n < 4, "tabIndex is not a valid number (1-3)")
     return localized and spec_table_localized[class][tabIndex] or spec_table[class][tabIndex]
@@ -3694,9 +3700,13 @@ end
 --
 function lib:GetNumTalentsByClass(class, tabIndex)
     assert(class == "WARRIOR" or class == "PALADIN" or class == "HUNTER" or class == "ROGUE" or class == "PRIEST" or class == "SHAMAN" or 
-           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT"), "invalid class")
+           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
     local n = tonumber(tabIndex) or 0
-    assert(n > 0 and n < 4, "tabIndex is not a valid number (1-3)")
+	local maxTabs = 3
+	if (playerClass == "DRUID" and isMop) then
+		maxTabs = 4
+	end
+    assert(n > 0 and n < maxTabs + 1, "tabIndex is not a valid number (1-3)")
     return #talents_table[class][tabIndex]
 end
 
@@ -3913,7 +3923,7 @@ end
 --
 function lib:GetTalentInfoByClass(class, tabIndex, talentIndex)
     assert(class == "WARRIOR" or class == "PALADIN" or class == "HUNTER" or class == "ROGUE" or class == "PRIEST" or class == "SHAMAN" or 
-           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT"), "invalid class")
+           class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
     tabIndex = tonumber(tabIndex) or 0
     assert(tabIndex > 0 and tabIndex < 4, "tabIndex is not a valid number (1-3)")
     talentIndex = tonumber(talentIndex) or 0

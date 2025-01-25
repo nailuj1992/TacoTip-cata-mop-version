@@ -282,6 +282,24 @@ function lib:IsWotlk()
     return isWotlk
 
 --------------------------------------------------------------------------
+-- ClassicInspector:IsCata()
+--
+--  Returns
+--     @boolean isCata            - client version is Classic Cata (4.x.x)
+--
+function lib:IsCata()
+    return isCata
+
+--------------------------------------------------------------------------
+-- ClassicInspector:IsMop()
+--
+--  Returns
+--     @boolean isMop            - client version is Classic Mop (5.x.x)
+--
+function lib:IsMop()
+    return isMop
+
+--------------------------------------------------------------------------
 -- ClassicInspector:CanInspect(unitorguid)
 --
 --  Note
