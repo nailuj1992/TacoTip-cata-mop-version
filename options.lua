@@ -119,8 +119,12 @@ end
 -- main frame
 local frame = CreateFrame("Frame","TacoTipOptions")
 frame.name = addOnName
-InterfaceOptions_AddCategory(frame)
 frame:Hide()
+
+-- Add to Blizzard settings
+local category = Settings.RegisterCanvasLayoutCategory(frame, frame.name, frame.name);
+category.ID = frame.name
+Settings.RegisterAddOnCategory(category);
 
 frame:SetScript("OnShow", function(frame)
     local options = {}
@@ -834,7 +838,6 @@ SlashCmdList["TACOTIP"] = function(msg)
             print("|cff59f0dcTacoTip:|r "..L["TEXT_HELP_ANCHOR"])
         end
     else
-        InterfaceOptionsFrame_OpenToCategory(addOnName)
-        InterfaceOptionsFrame_OpenToCategory(addOnName)
+        Settings.OpenToCategory(category.ID)
     end
 end
