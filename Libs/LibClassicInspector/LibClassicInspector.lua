@@ -3410,7 +3410,11 @@ local function sendInfo()
                     local z = select(3, GetGlyphSocketInfo(i, x))
                     if (z) then
                         if (z == 55115) then z = 54929 end
-                        s = s..string.char(glyph_r_tbl[z]+48)
+						if (glyph_r_tbl[z] ~= nil) then
+							s = s..string.char(glyph_r_tbl[z]+48)
+						else
+							s = s.."0"
+						end
                     else
                         s = s.."0"
                     end

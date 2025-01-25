@@ -247,9 +247,9 @@ frame:SetScript("OnShow", function(frame)
             end
         end
         if (TacoTipConfig.color_class) then
-            options.exampleTooltip:AddLine(string.format("%s 80 %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], L["Undead"], name_r*255, name_g*255, name_b*255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
+            options.exampleTooltip:AddLine(string.format("%s 85 %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], L["Undead"], name_r*255, name_g*255, name_b*255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
         else
-            options.exampleTooltip:AddLine(string.format("%s 80 %s %s (%s)", L["Level"], L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
+            options.exampleTooltip:AddLine(string.format("%s 85 %s %s (%s)", L["Level"], L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
         end
 
         if (not TacoTipConfig.show_pvp_icon) then
@@ -268,21 +268,21 @@ frame:SetScript("OnShow", function(frame)
         end
         if (TacoTipConfig.show_talents) then
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine(L["Talents"]..":", CI:GetSpecializationName("ROGUE", 1, true).." [51/18/2]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 3, true).." [14/3/54]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                options.exampleTooltip:AddDoubleLine(L["Talents"]..":", CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true).." [7/31/3]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
             else
-                options.exampleTooltip:AddLine(L["Talents"]..":|cFFFFFFFF "..CI:GetSpecializationName("ROGUE", 1, true).." [51/18/2]")
+                options.exampleTooltip:AddLine(L["Talents"]..":|cFFFFFFFF "..CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]")
             end
         end
         local miniText = ""
         if (TacoTipConfig.show_gs_player) then
-            local gs_r, gs_b, gs_g = GearScore:GetQuality(6054)
+            local gs_r, gs_b, gs_g = GearScore:GetQuality(10405)
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine("GearScore: 6054", "(iLvl: 264)", gs_r, gs_g, gs_b, gs_r, gs_g, gs_b)
+                options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_g, gs_b, gs_r, gs_g, gs_b)
             elseif (mini_style) then
-                miniText = string.format("|cFF%02x%02x%02xGS: 6054  L: 264|r  ", gs_r*255, gs_g*255, gs_b*255)
+                miniText = string.format("|cFF%02x%02x%02xGS: 10405  L: 388|r  ", gs_r*255, gs_g*255, gs_b*255)
             else
-                options.exampleTooltip:AddLine("GearScore: 6054", gs_r, gs_g, gs_b)
+                options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_g, gs_b)
             end
         end
         if (isPawnLoaded and TacoTipConfig.show_pawn_player) then
