@@ -1,4 +1,4 @@
-## TacoTip: Better player tooltips - for Cataclysm Classic
+## TacoTip: Better player tooltips - for Cataclysm Classic (and nearly for MoP Classic)
 
 **Compatible with Cataclysm Classic
 
