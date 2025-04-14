@@ -29,7 +29,7 @@ Any input / feedback is welcome !
 
 **Options Menu**  
 Access from Interface->Addons->TacoTip or chat command /tacotip
-![TacoTip](https://user-images.githubusercontent.com/13628128/185593093-0e0662d6-0915-4f8f-aa33-151b38eb5c7c.png)
+![TacoTip](https://github.com/user-attachments/assets/37c78f74-828c-4889-8982-17950b8ab463)
 
 
 ---
@@ -45,15 +45,17 @@ Press ESC for Menu -> Addons -> Check: [X] Load out of date AddOns
 
 ![out-of-date-addon-menu-small](https://user-images.githubusercontent.com/13628128/199223990-17896046-3407-472d-be70-b78fc42ae905.jpg)
 
+
 Developed by anzz1
-Updated for Cataclysm by Zik
+Originally adapted for Cataclysm by Zik. Compiled and debugged by Nailuj1992.
+Currently being adapted for Mists of Pandaria by Nailuj1992.
 
 ---
 
 ***Translators***  
 🇩🇪 deDE: @shakimas (Shaktor, LakeshireEU) , @Nils89  
 🇪🇸 esES: @Yorkylizado  
-🇲🇽 esMX:   
+🇲🇽 esMX: @Nailuj1992
 🇫🇷 frFR:   
 🇮🇹 itIT:   
 🇰🇷 koKR: @wagerssi (와우하는아저씨)  
