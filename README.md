@@ -29,7 +29,8 @@ Any input / feedback is welcome !
 
 **Options Menu**  
 Access from Interface->Addons->TacoTip or chat command /tacotip
-![TacoTip](https://github.com/user-attachments/assets/37c78f74-828c-4889-8982-17950b8ab463)
+![TacoTip](https://github.com/user-attachments/assets/333a19c6-f2ac-49bc-8401-254e8ca71b9f)
+
 
 
 ---
