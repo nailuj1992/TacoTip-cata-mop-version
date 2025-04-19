@@ -278,11 +278,11 @@ frame:SetScript("OnShow", function(frame)
         if (TacoTipConfig.show_gs_player) then
             local gs_r, gs_b, gs_g = GearScore:GetQuality(10405)
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_g, gs_b, gs_r, gs_g, gs_b)
+                options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
             elseif (mini_style) then
-                miniText = string.format("|cFF%02x%02x%02xGS: 10405  L: 388|r  ", gs_r*255, gs_g*255, gs_b*255)
+                options.exampleTooltip:AddLine("GS: 10405 L: 388", gs_r, gs_b, gs_g)
             else
-                options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_g, gs_b)
+                options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
             end
         end
         if (isPawnLoaded and TacoTipConfig.show_pawn_player) then

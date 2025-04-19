@@ -31,9 +31,9 @@ TT_GS = {}
 local BRACKET_SIZE = 1000
 
 if (CI:IsMop()) then
-    BRACKET_SIZE = 6000
+    BRACKET_SIZE = 4000
 elseif (CI:IsCata()) then
-    BRACKET_SIZE = 2200
+    BRACKET_SIZE = 2000
 elseif (CI:IsWotlk()) then
     BRACKET_SIZE = 1000
 elseif (CI:IsTBC()) then
@@ -117,8 +117,8 @@ local GS_Quality = {
     },
     [BRACKET_SIZE*3] = {
         ["Red"] = { ["A"] = 0.12, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00012, ["D"] = -1 },
-        ["Blue"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00050, ["D"] = -1 },
-        ["Green"] = { ["A"] = 0, ["B"] = BRACKET_SIZE*2, ["C"] = 0.001, ["D"] = 1 },
+        ["Green"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00050, ["D"] = -1 },
+        ["Blue"] = { ["A"] = 0, ["B"] = BRACKET_SIZE*2, ["C"] = 0.001, ["D"] = 1 },
         ["Description"] = "Uncommon"
     },
     [BRACKET_SIZE*2] = {
@@ -196,7 +196,7 @@ function TT_GS:GetItemScore(ItemLink)
             ItemRarity = 3
             ItemLevel = 187.05
         end
-        if (ItemLevel > 120) then
+        if (CI:IsWotlk() and ItemLevel > 120) or (CI:IsCata() and ItemLevel > 270) or (CI:IsMop() and ItemLevel > 520) then
             Table = GS_Formula["A"]
         else
             Table = GS_Formula["B"]

@@ -231,7 +231,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             if (TacoTipConfig.show_gs_player) then
                 local gearscore, avg_ilvl = GearScore:GetScore(guid, true)
                 if (gearscore > 0) then
-                    local r, g, b = GearScore:GetQuality(gearscore)
+                    local r, g, b, quality = GearScore:GetQuality(gearscore)
                     if (wide_style) then
                         if (r == b and r == g) then
                             tinsert(linesToAdd, {"|cFFFFFFFFGearScore:|r "..gearscore, "|cFFFFFFFF(iLvl:|r "..avg_ilvl.."|cFFFFFFFF)|r", r, g, b, r, g, b})
@@ -240,9 +240,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                         end
                     elseif (mini_style) then
                         if (r == b and r == g) then
-                            miniText = string.format("GS: |cFF%02x%02x%02x%s|r  L: |cFF%02x%02x%02x%s|r  ", r*255, g*255, b*255, gearscore, r*255, g*255, b*255, avg_ilvl)
+                            tinsert(linesToAdd, {"|cFFFFFFFFGS:|r "..gearscore.. " |cFFFFFFFFL:|r "..avg_ilvl.."|cFFFFFFFF|r", r, g, b})
                         else
-                            miniText = string.format("|cFF%02x%02x%02xGS: %s  L: %s|r  ", r*255, g*255, b*255, gearscore, avg_ilvl)
+                            tinsert(linesToAdd, {"GS: "..gearscore.. " L: "..avg_ilvl, r, g, b})
                         end
                     else
                         if (r == b and r == g) then
@@ -268,7 +268,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             if (miniText ~= "") then
                 tinsert(linesToAdd, {miniText, 1, 1, 1})
             end
-            if (CI:IsWotlk() and TacoTipConfig.show_achievement_points) then
+            if ((CI:IsWotlk() or CI:IsCata() or CI:IsMop()) and TacoTipConfig.show_achievement_points) then
                 local achi_pts = CI:GetTotalAchievementPoints(guid)
                 if (achi_pts) then
                     if (wide_style) then
