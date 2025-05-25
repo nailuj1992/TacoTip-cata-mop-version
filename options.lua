@@ -1,4 +1,5 @@
 local addOnName = ...
+GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 local addOnVersion = GetAddOnMetadata(addOnName, "Version") or "0.0.1"
 
 local clientVersionString = GetBuildInfo()
@@ -36,6 +37,9 @@ function TT:GetDefaults()
         show_guild_rank = false,
         show_talents = true,
         show_gs_player = true,
+        gearscore_style = false,
+        ilevel_style = false,
+        gearscore_ilevel_style = true,
         show_gs_character = true,
         show_gs_items = false,
         show_gs_items_hs = false,
@@ -278,11 +282,29 @@ frame:SetScript("OnShow", function(frame)
         if (TacoTipConfig.show_gs_player) then
             local gs_r, gs_b, gs_g = GearScore:GetQuality(10405)
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
+                if TacoTipConfig.gearscore_ilevel_style then
+                    options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.gearscore_style then
+                    options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.ilevel_style then
+                    options.exampleTooltip:AddLine("iLvl: 388", gs_r, gs_b, gs_g)
+                end
             elseif (mini_style) then
-                options.exampleTooltip:AddLine("GS: 10405 L: 388", gs_r, gs_b, gs_g)
+                if TacoTipConfig.gearscore_ilevel_style then
+                    options.exampleTooltip:AddLine("GS: 10405 L: 388", gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.gearscore_style then
+                    options.exampleTooltip:AddLine("GS: 10405", gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.ilevel_style then
+                    options.exampleTooltip:AddLine("L: 388", gs_r, gs_b, gs_g)
+                end
             else
-                options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
+                if TacoTipConfig.gearscore_ilevel_style then
+                    options.exampleTooltip:AddLine("GearScore: 10405 (iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.gearscore_style then
+                    options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
+                elseif TacoTipConfig.ilevel_style then
+                    options.exampleTooltip:AddLine("iLvl: 388", gs_r, gs_b, gs_g)
+                end
             end
         end
         if (isPawnLoaded and TacoTipConfig.show_pawn_player) then
@@ -418,9 +440,66 @@ frame:SetScript("OnShow", function(frame)
         L["Show player's GearScore in tooltips"],
         function(self, value) 
             TacoTipConfig.show_gs_player = value
+            if (value) then
+                options.gearScoreStyle1:SetDisabled(not TacoTipConfig.show_gs_player)
+                options.gearScoreStyle2:SetDisabled(not TacoTipConfig.show_gs_player)
+                options.gearScoreStyle3:SetDisabled(not TacoTipConfig.show_gs_player)
+            else
+                options.gearScoreStyle1:SetDisabled(true)
+                options.gearScoreStyle2:SetDisabled(true)
+                options.gearScoreStyle3:SetDisabled(true)
+            end
             showExampleTooltip()
         end)
     options.gearScorePlayer:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 140, -60)
+
+    options.gearScoreStyle1 = newRadioButton(
+        "GearScoreStyle1",
+        L["Style"].." 1",
+        "Show GearScore and iLvl",
+        function(self, value)
+            options.gearScoreStyle2:SetChecked(not value)
+            options.gearScoreStyle3:SetChecked(not value)
+            TacoTipConfig.gearscore_style = not value
+            TacoTipConfig.ilevel_style = not value
+            TacoTipConfig.gearscore_ilevel_style = value
+            showExampleTooltip()
+        end)
+    options.gearScoreStyle1.label:SetText("1")
+    options.gearScoreStyle1:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 248, -64)
+    options.gearScoreStyle1:SetHitRectInsets(0, -16, 0, 0)
+
+    options.gearScoreStyle2 = newRadioButton(
+        "GearScoreStyle2",
+        L["Style"].." 2",
+        "Show only GearScore", 
+        function(self, value)
+            options.gearScoreStyle1:SetChecked(not value)
+            options.gearScoreStyle3:SetChecked(not value)
+            TacoTipConfig.ilevel_style = not value
+            TacoTipConfig.gearscore_ilevel_style = not value
+            TacoTipConfig.gearscore_style = value
+            showExampleTooltip()
+        end)
+    options.gearScoreStyle2.label:SetText("2")
+    options.gearScoreStyle2:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 280, -64)
+    options.gearScoreStyle2:SetHitRectInsets(0, -16, 0, 0)
+
+    options.gearScoreStyle3 = newRadioButton(
+        "GearScoreStyle3",
+        L["Style"].." 3",
+        "Show only iLvl", 
+        function(self, value)
+            options.gearScoreStyle1:SetChecked(not value)
+            options.gearScoreStyle2:SetChecked(not value)
+            TacoTipConfig.gearscore_style = not value
+            TacoTipConfig.gearscore_ilevel_style = not value
+            TacoTipConfig.ilevel_style = value
+            showExampleTooltip()
+        end)
+    options.gearScoreStyle3.label:SetText("3")
+    options.gearScoreStyle3:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 312, -64)
+    options.gearScoreStyle3:SetHitRectInsets(0, -16, 0, 0)
 
     options.pawnScorePlayer = newCheckbox(
         "PawnScorePlayer",
@@ -726,6 +805,12 @@ frame:SetScript("OnShow", function(frame)
         options.showTalents:SetChecked(TacoTipConfig.show_talents)
         options.gearScorePlayer:SetChecked(TacoTipConfig.show_gs_player)
         options.gearScoreCharacter:SetChecked(TacoTipConfig.show_gs_character)
+        options.gearScoreStyle1:SetChecked(TacoTipConfig.gearscore_ilevel_style)
+        options.gearScoreStyle1:SetDisabled(not TacoTipConfig.show_gs_character)
+        options.gearScoreStyle2:SetChecked(TacoTipConfig.gearscore_style)
+        options.gearScoreStyle2:SetDisabled(not TacoTipConfig.show_gs_character)
+        options.gearScoreStyle3:SetChecked(TacoTipConfig.ilevel_style)
+        options.gearScoreStyle3:SetDisabled(not TacoTipConfig.show_gs_character)
         options.gearScoreItems:SetChecked(TacoTipConfig.show_gs_items)
         options.averageItemLevel:SetChecked(TacoTipConfig.show_avg_ilvl)
         options.showItemLevel:SetChecked(TacoTipConfig.show_item_level)

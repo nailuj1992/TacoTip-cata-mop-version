@@ -3158,14 +3158,16 @@ local function cacheUserTalents(unit)
     if (not guid) then
         return
     end
-    local talents = {[1] = {[1] = {}, [2] = {}, [3] = {}}, [2] = {[1] = {}, [2] = {}, [3] = {}}, ["time"] = time(), ["active"] = (isWotlk or isCata or isMop) and GetActiveTalentGroup(true, false) or 1, ["inspect"] = true}
-    for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
-        for i = 1, 3 do  -- GetNumTalentTabs
-            for j = 1, GetNumTalents(i, true, false) do
-                talents[x][i][j] = select(5, GetTalentInfo(i, j, true, false, x))
-            end
-        end
-    end
+    local talents = {[1] = {[1] = {}, [2] = {}, [3] = {}}, [2] = {[1] = {}, [2] = {}, [3] = {}}, ["time"] = time(), ["active"] = (isWotlk or isCata) and GetActiveTalentGroup(true, false) or 1, ["inspect"] = true}
+    if (isWotlk or isCata) then
+		for x = 1, ((isWotlk or isCata) and 2 or 1) do
+			for i = 1, 3 do  -- GetNumTalentTabs
+				for j = 1, GetNumTalents(i, true, false) do
+					talents[x][i][j] = select(5, GetTalentInfo(i, j, true, false, x))
+				end
+			end
+		end
+	end
     local user = getCacheUser(guid)
     if(user) then
         user.talents = talents
@@ -3382,7 +3384,7 @@ f:RegisterEvent("PLAYER_UNGHOST")
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("CHARACTER_POINTS_CHANGED")
-if (isWotlk or isCata or isMop) then
+if (isWotlk or isCata) then
     f:RegisterEvent("PLAYER_TALENT_UPDATE")
     f:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     f:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
@@ -3390,21 +3392,18 @@ end
 C_ChatInfo.RegisterAddonMessagePrefix(C_PREFIX)
 
 local function sendInfo()
-    if (IsInGroup() or IsInGuild()) then
+    if ((IsInGroup() or IsInGuild()) and (isWotlk or isCata)) then
         local s = "02-"
-        s = s .. ((isWotlk or isCata or isMop) and GetActiveTalentGroup(false, false) or 1)
-        for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
+        s = s .. ((isWotlk or isCata) and GetActiveTalentGroup(false, false) or 1)
+        for x = 1, ((isWotlk or isCata) and 2 or 1) do
 			local maxTabs = 3
-			if (playerClass == "DRUID" and isMop) then
-				maxTabs = 4
-			end
             for i = 1, maxTabs do  -- GetNumTalentTabs
                 for j = 1, GetNumTalents(i, false, false) do
                     s = s .. select(5, GetTalentInfo(i, j, false, false, x))
                 end
             end
         end
-        if ((isWotlk or isCata or isMop)) then
+        if ((isWotlk or isCata)) then
             for x = 1, 2 do
                 for i = 1, 6 do
                     local z = select(3, GetGlyphSocketInfo(i, x))
@@ -3744,7 +3743,7 @@ function lib:GetSpecialization(unitorguid, _group)
     end
     local mostPoints = 0
     local specIndex = nil
-    if (guid == UnitGUID("player")) then
+    if (guid == UnitGUID("player") and (isWotlk or isCata)) then
         for i = 1, 3 do  -- GetNumTalentTabs
             local points = 0
             for j = 1, GetNumTalents(i, false, false) do
@@ -3753,6 +3752,23 @@ function lib:GetSpecialization(unitorguid, _group)
             if (points > mostPoints) then
                 mostPoints = points
                 specIndex = i
+            end
+        end
+	elseif (guid == UnitGUID("player") and (isMop)) then
+		-- TODO: MoP
+		-- print('Talents: '..select(4, GetTalentInfo(1,3,1)))
+		-- print("GetActiveSpecGroup: ", type(GetActiveSpecGroup))
+		-- print("GetTalentInfo: ", type(GetTalentInfo))
+		-- print("GetTalentInfoBySpecialization: ", type(GetTalentInfoBySpecialization))
+		for talentTier = 1, 6 do
+            for talentColumn = 1, 3 do
+                -- local talentId, name, texture, selected, available = GetTalentInfo(talentTier, talentColumn, 1, false, _group)
+				-- -- local talentId, name, texture, selected, available = GetTalentInfoBySpecialization(1, talentTier, talentColumn)
+                -- if (selected) then
+                --     -- talents[talentTier] = talentId
+				-- 	print('talent: '..talentId)
+                --     break
+                -- end
             end
         end
     else
@@ -3799,7 +3815,7 @@ function lib:GetTalentPoints(unitorguid, _group)
     end
     local group = tonumber(_group) or 0
     assert(group == 1 or group == 2, "group is not a valid number (1-2)")
-    if (not (isWotlk or isCata or isMop) and group == 2) then
+    if (not (isWotlk or isCata) and group == 2) then
         return nil
     end
     local talents = {0, 0, 0}
@@ -3840,7 +3856,7 @@ function lib:GetActiveTalentGroup(unitorguid)
         return nil
     end
     if (guid == UnitGUID("player")) then
-        return (isWotlk or isCata or isMop) and GetActiveTalentGroup(false, false) or 1
+        return (isWotlk or isCata) and GetActiveTalentGroup(false, false) or 1
     else
         local user = getCacheUser2(guid)
         if (user and user.talents["active"] > 0) then
@@ -3877,7 +3893,7 @@ function lib:GetTalentInfo(unitorguid, tabIndex, talentIndex, _group)
         return nil
     end
     tabIndex = tonumber(tabIndex) or 0
-    assert(tabIndex > 0 and tabIndex < 4, "tabIndex is not a valid number (1-3)")
+    assert((tabIndex > 0 and tabIndex < 4 and (isWotlk or isCata or (isMop and class == "DRUID"))) or (tabIndex > 0 and tabIndex < 5 and isMop and class ~= "DRUID"), "tabIndex is not a valid number (1-3)")
     talentIndex = tonumber(talentIndex) or 0
     assert(talentIndex > 0 and talentIndex <= MAX_TALENTS_PER_TAB, "talentIndex is not a valid number")
     if (not _group) then
@@ -3889,7 +3905,7 @@ function lib:GetTalentInfo(unitorguid, tabIndex, talentIndex, _group)
     local group = tonumber(_group) or 0
     assert(group == 1 or group == 2, "group is not a valid number (1-2)")
     local _, class = GetPlayerInfoByGUID(guid)
-    if (not class or (not (isWotlk or isCata or isMop) and group == 2)) then
+    if (not class or (not (isWotlk or isCata) and group == 2)) then
         return nil
     end
     if (guid == UnitGUID("player")) then
@@ -3929,7 +3945,7 @@ function lib:GetTalentInfoByClass(class, tabIndex, talentIndex)
     assert(class == "WARRIOR" or class == "PALADIN" or class == "HUNTER" or class == "ROGUE" or class == "PRIEST" or class == "SHAMAN" or 
            class == "MAGE" or class == "WARLOCK" or class == "DRUID" or ((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
     tabIndex = tonumber(tabIndex) or 0
-    assert(tabIndex > 0 and tabIndex < 4, "tabIndex is not a valid number (1-3)")
+    assert((tabIndex > 0 and tabIndex < 4 and (isWotlk or isCata or (isMop and class == "DRUID"))) or (tabIndex > 0 and tabIndex < 5 and isMop and class ~= "DRUID"), "tabIndex is not a valid number (1-3)")
     talentIndex = tonumber(talentIndex) or 0
     assert(talentIndex > 0 and talentIndex <= MAX_TALENTS_PER_TAB, "talentIndex is not a valid number")
     local talent = talents_table[class][tabIndex][talentIndex]
@@ -4079,7 +4095,7 @@ function lib:GetTalentRanksTable(unitorguid)
     end
     if (guid == UnitGUID("player")) then
         local talents = {[1] = {[1] = {}, [2] = {}, [3] = {}}, [2] = {[1] = {}, [2] = {}, [3] = {}}}
-        for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
+        for x = 1, ((isWotlk or isCata) and 2 or 1) do
             for i = 1, 3 do  -- GetNumTalentTabs
                 for j = 1, GetNumTalents(i, false, false) do
                     talents[x][i][j] = select(5, GetTalentInfo(i, j, false, false, x))
@@ -4091,7 +4107,7 @@ function lib:GetTalentRanksTable(unitorguid)
         local user = getCacheUser2(guid)
         if (user and user.talents.time ~= 0) then
             local talents = {[1] = {[1] = {}, [2] = {}, [3] = {}}, [2] = {[1] = {}, [2] = {}, [3] = {}}}
-            for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
+            for x = 1, ((isWotlk or isCata) and 2 or 1) do
                 for i = 1, 3 do  -- GetNumTalentTabs
                     for k,v in ipairs(user.talents[x][i]) do
                         talents[x][i][k] = v
@@ -4177,7 +4193,7 @@ end
 --     @number total_points        - total achievement points
 --
 function lib:GetTotalAchievementPoints(unitorguid)
-    if (not (isWotlk or isCata or isMop)) then
+    if (not (isWotlk or isCata)) then
         return nil
     end
     local guid = getPlayerGUID(unitorguid)
@@ -4315,7 +4331,7 @@ end
 --     @number iconFile            - file ID of the sigil icon associated with the socketed glyph
 --
 function lib:GetGlyphSocketInfo(unitorguid, socketID, _group)
-    if (not (isWotlk or isCata or isMop)) then
+    if (not (isWotlk or isCata)) then
         return nil
     end
     local n = tonumber(socketID) or 0
@@ -4372,7 +4388,7 @@ end
 --     @boolean enabled            - true if the player has socketed glyph with matching ID
 --
 function lib:HasGlyph(unitorguid, glyphSpellID, _group)
-    if (not (isWotlk or isCata or isMop)) then
+    if (not (isWotlk or isCata)) then
         return nil
     end
     local guid = getPlayerGUID(unitorguid)
@@ -4442,7 +4458,7 @@ end
 --     @number glyphSpellID6       - spell ID of glyph in socket 6 (MAJOR)
 --
 function lib:GetGlyphs(unitorguid, _group)
-    if (not (isWotlk or isCata or isMop)) then
+    if (not (isWotlk or isCata)) then
         return nil
     end
     local guid = getPlayerGUID(unitorguid)
