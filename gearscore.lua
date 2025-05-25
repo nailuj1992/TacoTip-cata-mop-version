@@ -25,21 +25,28 @@ assert(LibStub:GetLibrary("LibDetours-1.0", true), "TacoTip requires LibDetours-
 local CI = LibStub("LibClassicInspector")
 
 local GUIDIsPlayer = C_PlayerInfo.GUIDIsPlayer
+local GetItemInfo = (C_Item and C_Item.GetItemInfo) and C_Item.GetItemInfo or GetItemInfo
 
 TT_GS = {}
 
 local BRACKET_SIZE = 1000
+local SUPERIOR_ITEM_LEVEL = 120
 
 if (CI:IsMop()) then
-    BRACKET_SIZE = 4000
+    BRACKET_SIZE = 3000
+    SUPERIOR_ITEM_LEVEL = 430
 elseif (CI:IsCata()) then
     BRACKET_SIZE = 2000
+    SUPERIOR_ITEM_LEVEL = 270
 elseif (CI:IsWotlk()) then
     BRACKET_SIZE = 1000
+    SUPERIOR_ITEM_LEVEL = 120
 elseif (CI:IsTBC()) then
     BRACKET_SIZE = 400
+    SUPERIOR_ITEM_LEVEL = 100
 elseif (CI:IsClassic()) then
     BRACKET_SIZE = 200
+    SUPERIOR_ITEM_LEVEL = 40
 end
 
 local MAX_SCORE = BRACKET_SIZE*6-1
@@ -70,6 +77,11 @@ local GS_ItemTypes = {
     ["INVTYPE_CLOAK"] = { ["SlotMOD"] = 0.5625, ["ItemSlot"] = 15, ["Enchantable"] = true },
     ["INVTYPE_BODY"] = { ["SlotMOD"] = 0, ["ItemSlot"] = 4, ["Enchantable"] = false },
 }
+
+if (CI:IsMop()) then
+    GS_ItemTypes["INVTYPE_RANGED"] = { ["SlotMOD"] = 2.000, ["ItemSlot"] = 16, ["Enchantable"] = true }
+    GS_ItemTypes["INVTYPE_RANGEDRIGHT"] = { ["SlotMOD"] = 1.0000, ["ItemSlot"] = 16, ["Enchantable"] = false }
+end
 
 local GS_Rarity = {
     [0] = {Red = 0.55, Green = 0.55, Blue = 0.55 },
@@ -117,8 +129,8 @@ local GS_Quality = {
     },
     [BRACKET_SIZE*3] = {
         ["Red"] = { ["A"] = 0.12, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00012, ["D"] = -1 },
-        ["Green"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00050, ["D"] = -1 },
-        ["Blue"] = { ["A"] = 0, ["B"] = BRACKET_SIZE*2, ["C"] = 0.001, ["D"] = 1 },
+        ["Blue"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00050, ["D"] = -1 },
+        ["Green"] = { ["A"] = 0, ["B"] = BRACKET_SIZE*2, ["C"] = 0.001, ["D"] = 1 },
         ["Description"] = "Uncommon"
     },
     [BRACKET_SIZE*2] = {
@@ -196,7 +208,7 @@ function TT_GS:GetItemScore(ItemLink)
             ItemRarity = 3
             ItemLevel = 187.05
         end
-        if (CI:IsWotlk() and ItemLevel > 120) or (CI:IsCata() and ItemLevel > 270) or (CI:IsMop() and ItemLevel > 520) then
+        if ItemLevel > SUPERIOR_ITEM_LEVEL then
             Table = GS_Formula["A"]
         else
             Table = GS_Formula["B"]
@@ -219,10 +231,16 @@ end
 
 function TT_GS:GetItemHunterScore(ItemLink)
     local GearScore, ItemLevel, Red, Green, Blue, ItemEquipLoc = TT_GS:GetItemScore(ItemLink)
-    if ((ItemEquipLoc == "INVTYPE_2HWEAPON") or (ItemEquipLoc == "INVTYPE_WEAPONMAINHAND") or (ItemEquipLoc == "INVTYPE_WEAPONOFFHAND") or (ItemEquipLoc == "INVTYPE_WEAPON") or (ItemEquipLoc == "INVTYPE_HOLDABLE")) then
-        GearScore = floor(GearScore * 0.3164)
-    elseif ((ItemEquipLoc == "INVTYPE_RANGEDRIGHT") or (ItemEquipLoc == "INVTYPE_RANGED")) then
-        GearScore = floor(GearScore * 5.3224)
+    if CI:IsMop() then
+        if ((ItemEquipLoc == "INVTYPE_2HWEAPON") or (ItemEquipLoc == "INVTYPE_WEAPONMAINHAND") or (ItemEquipLoc == "INVTYPE_WEAPONOFFHAND") or (ItemEquipLoc == "INVTYPE_WEAPON") or (ItemEquipLoc == "INVTYPE_HOLDABLE") or (ItemEquipLoc == "INVTYPE_RANGEDRIGHT") or (ItemEquipLoc == "INVTYPE_RANGED")) then
+            GearScore = floor(GearScore * 0.3164)
+        end
+    else
+        if ((ItemEquipLoc == "INVTYPE_2HWEAPON") or (ItemEquipLoc == "INVTYPE_WEAPONMAINHAND") or (ItemEquipLoc == "INVTYPE_WEAPONOFFHAND") or (ItemEquipLoc == "INVTYPE_WEAPON") or (ItemEquipLoc == "INVTYPE_HOLDABLE")) then
+            GearScore = floor(GearScore * 0.3164)
+        elseif ((ItemEquipLoc == "INVTYPE_RANGEDRIGHT") or (ItemEquipLoc == "INVTYPE_RANGED")) then
+            GearScore = floor(GearScore * 5.3224)
+        end
     end
     return GearScore, ItemLevel, Red, Green, Blue, ItemEquipLoc
 end
@@ -317,7 +335,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
                 TitanGrip = 0.5
             end
             local TempScore, ItemLevel = TT_GS:GetItemScore(offHandLink)
-            if (PlayerEnglishClass == "HUNTER") then
+            if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                 TempScore = TempScore * 0.3164
             end
             GearScore = GearScore + TempScore * TitanGrip
@@ -325,13 +343,17 @@ function TT_GS:GetScore(unitorguid, useCallback)
             LevelTotal = LevelTotal + ItemLevel
         end
 
-        for i = 1, 18 do
+        local maxItems = 18
+        if CI:IsMop() then
+            maxItems = 17
+        end
+        for i = 1, maxItems do
             if ( i ~= 4 ) and ( i ~= 17 ) then
                 local item = CI:GetInventoryItemMixin(guid, i)
                 if (item) then
                     if (item:IsItemDataCached()) then
                         local TempScore, ItemLevel = TT_GS:GetItemScore(item:GetItemLink())
-                        if (PlayerEnglishClass == "HUNTER") then
+                        if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                             if (i == 16) then
                                 TempScore = TempScore * 0.3164
                             elseif (i == 18) then
