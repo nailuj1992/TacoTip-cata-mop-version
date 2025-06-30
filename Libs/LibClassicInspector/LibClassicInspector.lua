@@ -3760,6 +3760,9 @@ function lib:GetSpecialization(unitorguid, _group)
 		-- print("GetActiveSpecGroup: ", type(GetActiveSpecGroup))
 		-- print("GetTalentInfo: ", type(GetTalentInfo))
 		-- print("GetTalentInfoBySpecialization: ", type(GetTalentInfoBySpecialization))
+		-- print("GetActiveTalentGroup: ", type(GetActiveTalentGroup))
+		-- print("GetTalentInfoBySpecialization: ", type(GetTalentInfoBySpecialization))
+		-- print("GetTalentRowSelectionInfo: ", type(GetTalentRowSelectionInfo))
 		for talentTier = 1, 6 do
             for talentColumn = 1, 3 do
                 -- local talentId, name, texture, selected, available = GetTalentInfo(talentTier, talentColumn, 1, false, _group)

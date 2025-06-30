@@ -271,11 +271,15 @@ frame:SetScript("OnShow", function(frame)
             end
         end
         if (TacoTipConfig.show_talents) then
-            if (wide_style) then
-                options.exampleTooltip:AddDoubleLine(L["Talents"]..":", CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true).." [7/31/3]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+            if not CI:IsMop() then
+                if (wide_style) then
+                    options.exampleTooltip:AddDoubleLine(L["Talents"]..":", CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+                    options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true).." [7/31/3]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                else
+                    options.exampleTooltip:AddLine(L["Talents"]..":|cFFFFFFFF "..CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]")
+                end
             else
-                options.exampleTooltip:AddLine(L["Talents"]..":|cFFFFFFFF "..CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]")
+                TacoTipConfig.show_talents = false
             end
         end
         local miniText = ""
@@ -424,15 +428,17 @@ frame:SetScript("OnShow", function(frame)
     rankstylehint:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 264, -23)
     rankstylehint:SetText(L["Style"])
 
-    options.showTalents = newCheckbox(
-        "Talents",
-        L["Talents"],
-        L["Show talents and specialization in tooltips"],
-        function(self, value) 
-            TacoTipConfig.show_talents = value
-            showExampleTooltip()
-        end)
-    options.showTalents:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -60)
+    if not CI:IsMop() then
+        options.showTalents = newCheckbox(
+            "Talents",
+            L["Talents"],
+            L["Show talents and specialization in tooltips"],
+            function(self, value) 
+                TacoTipConfig.show_talents = value
+                showExampleTooltip()
+            end)
+        options.showTalents:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -60)
+    end
 
     options.gearScorePlayer = newCheckbox(
         "GearScorePlayer",
@@ -802,7 +808,9 @@ frame:SetScript("OnShow", function(frame)
         options.showTitles:SetChecked(TacoTipConfig.show_titles)
         options.showGuildNames:SetChecked(TacoTipConfig.show_guild_name)
         options.showGuildRanks:SetChecked(TacoTipConfig.show_guild_rank)
-        options.showTalents:SetChecked(TacoTipConfig.show_talents)
+        if not CI:IsMop() then
+            options.showTalents:SetChecked(TacoTipConfig.show_talents)
+        end
         options.gearScorePlayer:SetChecked(TacoTipConfig.show_gs_player)
         options.gearScoreCharacter:SetChecked(TacoTipConfig.show_gs_character)
         options.gearScoreStyle1:SetChecked(TacoTipConfig.gearscore_ilevel_style)
