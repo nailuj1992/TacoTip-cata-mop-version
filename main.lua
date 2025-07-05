@@ -493,7 +493,7 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
         end
     end
     if (TacoTipConfig.anchor_mouse) then
-        if (not TacoTipConfig.anchor_mouse_world or GetMouseFocus() == WorldFrame) then
+        if (not TacoTipConfig.anchor_mouse_world or GetMouseFoci() == WorldFrame) then
             if (not TacoTipMouseAnchor) then
                 CreateMouseAnchor()
                 CreateMouseAnchor = nil
