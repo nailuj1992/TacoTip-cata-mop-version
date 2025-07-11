@@ -40,6 +40,8 @@ local CAfter = C_Timer.After
 
 local playerClass = select(2, UnitClass("player"))
 
+local FORMAT_ILVL = "%.1f"
+
 function TacoTip_GSCallback(guid)
     local _, ttUnit = GameTooltip:GetUnit()
     if (ttUnit and UnitGUID(ttUnit) == guid) then
@@ -234,14 +236,15 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             local miniText = ""
             if (TacoTipConfig.show_gs_player) then
                 local gearscore, avg_ilvl = GearScore:GetScore(guid, true)
+                local avg_ilevel_dec = string.format(FORMAT_ILVL, avg_ilvl)
                 if (gearscore > 0) then
                     local r, g, b, quality = GearScore:GetQuality(gearscore)
                     if (wide_style) then
                         if TacoTipConfig.gearscore_ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFGearScore:|r "..gearscore, "|cFFFFFFFF(iLvl:|r "..avg_ilvl.."|cFFFFFFFF)|r", r, g, b, r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFGearScore:|r "..gearscore, "|cFFFFFFFF(iLvl:|r "..avg_ilevel_dec.."|cFFFFFFFF)|r", r, g, b, r, g, b})
                             else
-                                tinsert(linesToAdd, {"GearScore: "..gearscore, "(iLvl: "..avg_ilvl..")", r, g, b, r, g, b})
+                                tinsert(linesToAdd, {"GearScore: "..gearscore, "(iLvl: "..avg_ilevel_dec..")", r, g, b, r, g, b})
                             end
                         elseif TacoTipConfig.gearscore_style then
                             if (r == b and r == g) then
@@ -251,17 +254,17 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                             end
                         elseif TacoTipConfig.ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFiLvl:|r "..avg_ilvl.."|cFFFFFFFF|r", "", r, g, b, r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFiLvl:|r "..avg_ilevel_dec.."|cFFFFFFFF|r", "", r, g, b, r, g, b})
                             else
-                                tinsert(linesToAdd, {"iLvl: "..avg_ilvl, "", r, g, b, r, g, b})
+                                tinsert(linesToAdd, {"iLvl: "..avg_ilevel_dec, "", r, g, b, r, g, b})
                             end
                         end
                     elseif (mini_style) then
                         if TacoTipConfig.gearscore_ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFGS:|r "..gearscore.. " |cFFFFFFFFL:|r "..avg_ilvl.."|cFFFFFFFF|r", r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFGS:|r "..gearscore.. " |cFFFFFFFFL:|r "..avg_ilevel_dec.."|cFFFFFFFF|r", r, g, b})
                             else
-                                tinsert(linesToAdd, {"GS: "..gearscore.. " L: "..avg_ilvl, r, g, b})
+                                tinsert(linesToAdd, {"GS: "..gearscore.. " L: "..avg_ilevel_dec, r, g, b})
                             end
                         elseif TacoTipConfig.gearscore_style then
                             if (r == b and r == g) then
@@ -271,17 +274,17 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                             end
                         elseif TacoTipConfig.ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFL:|r "..avg_ilvl.."|cFFFFFFFF|r", r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFL:|r "..avg_ilevel_dec.."|cFFFFFFFF|r", r, g, b})
                             else
-                                tinsert(linesToAdd, {"L: "..avg_ilvl, r, g, b})
+                                tinsert(linesToAdd, {"L: "..avg_ilevel_dec, r, g, b})
                             end
                         end
                     else
                         if TacoTipConfig.gearscore_ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFGearScore:|r "..gearscore.." (iLvl:|r "..avg_ilvl..")", r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFGearScore:|r "..gearscore.." (iLvl:|r "..avg_ilevel_dec..")", r, g, b})
                             else
-                                tinsert(linesToAdd, {"GearScore: "..gearscore.." (iLvl: "..avg_ilvl..")", r, g, b})
+                                tinsert(linesToAdd, {"GearScore: "..gearscore.." (iLvl: "..avg_ilevel_dec..")", r, g, b})
                             end
                         elseif TacoTipConfig.gearscore_style then
                             if (r == b and r == g) then
@@ -291,9 +294,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                             end
                         elseif TacoTipConfig.ilevel_style then
                             if (r == b and r == g) then
-                                tinsert(linesToAdd, {"|cFFFFFFFFiLvl:|r "..avg_ilvl, r, g, b})
+                                tinsert(linesToAdd, {"|cFFFFFFFFiLvl:|r "..avg_ilevel_dec, r, g, b})
                             else
-                                tinsert(linesToAdd, {"iLvl: "..avg_ilvl, r, g, b})
+                                tinsert(linesToAdd, {"iLvl: "..avg_ilevel_dec, r, g, b})
                             end
                         end
                     end
@@ -570,7 +573,7 @@ function TT:InitCharacterFrame()
     PersonalAvgItemLvl:SetFont(L["CHARACTER_FRAME_ILVL_VALUE_FONT"], L["CHARACTER_FRAME_ILVL_VALUE_FONT_SIZE"])
     PersonalAvgItemLvl:SetText("0")
     PersonalAvgItemLvl.RefreshPosition = function()
-        PersonalAvgItemLvl:SetPoint("BOTTOMLEFT",PaperDollFrame,"BOTTOMLEFT",L["CHARACTER_FRAME_ILVL_VALUE_XPOS"] + (TacoTipConfig.character_ilvl_offset_x or 0),L["CHARACTER_FRAME_ILVL_VALUE_YPOS"] + (TacoTipConfig.character_ilvl_offset_y or 0))
+        PersonalAvgItemLvl:SetPoint("BOTTOMRIGHT",PaperDollFrame,"BOTTOMLEFT",L["CHARACTER_FRAME_ILVL_VALUE_XPOS"] + (TacoTipConfig.character_ilvl_offset_x or 0),L["CHARACTER_FRAME_ILVL_VALUE_YPOS"] + (TacoTipConfig.character_ilvl_offset_y or 0))
     end
     PersonalAvgItemLvl:RefreshPosition()
 
@@ -578,7 +581,7 @@ function TT:InitCharacterFrame()
     PersonalAvgItemLvlText:SetFont(L["CHARACTER_FRAME_ILVL_TITLE_FONT"], L["CHARACTER_FRAME_ILVL_TITLE_FONT_SIZE"])
     PersonalAvgItemLvlText:SetText("iLvl")
     PersonalAvgItemLvlText.RefreshPosition = function()
-        PersonalAvgItemLvlText:SetPoint("BOTTOMLEFT",PaperDollFrame,"BOTTOMLEFT",L["CHARACTER_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.character_ilvl_offset_x or 0),L["CHARACTER_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.character_ilvl_offset_y or 0))
+        PersonalAvgItemLvlText:SetPoint("BOTTOMRIGHT",PaperDollFrame,"BOTTOMLEFT",L["CHARACTER_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.character_ilvl_offset_x or 0),L["CHARACTER_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.character_ilvl_offset_y or 0))
     end
     PersonalAvgItemLvlText:RefreshPosition()
 
@@ -621,7 +624,7 @@ function TT:RefreshCharacterFrame()
         end
     end
     if (TacoTipConfig.show_avg_ilvl and (not TacoTipConfig.hide_in_combat or not InCombatLockdown())) then
-        PersonalAvgItemLvl:SetText(MyAverageScore);
+        PersonalAvgItemLvl:SetText(string.format(FORMAT_ILVL, MyAverageScore));
         PersonalAvgItemLvl:SetTextColor(r, g, b, 1)
         PersonalAvgItemLvl:Show()
         PersonalAvgItemLvlText:Show()
@@ -669,7 +672,7 @@ function TT:InitInspectFrame()
     InspectAvgItemLvl:SetFont(L["INSPECT_FRAME_ILVL_VALUE_FONT"], L["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"])
     InspectAvgItemLvl:SetText("0")
     InspectAvgItemLvl.RefreshPosition = function()
-        InspectAvgItemLvl:SetPoint("BOTTOMLEFT",InspectPaperDollFrame,"BOTTOMLEFT",L["INSPECT_FRAME_ILVL_VALUE_XPOS"] + (TacoTipConfig.inspect_ilvl_offset_x or 0),L["INSPECT_FRAME_ILVL_VALUE_YPOS"] + (TacoTipConfig.inspect_ilvl_offset_y or 0))
+        InspectAvgItemLvl:SetPoint("BOTTOMRIGHT",InspectPaperDollFrame,"BOTTOMLEFT",L["INSPECT_FRAME_ILVL_VALUE_XPOS"] + (TacoTipConfig.inspect_ilvl_offset_x or 0),L["INSPECT_FRAME_ILVL_VALUE_YPOS"] + (TacoTipConfig.inspect_ilvl_offset_y or 0))
     end
     InspectAvgItemLvl:RefreshPosition()
 
@@ -677,7 +680,7 @@ function TT:InitInspectFrame()
     InspectAvgItemLvlText:SetFont(L["INSPECT_FRAME_ILVL_TITLE_FONT"], L["INSPECT_FRAME_ILVL_TITLE_FONT_SIZE"])
     InspectAvgItemLvlText:SetText("iLvl")
     InspectAvgItemLvlText.RefreshPosition = function()
-        InspectAvgItemLvlText:SetPoint("BOTTOMLEFT",InspectPaperDollFrame,"BOTTOMLEFT",L["INSPECT_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.inspect_ilvl_offset_x or 0),L["INSPECT_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.inspect_ilvl_offset_y or 0))
+        InspectAvgItemLvlText:SetPoint("BOTTOMRIGHT",InspectPaperDollFrame,"BOTTOMLEFT",L["INSPECT_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.inspect_ilvl_offset_x or 0),L["INSPECT_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.inspect_ilvl_offset_y or 0))
     end
     InspectAvgItemLvlText:RefreshPosition()
 
@@ -730,7 +733,7 @@ function TT:RefreshInspectFrame()
         end
     end
     if (TacoTipConfig.show_avg_ilvl and (not TacoTipConfig.hide_in_combat or not InCombatLockdown())) then
-        InspectAvgItemLvl:SetText(inspect_avg);
+        InspectAvgItemLvl:SetText(string.format(FORMAT_ILVL, inspect_avg));
         InspectAvgItemLvl:SetTextColor(r, g, b, 1)
         InspectAvgItemLvl:Show()
         InspectAvgItemLvlText:Show()

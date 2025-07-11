@@ -121,7 +121,7 @@ if not TacoTipConfig then
 end
 
 -- main frame
-local frame = CreateFrame("Frame","TacoTipOptions")
+local frame = CreateFrame("Frame", "TacoTipOptions")
 frame.name = addOnName
 frame:Hide()
 
@@ -141,7 +141,8 @@ frame:SetScript("OnShow", function(frame)
     description:SetText(L["TEXT_OPT_DESC"])
 
     local function newCheckbox(name, label, description, onClick)
-        local check = CreateFrame("CheckButton", "TacoTipOptCheckBox" .. name, frame, "InterfaceOptionsCheckButtonTemplate")
+        local check = CreateFrame("CheckButton", "TacoTipOptCheckBox" .. name, frame,
+            "InterfaceOptionsCheckButtonTemplate")
         check:SetScript("OnClick", function(self)
             local tick = self:GetChecked()
             onClick(self, tick and true or false)
@@ -169,13 +170,13 @@ frame:SetScript("OnShow", function(frame)
         UIDropDownMenu_Initialize(dropDown, function(frame, level, menuList)
             local info = UIDropDownMenu_CreateInfo()
             info.func = function(self)
-                    UIDropDownMenu_SetSelectedValue(frame, self.value)
-                    callback(self.value)
+                UIDropDownMenu_SetSelectedValue(frame, self.value)
+                callback(self.value)
             end
-            for i,selection in ipairs(values) do
+            for i, selection in ipairs(values) do
                 local text, desc = unpack(selection)
                 info.text, info.checked, info.value = text, false, i
-                if(desc) then
+                if (desc) then
                     info.tooltipTitle = text
                     info.tooltipText = desc
                     info.tooltipOnButton = 1
@@ -191,9 +192,10 @@ frame:SetScript("OnShow", function(frame)
     end
 
     local function newRadioButton(name, label, description, onClick)
-        local check = CreateFrame("CheckButton", "TacoTipOptRadioButton" .. name, frame, "InterfaceOptionsCheckButtonTemplate, UIRadioButtonTemplate")
+        local check = CreateFrame("CheckButton", "TacoTipOptRadioButton" .. name, frame,
+            "InterfaceOptionsCheckButtonTemplate, UIRadioButtonTemplate")
         check:SetScript("OnClick", function(self)
-            if(not self:GetChecked()) then
+            if (not self:GetChecked()) then
                 self:SetChecked(true)
             end
             onClick(self, true)
@@ -218,7 +220,8 @@ frame:SetScript("OnShow", function(frame)
 
 
     options.exampleTooltip = CreateFrame("GameTooltip", "TacoTipOptExampleTooltip", frame, "GameTooltipTemplate")
-    options.exampleTooltipHealthBar = CreateFrame("StatusBar", "TacoTipOptExampleTooltipStatusBar", options.exampleTooltip)
+    options.exampleTooltipHealthBar = CreateFrame("StatusBar", "TacoTipOptExampleTooltipStatusBar",
+        options.exampleTooltip)
     options.exampleTooltipHealthBar:SetSize(0, 8)
     options.exampleTooltipHealthBar:SetPoint("TOPLEFT", options.exampleTooltip, "BOTTOMLEFT", 2, -1)
     options.exampleTooltipHealthBar:SetPoint("TOPRIGHT", options.exampleTooltip, "BOTTOMRIGHT", -2, -1)
@@ -238,22 +241,30 @@ frame:SetScript("OnShow", function(frame)
         local name_g = TacoTipConfig.color_class and classc and classc.g or 0.6
         local name_b = TacoTipConfig.color_class and classc and classc.b or 0.1
         local title = TacoTipConfig.show_titles and L[" the Kingslayer"] or ""
-        options.exampleTooltip:AddLine(string.format("|cFF%02x%02x%02xKebabstorm%s %s%s|r", name_r*255, name_g*255, name_b*255, title, (TacoTipConfig.show_team and (HORDE_ICON.." ") or ""), (TacoTipConfig.show_pvp_icon and PVP_FLAG_ICON or "")))
+        options.exampleTooltip:AddLine(string.format("|cFF%02x%02x%02xKebabstorm%s %s%s|r", name_r * 255, name_g * 255,
+            name_b * 255, title, (TacoTipConfig.show_team and (HORDE_ICON .. " ") or ""),
+            (TacoTipConfig.show_pvp_icon and PVP_FLAG_ICON or "")))
         if (TacoTipConfig.show_guild_name) then
             if (TacoTipConfig.show_guild_rank) then
                 if (TacoTipConfig.guild_rank_alt_style) then
                     options.exampleTooltip:AddLine("|cFF40FB40<Drunken Wrath> (Officer)|r")
                 else
-                    options.exampleTooltip:AddLine(string.format("|cFF40FB40"..L["FORMAT_GUILD_RANK_1"].."|r", "Officer", "Drunken Wrath"))
+                    options.exampleTooltip:AddLine(string.format("|cFF40FB40" .. L["FORMAT_GUILD_RANK_1"] .. "|r",
+                        "Officer", "Drunken Wrath"))
                 end
             else
                 options.exampleTooltip:AddLine("|cFF40FB40<Drunken Wrath>|r")
             end
         end
         if (TacoTipConfig.color_class) then
-            options.exampleTooltip:AddLine(string.format("%s 85 %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], L["Undead"], name_r*255, name_g*255, name_b*255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
+            options.exampleTooltip:AddLine(
+                string.format("%s 85 %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], L["Undead"], name_r * 255, name_g * 255,
+                    name_b * 255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
         else
-            options.exampleTooltip:AddLine(string.format("%s 85 %s %s (%s)", L["Level"], L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
+            options.exampleTooltip:AddLine(
+                string.format("%s 85 %s %s (%s)", L["Level"], L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"],
+                    L["Player"]),
+                1, 1, 1)
         end
 
         if (not TacoTipConfig.show_pvp_icon) then
@@ -265,18 +276,25 @@ frame:SetScript("OnShow", function(frame)
 
         if (TacoTipConfig.show_target) then
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine(L["Target"]..":", L["None"], NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                options.exampleTooltip:AddDoubleLine(L["Target"] .. ":", L["None"], NORMAL_FONT_COLOR.r,
+                    NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
             else
-                options.exampleTooltip:AddLine(L["Target"]..": |cFF808080"..L["None"].."|r")
+                options.exampleTooltip:AddLine(L["Target"] .. ": |cFF808080" .. L["None"] .. "|r")
             end
         end
         if (TacoTipConfig.show_talents) then
             if not CI:IsMop() then
                 if (wide_style) then
-                    options.exampleTooltip:AddDoubleLine(L["Talents"]..":", CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-                    options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true).." [7/31/3]", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                    options.exampleTooltip:AddDoubleLine(L["Talents"] .. ":",
+                        CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]", NORMAL_FONT_COLOR.r,
+                        NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
+                        HIGHLIGHT_FONT_COLOR.b)
+                    options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true) .. " [7/31/3]",
+                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
+                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
                 else
-                    options.exampleTooltip:AddLine(L["Talents"]..":|cFFFFFFFF "..CI:GetSpecializationName("ROGUE", 1, true).." [31/2/8]")
+                    options.exampleTooltip:AddLine(L["Talents"] ..
+                        ":|cFFFFFFFF " .. CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]")
                 end
             else
                 TacoTipConfig.show_talents = false
@@ -287,7 +305,8 @@ frame:SetScript("OnShow", function(frame)
             local gs_r, gs_b, gs_g = GearScore:GetQuality(10405)
             if (wide_style) then
                 if TacoTipConfig.gearscore_ilevel_style then
-                    options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b,
+                        gs_g)
                 elseif TacoTipConfig.gearscore_style then
                     options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.ilevel_style then
@@ -314,11 +333,14 @@ frame:SetScript("OnShow", function(frame)
         if (isPawnLoaded and TacoTipConfig.show_pawn_player) then
             local specColor = PawnGetScaleColor("\"Classic\":ROGUE1", true) or "|cffffffff"
             if (wide_style) then
-                options.exampleTooltip:AddDoubleLine(string.format("Pawn: %s1234.56|r", specColor), string.format("%s(%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1, 1, 1, 1, 1)
+                options.exampleTooltip:AddDoubleLine(string.format("Pawn: %s1234.56|r", specColor),
+                    string.format("%s(%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1, 1, 1, 1, 1)
             elseif (mini_style) then
                 miniText = miniText .. string.format("P: %s1234.5|r", specColor)
             else
-                options.exampleTooltip:AddLine(string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1, 1)
+                options.exampleTooltip:AddLine(
+                    string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1,
+                    1)
             end
         end
         if (miniText ~= "") then
@@ -351,7 +373,7 @@ frame:SetScript("OnShow", function(frame)
         "ClassColors",
         L["Class Color"],
         L["Color class names in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.color_class = value
             showExampleTooltip()
         end)
@@ -361,7 +383,7 @@ frame:SetScript("OnShow", function(frame)
         "ShowTitles",
         L["Title"],
         L["Show player's title in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_titles = value
             showExampleTooltip()
         end)
@@ -371,7 +393,7 @@ frame:SetScript("OnShow", function(frame)
         "GuildNames",
         L["Guild Name"],
         L["Show guild name in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_guild_name = value
             options.showGuildRanks:SetDisabled(not value)
             if (value) then
@@ -389,7 +411,7 @@ frame:SetScript("OnShow", function(frame)
         "GuildRanks",
         L["Guild Rank"],
         L["Show guild rank in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_guild_rank = value
             options.guildRankStyle1:SetDisabled(not value)
             options.guildRankStyle2:SetDisabled(not value)
@@ -400,7 +422,7 @@ frame:SetScript("OnShow", function(frame)
 
     options.guildRankStyle1 = newRadioButton(
         "GuildRankStyle1",
-        L["Style"].." 1",
+        L["Style"] .. " 1",
         string.format(L["FORMAT_GUILD_RANK_1"], L["Rank"], L["Guild"]),
         function(self, value)
             options.guildRankStyle2:SetChecked(false)
@@ -413,7 +435,7 @@ frame:SetScript("OnShow", function(frame)
 
     options.guildRankStyle2 = newRadioButton(
         "GuildRankStyle2",
-        L["Style"].." 2",
+        L["Style"] .. " 2",
         string.format("<%s> (%s)", L["Guild"], L["Rank"]),
         function(self, value)
             options.guildRankStyle1:SetChecked(false)
@@ -433,7 +455,7 @@ frame:SetScript("OnShow", function(frame)
             "Talents",
             L["Talents"],
             L["Show talents and specialization in tooltips"],
-            function(self, value) 
+            function(self, value)
                 TacoTipConfig.show_talents = value
                 showExampleTooltip()
             end)
@@ -444,7 +466,7 @@ frame:SetScript("OnShow", function(frame)
         "GearScorePlayer",
         "GearScore",
         L["Show player's GearScore in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_gs_player = value
             if (value) then
                 options.gearScoreStyle1:SetDisabled(not TacoTipConfig.show_gs_player)
@@ -461,7 +483,7 @@ frame:SetScript("OnShow", function(frame)
 
     options.gearScoreStyle1 = newRadioButton(
         "GearScoreStyle1",
-        L["Style"].." 1",
+        L["Style"] .. " 1",
         "Show GearScore and iLvl",
         function(self, value)
             options.gearScoreStyle2:SetChecked(not value)
@@ -477,8 +499,8 @@ frame:SetScript("OnShow", function(frame)
 
     options.gearScoreStyle2 = newRadioButton(
         "GearScoreStyle2",
-        L["Style"].." 2",
-        "Show only GearScore", 
+        L["Style"] .. " 2",
+        "Show only GearScore",
         function(self, value)
             options.gearScoreStyle1:SetChecked(not value)
             options.gearScoreStyle3:SetChecked(not value)
@@ -493,8 +515,8 @@ frame:SetScript("OnShow", function(frame)
 
     options.gearScoreStyle3 = newRadioButton(
         "GearScoreStyle3",
-        L["Style"].." 3",
-        "Show only iLvl", 
+        L["Style"] .. " 3",
+        "Show only iLvl",
         function(self, value)
             options.gearScoreStyle1:SetChecked(not value)
             options.gearScoreStyle2:SetChecked(not value)
@@ -511,7 +533,7 @@ frame:SetScript("OnShow", function(frame)
         "PawnScorePlayer",
         "PawnScore",
         L["Show player's PawnScore in tooltips (may affect performance)"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_pawn_player = value
             showExampleTooltip()
         end)
@@ -521,7 +543,7 @@ frame:SetScript("OnShow", function(frame)
         "ShowTarget",
         L["Target"],
         L["Show unit's target in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_target = value
             showExampleTooltip()
         end)
@@ -531,17 +553,17 @@ frame:SetScript("OnShow", function(frame)
         "ShowTeam",
         L["Faction Icon"],
         L["Show player's faction icon (Horde/Alliance) in tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_team = value
             showExampleTooltip()
         end)
-    options.showTeam:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -116)   
+    options.showTeam:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -116)
 
     options.showPVPIcon = newCheckbox(
         "ShowPVPIcon",
         L["PVP Icon"],
         L["Show player's pvp flag status as icon instead of text"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_pvp_icon = value
             showExampleTooltip()
         end)
@@ -551,7 +573,7 @@ frame:SetScript("OnShow", function(frame)
         "ShowHealthBar",
         L["Health Bar"],
         L["Show unit's health bar under tooltip"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_hp_bar = value
             showExampleTooltip()
         end)
@@ -561,7 +583,7 @@ frame:SetScript("OnShow", function(frame)
         "ShowPowerBar",
         L["Power Bar"],
         L["Show unit's power bar under tooltip"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_power_bar = value
             showExampleTooltip()
         end)
@@ -576,7 +598,7 @@ frame:SetScript("OnShow", function(frame)
         "GearScoreCharacter",
         "GearScore",
         L["Show GearScore in character frame"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_gs_character = value
             if (PaperDollFrame and PaperDollFrame:IsShown()) then
                 TT:RefreshCharacterFrame()
@@ -591,7 +613,7 @@ frame:SetScript("OnShow", function(frame)
         "AverageItemLevel",
         L["Average iLvl"],
         L["Show Average Item Level in character frame"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_avg_ilvl = value
             if (PaperDollFrame and PaperDollFrame:IsShown()) then
                 TT:RefreshCharacterFrame()
@@ -615,7 +637,7 @@ frame:SetScript("OnShow", function(frame)
                 TT:RefreshInspectFrame()
             end
         end)
-    options.lockCharacterInfoPosition:SetPoint("TOPLEFT", characterFrameText, "BOTTOMLEFT", -2, -32)    
+    options.lockCharacterInfoPosition:SetPoint("TOPLEFT", characterFrameText, "BOTTOMLEFT", -2, -32)
 
 
     local extraText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -626,16 +648,16 @@ frame:SetScript("OnShow", function(frame)
         "ShowItemLevel",
         L["Show Item Level"],
         L["Display item level in the tooltip for certain items."],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_item_level = value
         end)
-    options.showItemLevel:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -4)  
+    options.showItemLevel:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -4)
 
     options.gearScoreItems = newCheckbox(
         "GearScoreItems",
         L["Show Item GearScore"],
         L["Show GearScore in item tooltips"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.show_gs_items = value
         end)
     options.gearScoreItems:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -32)
@@ -644,7 +666,7 @@ frame:SetScript("OnShow", function(frame)
         "UberTips",
         L["Enhanced Tooltips"],
         L["TEXT_OPT_UBERTIPS"],
-        function(self, value) 
+        function(self, value)
             SetCVar("UberTooltips", value and "1" or "0")
         end)
     options.uberTips:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -60)
@@ -653,19 +675,21 @@ frame:SetScript("OnShow", function(frame)
         "HideInCombat",
         L["Disable In Combat"],
         L["Disable gearscore & talents in combat"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.hide_in_combat = value
         end)
     options.hideInCombat:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -88)
 
-    options.chatClassColors = newCheckbox(
-        "ChatClassColors",
-        L["Chat Class Colors"],
-        L["Color names by class in chat windows"],
-        function(self, value) 
-            SetCVar("chatClassColorOverride", value and "0" or "1")
-        end)
-    options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116) 
+    if not CI:IsMop() then
+        options.chatClassColors = newCheckbox(
+            "ChatClassColors",
+            L["Chat Class Colors"],
+            L["Color names by class in chat windows"],
+            function(self, value)
+                SetCVar("chatClassColorOverride", value and "0" or "1")
+            end)
+        options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116)
+    end
 
     options.customPosition = newCheckbox(
         "CustomPosition",
@@ -729,7 +753,7 @@ frame:SetScript("OnShow", function(frame)
         "InstantFade",
         L["Instant Fade"],
         L["Fade out unit tooltips instantly"],
-        function(self, value) 
+        function(self, value)
             TacoTipConfig.instant_fade = value
             if (value) then
                 TT.frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
@@ -759,19 +783,18 @@ frame:SetScript("OnShow", function(frame)
         function(self, value)
             TacoTipConfig.show_achievement_points = value
         end)
-    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)      
-
+    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
 
     local styleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     styleText:SetPoint("TOPLEFT", description, "BOTTOMLEFT", 341, -154)
     styleText:SetText(L["Tooltip Style"])
 
     local dropdown_values = {
-        {L["FULL"], L["Always FULL"]},
-        {L["COMPACT/FULL"], L["Default COMPACT, hold SHIFT for FULL"]},
-        {L["COMPACT"], L["Always COMPACT"]},
-        {L["MINI/FULL"], L["Default MINI, hold SHIFT for FULL"]},
-        {L["MINI"], L["Always MINI"]}
+        { L["FULL"],         L["Always FULL"] },
+        { L["COMPACT/FULL"], L["Default COMPACT, hold SHIFT for FULL"] },
+        { L["COMPACT"],      L["Always COMPACT"] },
+        { L["MINI/FULL"],    L["Default MINI, hold SHIFT for FULL"] },
+        { L["MINI"],         L["Always MINI"] }
     }
     options.styleChoice = newDropDown(
         "StyleChoice",
@@ -832,7 +855,7 @@ frame:SetScript("OnShow", function(frame)
         options.moverBtn:SetEnabled(TacoTipConfig.custom_pos and true or false)
         options.pawnScorePlayer:SetDisabled(not isPawnLoaded)
         options.pawnScorePlayer:SetChecked(TacoTipConfig.show_pawn_player)
-        options.pawnScorePlayer.label:SetText(isPawnLoaded and "PawnScore" or "PawnScore ("..L["requires Pawn"]..")")
+        options.pawnScorePlayer.label:SetText(isPawnLoaded and "PawnScore" or "PawnScore (" .. L["requires Pawn"] .. ")")
         options.showTeam:SetChecked(TacoTipConfig.show_team)
         options.showPVPIcon:SetChecked(TacoTipConfig.show_pvp_icon)
         options.guildRankStyle1:SetChecked(not TacoTipConfig.guild_rank_alt_style)
@@ -842,7 +865,9 @@ frame:SetScript("OnShow", function(frame)
         options.showHealthBar:SetChecked(TacoTipConfig.show_hp_bar)
         options.showPowerBar:SetChecked(TacoTipConfig.show_power_bar)
         options.instantFade:SetChecked(TacoTipConfig.instant_fade)
-        options.chatClassColors:SetChecked(GetCVar("chatClassColorOverride") == "0")
+        if not CI:IsMop() then
+            options.chatClassColors:SetChecked(GetCVar("chatClassColorOverride") == "0")
+        end
         options.anchorMouse:SetChecked(TacoTipConfig.anchor_mouse)
         options.anchorMouse:SetDisabled(TacoTipConfig.custom_pos and true or false)
         options.anchorMouseWorld:SetChecked(TacoTipConfig.anchor_mouse_world)
@@ -894,7 +919,7 @@ SlashCmdList["TACOTIP"] = function(msg)
         TacoTip_CustomPosEnable(true)
     elseif (cmd == "default") then
         if (not TacoTipConfig.custom_pos) then
-            print("|cff59f0dcTacoTip:|r "..L["Custom tooltip position disabled."])
+            print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position disabled."])
         end
         if (TacoTipDragButton) then
             TacoTipDragButton:_Disable()
@@ -906,7 +931,7 @@ SlashCmdList["TACOTIP"] = function(msg)
         if (frame:IsShown()) then
             frame:Refresh()
         end
-        print("|cff59f0dcTacoTip:|r "..L["Configuration has been reset to default."])
+        print("|cff59f0dcTacoTip:|r " .. L["Configuration has been reset to default."])
     elseif (cmd == "save") then
         if (TacoTipDragButton and TacoTipDragButton:IsShown()) then
             TacoTipDragButton:_Save()
@@ -914,21 +939,21 @@ SlashCmdList["TACOTIP"] = function(msg)
     elseif (strfind(cmd, "anchor")) then
         if (strfind(cmd, "topleft")) then
             TacoTipConfig.custom_anchor = "TOPLEFT"
-            print("|cff59f0dcTacoTip:|r "..L["Custom position anchor set"]..": 'TOPLEFT'")
+            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'TOPLEFT'")
         elseif (strfind(cmd, "topright")) then
             TacoTipConfig.custom_anchor = "TOPRIGHT"
-            print("|cff59f0dcTacoTip:|r "..L["Custom position anchor set"]..": 'TOPRIGHT'")
+            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'TOPRIGHT'")
         elseif (strfind(cmd, "bottomleft")) then
             TacoTipConfig.custom_anchor = "BOTTOMLEFT"
-            print("|cff59f0dcTacoTip:|r "..L["Custom position anchor set"]..": 'BOTTOMLEFT'")
+            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'BOTTOMLEFT'")
         elseif (strfind(cmd, "bottomright")) then
             TacoTipConfig.custom_anchor = "BOTTOMRIGHT"
-            print("|cff59f0dcTacoTip:|r "..L["Custom position anchor set"]..": 'BOTTOMRIGHT'")
+            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'BOTTOMRIGHT'")
         elseif (strfind(cmd, "center")) then
             TacoTipConfig.custom_anchor = "CENTER"
-            print("|cff59f0dcTacoTip:|r "..L["Custom position anchor set"]..": 'CENTER'")
+            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'CENTER'")
         else
-            print("|cff59f0dcTacoTip:|r "..L["TEXT_HELP_ANCHOR"])
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_HELP_ANCHOR"])
         end
     else
         Settings.OpenToCategory(category.ID)

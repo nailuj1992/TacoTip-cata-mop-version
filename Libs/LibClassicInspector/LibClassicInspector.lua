@@ -3360,16 +3360,16 @@ function f:ACTIVE_TALENT_GROUP_CHANGED()
     infoChanged = true
 end
 if (isWotlk or isCata or isMop) then
-function f:INSPECT_ACHIEVEMENT_READY(event, guid, ...)
-    if (guid and GUIDIsPlayer(guid)) then
-        cacheUserAchievements(guid)
-        -- Fire ACHIEVEMENTS_READY(guid, isInspect) callback
-        lib.callbacks:Fire("ACHIEVEMENTS_READY", guid, true, nil)
-    end
-    if (AchievementFrame and AchievementFrame.isComparison and AchievementFrameComparison) then
-        AchievementFrameComparison_OnEvent(AchievementFrameComparison, event, guid, ...)
-    end
-end
+	function f:INSPECT_ACHIEVEMENT_READY(event, guid, ...)
+		if (guid and GUIDIsPlayer(guid)) then
+			cacheUserAchievements(guid)
+			-- Fire ACHIEVEMENTS_READY(guid, isInspect) callback
+			lib.callbacks:Fire("ACHIEVEMENTS_READY", guid, true, nil)
+		end
+		if (AchievementFrame and AchievementFrame.isComparison and AchievementFrameComparison) then
+			AchievementFrameComparison_OnEvent(AchievementFrameComparison, event, guid, ...)
+		end
+	end
 end
 
 f:SetScript("OnEvent", function(self, event, ...)
@@ -3384,7 +3384,7 @@ f:RegisterEvent("PLAYER_UNGHOST")
 f:RegisterEvent("GROUP_ROSTER_UPDATE")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("CHARACTER_POINTS_CHANGED")
-if (isWotlk or isCata) then
+if (isWotlk or isCata or isMop) then
     f:RegisterEvent("PLAYER_TALENT_UPDATE")
     f:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     f:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
@@ -4196,7 +4196,7 @@ end
 --     @number total_points        - total achievement points
 --
 function lib:GetTotalAchievementPoints(unitorguid)
-    if (not (isWotlk or isCata)) then
+    if (not (isWotlk or isCata or isMop)) then
         return nil
     end
     local guid = getPlayerGUID(unitorguid)
