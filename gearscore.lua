@@ -384,7 +384,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
             end
         end
         if (IsReady and GearScore > 0 and ItemCount > 0) then
-            return floor(GearScore), floor(LevelTotal/ItemCount)
+            return floor(GearScore), LevelTotal/ItemCount
         end
     end
     return 0,0

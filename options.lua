@@ -776,16 +776,14 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.anchorMouseSpells:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -88)
 
-    if true then
-        options.showAchievementPoints = newCheckbox(
-            "ShowAchievementPoints",
-            L["Show Achievement Points"],
-            L["Show total achievement points in tooltips"],
-            function(self, value)
-                TacoTipConfig.show_achievement_points = value
-            end)
-        options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
-    end
+    options.showAchievementPoints = newCheckbox(
+        "ShowAchievementPoints",
+        L["Show Achievement Points"],
+        L["Show total achievement points in tooltips"],
+        function(self, value)
+            TacoTipConfig.show_achievement_points = value
+        end)
+    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
 
     local styleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     styleText:SetPoint("TOPLEFT", description, "BOTTOMLEFT", 341, -154)
@@ -877,9 +875,7 @@ frame:SetScript("OnShow", function(frame)
         options.anchorMouseSpells:SetChecked(TacoTipConfig.anchor_mouse_spells)
         options.lockCharacterInfoPosition:SetChecked(not TacoTipConfig.unlock_info_position)
         options.lockCharacterInfoPosition:SetDisabled(not (TacoTipConfig.show_gs_character or TacoTipConfig.show_avg_ilvl))
-        if true then
-            options.showAchievementPoints:SetChecked(TacoTipConfig.show_achievement_points)
-        end
+        options.showAchievementPoints:SetChecked(TacoTipConfig.show_achievement_points)
     end
 
     frame.Refresh = function()
