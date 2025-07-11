@@ -314,7 +314,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             if (miniText ~= "") then
                 tinsert(linesToAdd, {miniText, 1, 1, 1})
             end
-            if ((CI:IsWotlk() or CI:IsCata()) and TacoTipConfig.show_achievement_points) then
+            if ((CI:IsWotlk() or CI:IsCata() or CI:IsMop()) and TacoTipConfig.show_achievement_points) then
                 local achi_pts = CI:GetTotalAchievementPoints(guid)
                 if (achi_pts) then
                     if (wide_style) then

@@ -776,7 +776,7 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.anchorMouseSpells:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -88)
 
-    if not CI:IsMop() then
+    if true then
         options.showAchievementPoints = newCheckbox(
             "ShowAchievementPoints",
             L["Show Achievement Points"],
@@ -877,7 +877,7 @@ frame:SetScript("OnShow", function(frame)
         options.anchorMouseSpells:SetChecked(TacoTipConfig.anchor_mouse_spells)
         options.lockCharacterInfoPosition:SetChecked(not TacoTipConfig.unlock_info_position)
         options.lockCharacterInfoPosition:SetDisabled(not (TacoTipConfig.show_gs_character or TacoTipConfig.show_avg_ilvl))
-        if not CI:IsMop() then
+        if true then
             options.showAchievementPoints:SetChecked(TacoTipConfig.show_achievement_points)
         end
     end
