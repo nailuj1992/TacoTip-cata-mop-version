@@ -796,7 +796,13 @@ function PaintItemLevelInfo(itemLink, frame)
         local _, _, quality, ilvl, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
         if ilvl and itemEquipLoc ~= "INVTYPE_SHIRT" and itemEquipLoc ~= "INVTYPE_TABARD" then
             frame.itemLevelText:SetText(ilvl)
-            local r, g, b = GetItemQualityColor(quality)
+            local r, g, b = 1, 1, 1
+            if GetItemQualityColor ~= nil then
+                r, g, b = GetItemQualityColor(quality)
+            elseif ITEM_QUALITY_COLORS ~= nil then
+                local color = ITEM_QUALITY_COLORS[quality or 1]
+                r, g, b = color.r, color.g, color.b
+            end
             frame.itemLevelText:SetTextColor(r, g, b)
             frame.itemLevelText:Show()
 
