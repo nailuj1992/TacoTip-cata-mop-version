@@ -580,13 +580,13 @@ function TT:UpdateSlotItemInfo(unit, framePrefix)
             -- Item Level
             ResetItemLevelInfo(frame)
             local itemLink = GetInventoryItemLink(unit, slotId)
-            PaintItemLevel(itemLink, frame)
+            PaintItemLevelInfo(itemLink, frame)
 
             -- Durability
             ResetDurabilityInfo(frame)
             if unit == "player" then
                 local current, max = GetInventoryItemDurability(slotId)
-                PaintDurability(current, max, frame)
+                PaintDurabilityInfo(current, max, frame)
             end
         end
     end
@@ -616,12 +616,12 @@ function TT:UpdateBagItemInfo()
                 -- Item Level
                 ResetItemLevelInfo(frame)
                 local itemLink = C_Container.GetContainerItemLink(bag, slot)
-                PaintItemLevel(itemLink, frame)
+                PaintItemLevelInfo(itemLink, frame)
 
                 -- Durability
                 ResetDurabilityInfo(frame)
                 local current, max = C_Container.GetContainerItemDurability(bag, slot)
-                PaintDurability(current, max, frame)
+                PaintDurabilityInfo(current, max, frame)
             end
         end
     end
@@ -642,12 +642,69 @@ function InitializeItemSlotInfo(frame)
         ds:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
         ds:SetText("")
         frame.itemDurabilityText = ds
+
+        -- Border color
+        InitializeItemBorder(frame)
     end
+end
+
+function InitializeItemBorder(frame)
+    local MAIGlowAlpha = 0.75
+    local slotbry = 0
+    
+    local name = ""
+    if frame.GetName then
+        name = frame:GetName() .. "."
+    end
+
+    frame.info = CreateFrame("FRAME", name .. "info", frame)
+    frame.info:SetSize(frame:GetSize())
+    frame.info:SetPoint("CENTER", frame, "CENTER", 0, 0)
+    frame.info:SetFrameLevel(50)
+    frame.info:SetScript(
+        "OnUpdate",
+        function(sel, elapsed)
+            if MouseIsOver(frame) then
+                frame.text:SetAlpha(0)
+                frame.texth:SetAlpha(0)
+            else
+                frame.text:SetAlpha(1)
+                frame.texth:SetAlpha(1)
+            end
+        end
+    )
+
+    --[[
+    frame.info.texture = frame:CreateTexture( nil, "BACKGROUND" )
+    frame.info.texture:SetAllPoints( frame.info )
+    frame.info.texture:SetVertexColor( 0.75, 0.75, 0.75, 0.5 )
+    ]]
+    frame.text = frame.info:CreateFontString(nil, "OVERLAY")
+    frame.text:SetFont(STANDARD_TEXT_FONT, 11, "THINOUTLINE")
+    frame.text:SetShadowOffset(1, -1)
+    frame.texth = frame.info:CreateFontString(nil, "OVERLAY")
+    frame.texth:SetFont(STANDARD_TEXT_FONT, 9, "THINOUTLINE")
+    frame.texth:SetShadowOffset(1, -1)
+    frame.border = frame.info:CreateTexture("frame.border", "OVERLAY")
+    frame.border:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
+    frame.border:SetBlendMode("ADD")
+    frame.border:SetAlpha(MAIGlowAlpha)
+    frame.text:SetPoint("TOP", frame.info, "TOP", 0, -slotbry)
+    frame.texth:SetPoint("BOTTOM", frame.info, "BOTTOM", 0, slotbry)
+    local NormalTexture = _G[frame:GetName() .. "NormalTexture"]
+    if NormalTexture then
+        local sw, sh = NormalTexture:GetSize()
+        frame.border:SetWidth(sw)
+        frame.border:SetHeight(sh)
+    end
+
+    frame.border:SetPoint("CENTER")
 end
 
 function ResetItemLevelInfo(frame)
     frame.itemLevelText:SetText("")
     frame.itemLevelText:Hide()
+    frame.border:SetVertexColor(1, 1, 1, 0)
 end
 
 function ResetDurabilityInfo(frame)
@@ -656,7 +713,7 @@ function ResetDurabilityInfo(frame)
 end
 
 -- Show item level
-function PaintItemLevel(itemLink, frame)
+function PaintItemLevelInfo(itemLink, frame)
     if not TacoTipConfig.show_item_level then
         return
     end
@@ -667,12 +724,24 @@ function PaintItemLevel(itemLink, frame)
             local r, g, b = GetItemQualityColor(quality)
             frame.itemLevelText:SetTextColor(r, g, b)
             frame.itemLevelText:Show()
+
+            if TacoTipConfig.show_quality then
+                local MAIGlowAlpha = 0.75
+                local alpha = MAIGlowAlpha
+                if r == 1 and g == 1 and b == 1 then
+                    alpha = alpha - 0.2
+                end
+                frame.border:SetVertexColor(r, g, b, alpha)
+            end
         end
     end
 end
 
 -- Show durability
-function PaintDurability(current, max, frame)
+function PaintDurabilityInfo(current, max, frame)
+    if not TacoTipConfig.show_durability then
+        return
+    end
     if current and max and max > 0 then
         local percent = math.floor((current / max) * 100)
 
