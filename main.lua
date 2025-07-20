@@ -441,7 +441,7 @@ end)
 local function itemToolTipHook(self)
     local _, itemLink = self:GetItem()
     if (itemLink and IsEquippableItem(itemLink) and (not TacoTipConfig.hide_in_combat or not InCombatLockdown())) then
-        if (TacoTipConfig.show_item_level) then
+        if (not CI:IsMop() and TacoTipConfig.show_item_level) then
             local ilvl = select(4, GetItemInfo(itemLink))
             if (ilvl and ilvl > 1) then
                 self:AddLine(L["Item Level"].." "..ilvl, 1, 1, 1)
@@ -552,6 +552,146 @@ local function CreateMover(parent, topkek, bottomright, callbackFunc)
     return mover
 end
 
+-- Valid slots IDs for Mists of Pandaria
+local SLOT_IDS = {
+    HeadSlot = 1, NeckSlot = 2, ShoulderSlot = 3, BackSlot = 15, ChestSlot = 5,
+    WristSlot = 9, HandsSlot = 10, WaistSlot = 6, LegsSlot = 7, FeetSlot = 8,
+    Finger0Slot = 11, Finger1Slot = 12, Trinket0Slot = 13, Trinket1Slot = 14,
+    MainHandSlot = 16, SecondaryHandSlot = 17
+}
+
+function TT:CreateItemInfoTexts(framePrefix)
+    if not CI:IsMop() then
+        return
+    end
+    for slotName, _ in pairs(SLOT_IDS) do
+        local frame = _G[framePrefix .. slotName]
+        InitializeItemSlotInfo(frame)
+    end
+end
+
+function TT:UpdateSlotItemInfo(unit, framePrefix)
+    if not CI:IsMop() then
+        return
+    end
+    for slotName, slotId in pairs(SLOT_IDS) do
+        local frame = _G[framePrefix .. slotName]
+        if frame and frame.itemLevelText and frame.itemDurabilityText then
+            -- Item Level
+            ResetItemLevelInfo(frame)
+            local itemLink = GetInventoryItemLink(unit, slotId)
+            PaintItemLevel(itemLink, frame)
+
+            -- Durability
+            ResetDurabilityInfo(frame)
+            if unit == "player" then
+                local current, max = GetInventoryItemDurability(slotId)
+                PaintDurability(current, max, frame)
+            end
+        end
+    end
+end
+
+function TT:CreateBagItemInfoTexts()
+    if not CI:IsMop() then
+        return
+    end
+    for bag = 0, NUM_BAG_FRAMES do
+        for slot = 1, MAX_CONTAINER_ITEMS do
+            local frame = _G["ContainerFrame"..(bag+1).."Item"..(MAX_CONTAINER_ITEMS - slot + 1)]
+            InitializeItemSlotInfo(frame)
+        end
+    end
+end
+
+function TT:UpdateBagItemInfo()
+    if not CI:IsMop() then
+        return
+    end
+    for bag = 0, NUM_BAG_FRAMES do
+        local numSlots = C_Container.GetContainerNumSlots(bag)
+        for slot = 1, numSlots do
+            local frame = _G["ContainerFrame"..(bag+1).."Item"..(numSlots - slot + 1)]
+            if frame and frame.itemLevelText and frame.itemDurabilityText then
+                -- Item Level
+                ResetItemLevelInfo(frame)
+                local itemLink = C_Container.GetContainerItemLink(bag, slot)
+                PaintItemLevel(itemLink, frame)
+
+                -- Durability
+                ResetDurabilityInfo(frame)
+                local current, max = C_Container.GetContainerItemDurability(bag, slot)
+                PaintDurability(current, max, frame)
+            end
+        end
+    end
+end
+
+function InitializeItemSlotInfo(frame)
+    if frame then
+        -- Item Level
+        local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        fs:SetPoint("TOP", frame, "TOP", 0, -5)
+        fs:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+        fs:SetText("")
+        frame.itemLevelText = fs
+
+        -- Durability
+        local ds = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        ds:SetPoint("BOTTOM", frame, "BOTTOM", 0, 2)
+        ds:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+        ds:SetText("")
+        frame.itemDurabilityText = ds
+    end
+end
+
+function ResetItemLevelInfo(frame)
+    frame.itemLevelText:SetText("")
+    frame.itemLevelText:Hide()
+end
+
+function ResetDurabilityInfo(frame)
+    frame.itemDurabilityText:SetText("")
+    frame.itemDurabilityText:Hide()
+end
+
+-- Show item level
+function PaintItemLevel(itemLink, frame)
+    if not TacoTipConfig.show_item_level then
+        return
+    end
+    if itemLink and IsEquippableItem(itemLink) then
+        local _, _, quality, ilvl, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+        if ilvl and itemEquipLoc ~= "INVTYPE_SHIRT" and itemEquipLoc ~= "INVTYPE_TABARD" then
+            frame.itemLevelText:SetText(ilvl)
+            local r, g, b = GetItemQualityColor(quality)
+            frame.itemLevelText:SetTextColor(r, g, b)
+            frame.itemLevelText:Show()
+        end
+    end
+end
+
+-- Show durability
+function PaintDurability(current, max, frame)
+    if current and max and max > 0 then
+        local percent = math.floor((current / max) * 100)
+
+        if percent < 100 then
+            -- Set color based on durability percentage
+            if percent > 50 then
+                frame.itemDurabilityText:SetTextColor(0.1, 1.0, 0.1)-- Green
+            elseif percent > 30 then
+                frame.itemDurabilityText:SetTextColor(1.0, 1.0, 0.1)-- Yellow
+            else
+                frame.itemDurabilityText:SetTextColor(1.0, 0.1, 0.1)-- Red
+            end
+
+            frame.itemDurabilityText:SetText(percent .. "%")
+            frame.itemDurabilityText:Show()
+        end
+    end
+end
+
 function TT:InitCharacterFrame()
     CharacterModelScene:CreateFontString("PersonalGearScore")
     PersonalGearScore:SetFont(L["CHARACTER_FRAME_GS_VALUE_FONT"], L["CHARACTER_FRAME_GS_VALUE_FONT_SIZE"])
@@ -584,6 +724,8 @@ function TT:InitCharacterFrame()
         PersonalAvgItemLvlText:SetPoint("BOTTOMRIGHT",PaperDollFrame,"BOTTOMLEFT",L["CHARACTER_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.character_ilvl_offset_x or 0),L["CHARACTER_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.character_ilvl_offset_y or 0))
     end
     PersonalAvgItemLvlText:RefreshPosition()
+
+    TT:CreateItemInfoTexts("Character")
 
     PaperDollFrame:HookScript("OnShow", TT.RefreshCharacterFrame)
 end
@@ -648,6 +790,8 @@ function TT:RefreshCharacterFrame()
             PersonalAvgItemLvlText.mover:Hide()
         end
     end
+
+    TT:UpdateSlotItemInfo("player", "Character")
 end
 
 
@@ -683,6 +827,8 @@ function TT:InitInspectFrame()
         InspectAvgItemLvlText:SetPoint("BOTTOMRIGHT",InspectPaperDollFrame,"BOTTOMLEFT",L["INSPECT_FRAME_ILVL_TITLE_XPOS"] + (TacoTipConfig.inspect_ilvl_offset_x or 0),L["INSPECT_FRAME_ILVL_TITLE_YPOS"] + (TacoTipConfig.inspect_ilvl_offset_y or 0))
     end
     InspectAvgItemLvlText:RefreshPosition()
+
+    TT:CreateItemInfoTexts("Inspect")
 
     InspectPaperDollFrame:HookScript("OnShow", TT.RefreshInspectFrame)
     InspectFrame:HookScript("OnHide", function()
@@ -757,18 +903,32 @@ function TT:RefreshInspectFrame()
             InspectAvgItemLvlText.mover:Hide()
         end
     end
+
+    TT:UpdateSlotItemInfo(InspectFrame.unit, "Inspect")
 end
 
 local function onEvent(self, event, ...)
-    if (event == "PLAYER_EQUIPMENT_CHANGED") then
+    if (event == "PLAYER_ENTERING_WORLD") then
+        TT:CreateBagItemInfoTexts()
+        TT:UpdateBagItemInfo()
+    elseif (event == "BAG_UPDATE") then
+        TT:UpdateBagItemInfo()
+    elseif (event == "PLAYER_EQUIPMENT_CHANGED") then
         if (CharacterModelScene and PaperDollFrame and PaperDollFrame:IsShown()) then
             TT:RefreshCharacterFrame()
         end
+        TT:UpdateBagItemInfo()
     elseif (event == "MODIFIER_STATE_CHANGED") then
         local _, unit = GameTooltip:GetUnit()
         if (unit and UnitIsPlayer(unit)) then
             GameTooltip:SetUnit(unit)
         end
+        TT:UpdateBagItemInfo()
+    elseif (event == "UPDATE_INVENTORY_DURABILITY") then
+        if (CharacterModelScene and PaperDollFrame and PaperDollFrame:IsShown()) then
+            TT:RefreshCharacterFrame()
+        end
+        TT:UpdateBagItemInfo()
     elseif (event == "UNIT_TARGET") then
         local unit = ...
         if (unit) then
@@ -840,6 +1000,9 @@ end
 do
     local f = CreateFrame("Frame")
     f:SetScript("OnEvent", onEvent)
+    f:RegisterEvent("PLAYER_ENTERING_WORLD")
+    f:RegisterEvent("BAG_UPDATE")
+    f:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
     f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
     f:RegisterEvent("MODIFIER_STATE_CHANGED")
     f:RegisterEvent("UNIT_TARGET")
