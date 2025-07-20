@@ -705,16 +705,14 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.hideInCombat:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -88)
 
-    if not CI:IsMop() then
-        options.chatClassColors = newCheckbox(
-            "ChatClassColors",
-            L["Chat Class Colors"],
-            L["Color names by class in chat windows"],
-            function(self, value)
-                SetCVar("chatClassColorOverride", value and "0" or "1")
-            end)
-        options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116)
-    end
+    options.showAchievementPoints = newCheckbox(
+        "ShowAchievementPoints",
+        L["Show Achievement Points"],
+        L["Show total achievement points in tooltips"],
+        function(self, value)
+            TacoTipConfig.show_achievement_points = value
+        end)
+    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116)
 
     options.customPosition = newCheckbox(
         "CustomPosition",
@@ -801,14 +799,16 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.anchorMouseSpells:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -88)
 
-    options.showAchievementPoints = newCheckbox(
-        "ShowAchievementPoints",
-        L["Show Achievement Points"],
-        L["Show total achievement points in tooltips"],
-        function(self, value)
-            TacoTipConfig.show_achievement_points = value
-        end)
-    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
+    if not CI:IsMop() then
+        options.chatClassColors = newCheckbox(
+            "ChatClassColors",
+            L["Chat Class Colors"],
+            L["Color names by class in chat windows"],
+            function(self, value)
+                SetCVar("chatClassColorOverride", value and "0" or "1")
+            end)
+        options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
+    end
 
     local styleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     styleText:SetPoint("TOPLEFT", description, "BOTTOMLEFT", 341, -154)
