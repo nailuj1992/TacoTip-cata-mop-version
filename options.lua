@@ -34,24 +34,26 @@ function TT:GetDefaults()
         color_class = true,
         show_titles = true,
         show_guild_name = true,
-        show_guild_rank = false,
-        show_talents = true,
+        show_guild_rank = true,
+        show_talents = false,
         show_gs_player = true,
         gearscore_style = false,
         ilevel_style = false,
         gearscore_ilevel_style = true,
         show_gs_character = true,
-        show_gs_items = false,
+        show_gs_items = true,
         show_gs_items_hs = false,
         show_avg_ilvl = true,
+        show_quality = true,
+        show_durability = true,
         hide_in_combat = false,
         show_item_level = true,
         tip_style = 2,
         show_target = true,
         show_pawn_player = false,
-        show_team = false,
-        show_pvp_icon = false,
-        guild_rank_alt_style = false,
+        show_team = true,
+        show_pvp_icon = true,
+        guild_rank_alt_style = true,
         show_hp_bar = true,
         show_power_bar = false,
         instant_fade = false,
@@ -650,6 +652,9 @@ frame:SetScript("OnShow", function(frame)
         L["Display item level in the tooltip for certain items."],
         function(self, value)
             TacoTipConfig.show_item_level = value
+            if CI:IsMop() then
+                options.showQuality:SetDisabled(not TacoTipConfig.show_item_level)
+            end
         end)
     options.showItemLevel:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -4)
 
@@ -661,6 +666,26 @@ frame:SetScript("OnShow", function(frame)
             TacoTipConfig.show_gs_items = value
         end)
     options.gearScoreItems:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -32)
+
+    if CI:IsMop() then
+        options.showQuality = newCheckbox(
+            "ShowQuality",
+            L["Show Quality Color"],
+            L["Display quality colors in the item icon for certain items."],
+            function(self, value)
+                TacoTipConfig.show_quality = value
+            end)
+        options.showQuality:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -4)
+
+        options.showDurability = newCheckbox(
+            "ShowDurability",
+            L["Show Durability"],
+            L["Display durability in the item icon for certain items."],
+            function(self, value)
+                TacoTipConfig.show_durability = value
+            end)
+        options.showDurability:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -32)
+    end
 
     options.uberTips = newCheckbox(
         "UberTips",
@@ -680,16 +705,14 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.hideInCombat:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -88)
 
-    if not CI:IsMop() then
-        options.chatClassColors = newCheckbox(
-            "ChatClassColors",
-            L["Chat Class Colors"],
-            L["Color names by class in chat windows"],
-            function(self, value)
-                SetCVar("chatClassColorOverride", value and "0" or "1")
-            end)
-        options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116)
-    end
+    options.showAchievementPoints = newCheckbox(
+        "ShowAchievementPoints",
+        L["Show Achievement Points"],
+        L["Show total achievement points in tooltips"],
+        function(self, value)
+            TacoTipConfig.show_achievement_points = value
+        end)
+    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", -2, -116)
 
     options.customPosition = newCheckbox(
         "CustomPosition",
@@ -710,13 +733,13 @@ frame:SetScript("OnShow", function(frame)
                 TacoTipConfig.custom_anchor = nil
             end
         end)
-    options.customPosition:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -4)
+    options.customPosition:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -5)
 
     options.moverBtn = CreateFrame("Button", "TacoTipOptButtonMover", frame, "UIPanelButtonTemplate")
     options.moverBtn:SetText(L["Mover"])
     options.moverBtn:SetWidth(80)
     options.moverBtn:SetHeight(20)
-    options.moverBtn:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -5)
+    options.moverBtn:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -32)
     options.moverBtn:SetScript("OnClick", function()
         TacoTip_CustomPosEnable(true)
     end)
@@ -738,7 +761,7 @@ frame:SetScript("OnShow", function(frame)
                 TacoTipConfig.custom_anchor = nil
             end
         end)
-    options.anchorMouse:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -32)
+    options.anchorMouse:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -60)
 
     options.anchorMouseWorld = newCheckbox(
         "AnchorMouseWorld",
@@ -747,7 +770,7 @@ frame:SetScript("OnShow", function(frame)
         function(self, value)
             TacoTipConfig.anchor_mouse_world = value
         end)
-    options.anchorMouseWorld:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -32)
+    options.anchorMouseWorld:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 374, -88)
 
     options.instantFade = newCheckbox(
         "InstantFade",
@@ -776,14 +799,16 @@ frame:SetScript("OnShow", function(frame)
         end)
     options.anchorMouseSpells:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -88)
 
-    options.showAchievementPoints = newCheckbox(
-        "ShowAchievementPoints",
-        L["Show Achievement Points"],
-        L["Show total achievement points in tooltips"],
-        function(self, value)
-            TacoTipConfig.show_achievement_points = value
-        end)
-    options.showAchievementPoints:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
+    if not CI:IsMop() then
+        options.chatClassColors = newCheckbox(
+            "ChatClassColors",
+            L["Chat Class Colors"],
+            L["Color names by class in chat windows"],
+            function(self, value)
+                SetCVar("chatClassColorOverride", value and "0" or "1")
+            end)
+        options.chatClassColors:SetPoint("TOPLEFT", extraText, "BOTTOMLEFT", 188, -116)
+    end
 
     local styleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     styleText:SetPoint("TOPLEFT", description, "BOTTOMLEFT", 341, -154)
@@ -845,6 +870,11 @@ frame:SetScript("OnShow", function(frame)
         options.gearScoreItems:SetChecked(TacoTipConfig.show_gs_items)
         options.averageItemLevel:SetChecked(TacoTipConfig.show_avg_ilvl)
         options.showItemLevel:SetChecked(TacoTipConfig.show_item_level)
+        if CI:IsMop() then
+            options.showQuality:SetChecked(TacoTipConfig.show_quality)
+            options.showQuality:SetDisabled(not TacoTipConfig.show_item_level)
+            options.showDurability:SetChecked(TacoTipConfig.show_durability)
+        end
         options.hideInCombat:SetChecked(TacoTipConfig.hide_in_combat)
         options.uberTips:SetChecked(GetCVar("UberTooltips") == "1")
         options.showTarget:SetChecked(TacoTipConfig.show_target)
