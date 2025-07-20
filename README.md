@@ -1,6 +1,6 @@
-## TacoTip: Better player tooltips - for Cataclysm Classic (and nearly for MoP Classic)
+## TacoTip: Better player tooltips - for Mists of Pandaria Classic
 
-**Compatible with Cataclysm Classic
+*With a stable version for Cataclysm Classic*
 
 All features are configurable - you decide what you want to see or not to see.
 
