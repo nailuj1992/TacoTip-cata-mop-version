@@ -49,10 +49,10 @@ elseif (CI:IsClassic()) then
     SUPERIOR_ITEM_LEVEL = 40
 end
 
-local MAX_SCORE = BRACKET_SIZE*6-1
+local MAX_SCORE = BRACKET_SIZE * 6 - 1
 
 local GS_ItemTypes = {
-    ["INVTYPE_RELIC"] = { ["SlotMOD"] = 0.3164, ["ItemSlot"] = 18, ["Enchantable"] = false},
+    ["INVTYPE_RELIC"] = { ["SlotMOD"] = 0.3164, ["ItemSlot"] = 18, ["Enchantable"] = false },
     ["INVTYPE_TRINKET"] = { ["SlotMOD"] = 0.5625, ["ItemSlot"] = 33, ["Enchantable"] = false },
     ["INVTYPE_2HWEAPON"] = { ["SlotMOD"] = 2.000, ["ItemSlot"] = 16, ["Enchantable"] = true },
     ["INVTYPE_WEAPONMAINHAND"] = { ["SlotMOD"] = 1.0000, ["ItemSlot"] = 16, ["Enchantable"] = true },
@@ -84,14 +84,14 @@ if (CI:IsMop()) then
 end
 
 local GS_Rarity = {
-    [0] = {Red = 0.55, Green = 0.55, Blue = 0.55 },
-    [1] = {Red = 1.00, Green = 1.00, Blue = 1.00 },
-    [2] = {Red = 0.12, Green = 1.00, Blue = 0.00 },
-    [3] = {Red = 0.00, Green = 0.50, Blue = 1.00 },
-    [4] = {Red = 0.69, Green = 0.28, Blue = 0.97 },
-    [5] = {Red = 0.94, Green = 0.09, Blue = 0.00 },
-    [6] = {Red = 1.00, Green = 0.00, Blue = 0.00 },
-    [7] = {Red = 0.90, Green = 0.80, Blue = 0.50 },
+    [0] = { Red = 0.55, Green = 0.55, Blue = 0.55 },
+    [1] = { Red = 1.00, Green = 1.00, Blue = 1.00 },
+    [2] = { Red = 0.12, Green = 1.00, Blue = 0.00 },
+    [3] = { Red = 0.00, Green = 0.50, Blue = 1.00 },
+    [4] = { Red = 0.69, Green = 0.28, Blue = 0.97 },
+    [5] = { Red = 0.94, Green = 0.09, Blue = 0.00 },
+    [6] = { Red = 1.00, Green = 0.00, Blue = 0.00 },
+    [7] = { Red = 0.90, Green = 0.80, Blue = 0.50 },
 }
 
 local GS_Formula = {
@@ -109,31 +109,31 @@ local GS_Formula = {
 }
 
 local GS_Quality = {
-    [BRACKET_SIZE*6] = {
-        ["Red"] = { ["A"] = 0.94, ["B"] = BRACKET_SIZE*5, ["C"] = 0.00006, ["D"] = 1 },
-        ["Blue"] = { ["A"] = 0.47, ["B"] = BRACKET_SIZE*5, ["C"] = 0.00047, ["D"] = -1 },
+    [BRACKET_SIZE * 6] = {
+        ["Red"] = { ["A"] = 0.94, ["B"] = BRACKET_SIZE * 5, ["C"] = 0.00006, ["D"] = 1 },
+        ["Blue"] = { ["A"] = 0.47, ["B"] = BRACKET_SIZE * 5, ["C"] = 0.00047, ["D"] = -1 },
         ["Green"] = { ["A"] = 0, ["B"] = 0, ["C"] = 0, ["D"] = 0 },
         ["Description"] = "Legendary"
     },
-    [BRACKET_SIZE*5] = {
-        ["Red"] = { ["A"] = 0.69, ["B"] = BRACKET_SIZE*4, ["C"] = 0.00025, ["D"] = 1 },
-        ["Blue"] = { ["A"] = 0.28, ["B"] = BRACKET_SIZE*4, ["C"] = 0.00019, ["D"] = 1 },
-        ["Green"] = { ["A"] = 0.97, ["B"] = BRACKET_SIZE*4, ["C"] = 0.00096, ["D"] = -1 },
+    [BRACKET_SIZE * 5] = {
+        ["Red"] = { ["A"] = 0.69, ["B"] = BRACKET_SIZE * 4, ["C"] = 0.00025, ["D"] = 1 },
+        ["Blue"] = { ["A"] = 0.28, ["B"] = BRACKET_SIZE * 4, ["C"] = 0.00019, ["D"] = 1 },
+        ["Green"] = { ["A"] = 0.97, ["B"] = BRACKET_SIZE * 4, ["C"] = 0.00096, ["D"] = -1 },
         ["Description"] = "Epic"
     },
-    [BRACKET_SIZE*4] = {
-        ["Red"] = { ["A"] = 0.0, ["B"] = BRACKET_SIZE*3, ["C"] = 0.00069, ["D"] = 1 },
-        ["Blue"] = { ["A"] = 0.5, ["B"] = BRACKET_SIZE*3, ["C"] = 0.00022, ["D"] = -1 },
-        ["Green"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*3, ["C"] = 0.00003, ["D"] = -1 },
+    [BRACKET_SIZE * 4] = {
+        ["Red"] = { ["A"] = 0.0, ["B"] = BRACKET_SIZE * 3, ["C"] = 0.00069, ["D"] = 1 },
+        ["Blue"] = { ["A"] = 0.5, ["B"] = BRACKET_SIZE * 3, ["C"] = 0.00022, ["D"] = -1 },
+        ["Green"] = { ["A"] = 1, ["B"] = BRACKET_SIZE * 3, ["C"] = 0.00003, ["D"] = -1 },
         ["Description"] = "Superior"
     },
-    [BRACKET_SIZE*3] = {
-        ["Red"] = { ["A"] = 0.12, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00012, ["D"] = -1 },
-        ["Blue"] = { ["A"] = 1, ["B"] = BRACKET_SIZE*2, ["C"] = 0.00050, ["D"] = -1 },
-        ["Green"] = { ["A"] = 0, ["B"] = BRACKET_SIZE*2, ["C"] = 0.001, ["D"] = 1 },
+    [BRACKET_SIZE * 3] = {
+        ["Red"] = { ["A"] = 0.12, ["B"] = BRACKET_SIZE * 2, ["C"] = 0.00012, ["D"] = -1 },
+        ["Blue"] = { ["A"] = 1, ["B"] = BRACKET_SIZE * 2, ["C"] = 0.00050, ["D"] = -1 },
+        ["Green"] = { ["A"] = 0, ["B"] = BRACKET_SIZE * 2, ["C"] = 0.001, ["D"] = 1 },
         ["Description"] = "Uncommon"
     },
-    [BRACKET_SIZE*2] = {
+    [BRACKET_SIZE * 2] = {
         ["Red"] = { ["A"] = 1, ["B"] = BRACKET_SIZE, ["C"] = 0.00088, ["D"] = -1 },
         ["Blue"] = { ["A"] = 1, ["B"] = 000, ["C"] = 0.00000, ["D"] = 0 },
         ["Green"] = { ["A"] = 1, ["B"] = BRACKET_SIZE, ["C"] = 0.001, ["D"] = -1 },
@@ -164,7 +164,7 @@ function TT_GS:GetQuality(ItemScore)
         return 0, 0, 0, "Trash"
     end
     --if (not CI:IsWotlk()) then
-        --return 1, 1, 1, "Common"
+    --return 1, 1, 1, "Common"
     --end
     if (ItemScore > MAX_SCORE) then
         ItemScore = MAX_SCORE
@@ -173,29 +173,32 @@ function TT_GS:GetQuality(ItemScore)
     local Blue = 0.1
     local Green = 0.1
     local GS_QualityDescription = "Legendary"
-    for i = 0,6 do
+    for i = 0, 6 do
         if ((ItemScore > i * BRACKET_SIZE) and (ItemScore <= ((i + 1) * BRACKET_SIZE))) then
-            local Red = GS_Quality[( i + 1 ) * BRACKET_SIZE].Red["A"] + (((ItemScore - GS_Quality[( i + 1 ) * BRACKET_SIZE].Red["B"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Red["C"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Red["D"])
-            local Blue = GS_Quality[( i + 1 ) * BRACKET_SIZE].Green["A"] + (((ItemScore - GS_Quality[( i + 1 ) * BRACKET_SIZE].Green["B"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Green["C"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Green["D"])
-            local Green = GS_Quality[( i + 1 ) * BRACKET_SIZE].Blue["A"] + (((ItemScore - GS_Quality[( i + 1 ) * BRACKET_SIZE].Blue["B"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Blue["C"])*GS_Quality[( i + 1 ) * BRACKET_SIZE].Blue["D"])
-            return Red, Green, Blue, GS_Quality[( i + 1 ) * BRACKET_SIZE].Description
+            local Red = GS_Quality[(i + 1) * BRACKET_SIZE].Red["A"] +
+            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Red["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["D"])
+            local Blue = GS_Quality[(i + 1) * BRACKET_SIZE].Green["A"] +
+            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Green["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["D"])
+            local Green = GS_Quality[(i + 1) * BRACKET_SIZE].Blue["A"] +
+            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Blue["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["D"])
+            return Red, Green, Blue, GS_Quality[(i + 1) * BRACKET_SIZE].Description
         end
     end
     return 0.1, 0.1, 0.1, "Trash"
 end
 
-
 function TT_GS:GetItemScore(ItemLink)
     if not (ItemLink) then
         return 0, 0, 0.1, 0.1, 0.1
     end
-    local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo(ItemLink)
+    local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
+    GetItemInfo(ItemLink)
     if (ItemLink and ItemRarity and ItemLevel and ItemEquipLoc and GS_ItemTypes[ItemEquipLoc]) then
         local Table
         local QualityScale = 1
         local GearScore = 0
         local Scale = 1.8618
-        if (ItemRarity == 5) then 
+        if (ItemRarity == 5) then
             QualityScale = 1.3
             ItemRarity = 4
         elseif (ItemRarity == 1) then
@@ -214,8 +217,10 @@ function TT_GS:GetItemScore(ItemLink)
             Table = GS_Formula["B"]
         end
         if ((ItemRarity >= 2) and (ItemRarity <= 4)) then
-            local Red, Green, Blue = TT_GS:GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) * 11.25)
-            GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
+            local Red, Green, Blue = TT_GS:GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) *
+            11.25)
+            GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) *
+            GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
             if (ItemLevel == 187.05) then
                 ItemLevel = 0
             end
@@ -246,7 +251,7 @@ function TT_GS:GetItemHunterScore(ItemLink)
 end
 
 local function itemcacheCB(tbl, id)
-    for i=1,#tbl.items do
+    for i = 1, #tbl.items do
         if (id == tbl.items[i]) then
             table.remove(tbl.items, i)
         end
@@ -262,8 +267,8 @@ function TT_GS:GetScore(unitorguid, useCallback)
     if (guid) then
         if (guid ~= UnitGUID("player")) then
             local _, invTime = CI:GetLastCacheTime(guid)
-            if(invTime == 0) then
-                return 0,0
+            if (invTime == 0) then
+                return 0, 0
             end
         end
 
@@ -278,11 +283,11 @@ function TT_GS:GetScore(unitorguid, useCallback)
         local offHandItem = CI:GetInventoryItemMixin(guid, 17)
         local mainHandLink
         local offHandLink
-        
+
         local cb_table
-        
+
         if (useCallback) then
-            cb_table = {["guid"] = guid, ["items"] = {}}
+            cb_table = { ["guid"] = guid, ["items"] = {} }
         end
 
         if (mainHandItem) then
@@ -323,14 +328,16 @@ function TT_GS:GetScore(unitorguid, useCallback)
         end
 
         if (mainHandLink and offHandLink) then
-            local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo(mainHandLink)
+            local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
+            GetItemInfo(mainHandLink)
             if (ItemEquipLoc == "INVTYPE_2HWEAPON") then
                 TitanGrip = 0.5
             end
         end
 
         if (offHandLink) then
-            local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture = GetItemInfo(offHandLink)
+            local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
+            GetItemInfo(offHandLink)
             if (ItemEquipLoc == "INVTYPE_2HWEAPON") then
                 TitanGrip = 0.5
             end
@@ -348,7 +355,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
             maxItems = 17
         end
         for i = 1, maxItems do
-            if ( i ~= 4 ) and ( i ~= 17 ) then
+            if (i ~= 4) and (i ~= 17) then
                 local item = CI:GetInventoryItemMixin(guid, i)
                 if (item) then
                     if (item:IsItemDataCached()) then
@@ -360,7 +367,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
                                 TempScore = TempScore * 5.3224
                             end
                         end
-                        if ( i == 16 ) then
+                        if (i == 16) then
                             TempScore = TempScore * TitanGrip
                         end
                         GearScore = GearScore + TempScore
@@ -384,9 +391,8 @@ function TT_GS:GetScore(unitorguid, useCallback)
             end
         end
         if (IsReady and GearScore > 0 and ItemCount > 0) then
-            return floor(GearScore), LevelTotal/ItemCount
+            return floor(GearScore), LevelTotal / ItemCount
         end
     end
-    return 0,0
+    return 0, 0
 end
-
