@@ -705,18 +705,22 @@ end
 function InitializeItemSlotInfo(frame)
     if frame then
         -- Item Level
-        local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        fs:SetPoint("TOP", frame, "TOP", 0, -5)
-        fs:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
-        fs:SetText("")
-        frame.itemLevelText = fs
+        if not frame.itemLevelText then
+            local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            fs:SetPoint("TOP", frame, "TOP", 0, -5)
+            fs:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+            fs:SetText("")
+            frame.itemLevelText = fs
+        end
 
         -- Durability
-        local ds = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        ds:SetPoint("BOTTOM", frame, "BOTTOM", 0, 2)
-        ds:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
-        ds:SetText("")
-        frame.itemDurabilityText = ds
+        if not frame.itemDurabilityText then
+            local ds = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            ds:SetPoint("BOTTOM", frame, "BOTTOM", 0, 2)
+            ds:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+            ds:SetText("")
+            frame.itemDurabilityText = ds
+        end
 
         -- Border color
         InitializeItemBorder(frame)
@@ -732,7 +736,9 @@ function InitializeItemBorder(frame)
         name = frame:GetName() .. "."
     end
 
-    frame.info = CreateFrame("FRAME", name .. "info", frame)
+    if not frame.info then
+        frame.info = CreateFrame("FRAME", name .. "info", frame)
+    end
     frame.info:SetSize(frame:GetSize())
     frame.info:SetPoint("CENTER", frame, "CENTER", 0, 0)
     frame.info:SetFrameLevel(50)
@@ -754,13 +760,20 @@ function InitializeItemBorder(frame)
     frame.info.texture:SetAllPoints( frame.info )
     frame.info.texture:SetVertexColor( 0.75, 0.75, 0.75, 0.5 )
     ]]
-    frame.text = frame.info:CreateFontString(nil, "OVERLAY")
+
+    if not frame.text then
+        frame.text = frame.info:CreateFontString(nil, "OVERLAY")
+    end
     frame.text:SetFont(STANDARD_TEXT_FONT, 11, "THINOUTLINE")
     frame.text:SetShadowOffset(1, -1)
-    frame.texth = frame.info:CreateFontString(nil, "OVERLAY")
+    if not frame.texth then
+        frame.texth = frame.info:CreateFontString(nil, "OVERLAY")
+    end
     frame.texth:SetFont(STANDARD_TEXT_FONT, 9, "THINOUTLINE")
     frame.texth:SetShadowOffset(1, -1)
-    frame.border = frame.info:CreateTexture("frame.border", "OVERLAY")
+    if not frame.border then
+        frame.border = frame.info:CreateTexture("frame.border", "OVERLAY")
+    end
     frame.border:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
     frame.border:SetBlendMode("ADD")
     frame.border:SetAlpha(MAIGlowAlpha)
