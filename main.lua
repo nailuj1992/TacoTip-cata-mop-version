@@ -667,37 +667,47 @@ function TT:UpdateSlotItemInfo(unit, framePrefix)
     end
 end
 
-function TT:CreateBagItemInfoTexts()
-    if not CI:IsMop() then
-        return
-    end
-    for bag = 0, NUM_BAG_FRAMES do
-        for slot = 1, MAX_CONTAINER_ITEMS do
-            local frame = _G["ContainerFrame" .. (bag + 1) .. "Item" .. (MAX_CONTAINER_ITEMS - slot + 1)]
-            InitializeItemSlotInfo(frame)
-        end
-    end
-end
-
 function TT:UpdateBagItemInfo()
     if not CI:IsMop() then
         return
     end
-    for bag = 0, NUM_BAG_FRAMES do
-        local numSlots = C_Container.GetContainerNumSlots(bag)
-        for slot = 1, numSlots do
-            local frame = _G["ContainerFrame" .. (bag + 1) .. "Item" .. (numSlots - slot + 1)]
-            if frame and frame.itemLevelText and frame.itemDurabilityText then
-                -- Item Level
-                ResetItemLevelInfo(frame)
-                local itemLink = C_Container.GetContainerItemLink(bag, slot)
-                PaintItemLevelInfo(itemLink, frame)
+    for i = 1, NUM_CONTAINER_FRAMES do
+        local container = _G["ContainerFrame" .. i]
+        if container then
+            local bagID = container:GetID()
+            if IsBagOpen(bagID) then
+                local numSlots = C_Container.GetContainerNumSlots(bagID)
+                for slot = 1, numSlots do
+                    local frame = _G["ContainerFrame" .. i .. "Item" .. (numSlots - slot + 1)]
+                    InitializeItemSlotInfo(frame)
+                    if frame and frame.itemLevelText and frame.itemDurabilityText then
+                        ResetItemLevelInfo(frame)
+                        local itemLink = C_Container.GetContainerItemLink(bagID, slot)
+                        PaintItemLevelInfo(itemLink, frame)
 
-                -- Durability
-                ResetDurabilityInfo(frame)
-                local current, max = C_Container.GetContainerItemDurability(bag, slot)
-                PaintDurabilityInfo(current, max, frame)
+                        ResetDurabilityInfo(frame)
+                        local current, max = C_Container.GetContainerItemDurability(bagID, slot)
+                        PaintDurabilityInfo(current, max, frame)
+                    end
+                end
             end
+        end
+    end
+end
+
+local function HookBagClicks(event)
+    -- Backpack (bag 0)
+    MainMenuBarBackpackButton:HookScript("OnClick", function()
+        TT:UpdateBagItemInfo()
+    end)
+
+    -- Additional bags (bags 1 to 4)
+    for i = 0, 3 do
+        local bagButton = _G["CharacterBag" .. i .. "Slot"]
+        if bagButton then
+            bagButton:HookScript("OnClick", function()
+                TT:UpdateBagItemInfo()
+            end)
         end
     end
 end
@@ -707,7 +717,7 @@ function InitializeItemSlotInfo(frame)
         -- Item Level
         if not frame.itemLevelText then
             local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            fs:SetPoint("TOP", frame, "TOP", 0, -5)
+            fs:SetPoint("TOP", frame, "TOP", 0, -3)
             fs:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
             fs:SetText("")
             frame.itemLevelText = fs
@@ -716,8 +726,8 @@ function InitializeItemSlotInfo(frame)
         -- Durability
         if not frame.itemDurabilityText then
             local ds = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            ds:SetPoint("BOTTOM", frame, "BOTTOM", 0, 2)
-            ds:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+            ds:SetPoint("BOTTOM", frame, "BOTTOM", 0, 3)
+            ds:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
             ds:SetText("")
             frame.itemDurabilityText = ds
         end
@@ -728,7 +738,7 @@ function InitializeItemSlotInfo(frame)
 end
 
 function InitializeItemBorder(frame)
-    local MAIGlowAlpha = 0.75
+    local MAIGlowAlpha = 0 --0.75
     local slotbry = 0
 
     local name = ""
@@ -1091,9 +1101,19 @@ end
 
 local function onEvent(self, event, ...)
     if (event == "PLAYER_ENTERING_WORLD") then
-        TT:CreateBagItemInfoTexts()
+        HookBagClicks(event)
+        TT:UpdateBagItemInfo()
+    elseif (event == "BAG_OPEN") then
         TT:UpdateBagItemInfo()
     elseif (event == "BAG_UPDATE") then
+        TT:UpdateBagItemInfo()
+    elseif (event == "BANKFRAME_OPENED") then
+        HookBagClicks(event)
+        TT:UpdateBagItemInfo()
+    elseif (event == "UNIT_INVENTORY_CHANGED") then
+        if (CharacterModelScene and PaperDollFrame and PaperDollFrame:IsShown()) then
+            TT:RefreshCharacterFrame()
+        end
         TT:UpdateBagItemInfo()
     elseif (event == "PLAYER_EQUIPMENT_CHANGED") then
         if (CharacterModelScene and PaperDollFrame and PaperDollFrame:IsShown()) then
@@ -1183,9 +1203,12 @@ do
     local f = CreateFrame("Frame")
     f:SetScript("OnEvent", onEvent)
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
+    f:RegisterEvent("BAG_OPEN")
     f:RegisterEvent("BAG_UPDATE")
+    f:RegisterEvent("BANKFRAME_OPENED")
     f:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
     f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+    f:RegisterEvent("UNIT_INVENTORY_CHANGED")
     f:RegisterEvent("MODIFIER_STATE_CHANGED")
     f:RegisterEvent("UNIT_TARGET")
     f:RegisterEvent("ADDON_LOADED")
