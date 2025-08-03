@@ -710,6 +710,35 @@ local function HookBagClicks(event)
             end)
         end
     end
+
+    if event == "BANKFRAME_OPENED" or event == "PLAYERBANKSLOTS_CHANGED" then
+        for i = 1, NUM_BANKGENERIC_SLOTS do
+            local slot = _G["BankFrameItem" .. i]
+            if slot then
+                local bagID = -1
+                InitializeItemSlotInfo(slot)
+                if slot and slot.itemLevelText and slot.itemDurabilityText then
+                    ResetItemLevelInfo(slot)
+                    local itemLink = C_Container.GetContainerItemLink(bagID, i)
+                    PaintItemLevelInfo(itemLink, slot)
+
+                    ResetDurabilityInfo(slot)
+                    local current, max = C_Container.GetContainerItemDurability(bagID, i)
+                    PaintDurabilityInfo(current, max, slot)
+                end
+            end
+        end
+
+        -- Accessing the additional bank bag slots
+        for i = 1, NUM_BANKBAGSLOTS do
+            local bagSlot = _G["BankSlotsFrame"]["Bag" .. i]
+            if bagSlot then
+                bagSlot:HookScript("OnClick", function()
+                    TT:UpdateBagItemInfo()
+                end)
+            end
+        end
+    end
 end
 
 function InitializeItemSlotInfo(frame)
@@ -1107,7 +1136,7 @@ local function onEvent(self, event, ...)
         TT:UpdateBagItemInfo()
     elseif (event == "BAG_UPDATE") then
         TT:UpdateBagItemInfo()
-    elseif (event == "BANKFRAME_OPENED") then
+    elseif (event == "BANKFRAME_OPENED" or event == "PLAYERBANKSLOTS_CHANGED") then
         HookBagClicks(event)
         TT:UpdateBagItemInfo()
     elseif (event == "UNIT_INVENTORY_CHANGED") then
@@ -1206,6 +1235,7 @@ do
     f:RegisterEvent("BAG_OPEN")
     f:RegisterEvent("BAG_UPDATE")
     f:RegisterEvent("BANKFRAME_OPENED")
+    f:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
     f:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
     f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
     f:RegisterEvent("UNIT_INVENTORY_CHANGED")
