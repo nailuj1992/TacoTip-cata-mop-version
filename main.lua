@@ -511,7 +511,7 @@ local function itemToolTipHook(self)
             end
         end
         if (TacoTipConfig.show_gs_items) then
-            local ilvlAfterUpgrades = TT_GS:FindCurrentItemLevelAfterUpgrades(self)
+            local ilvlAfterUpgrades = TT_GS:ScanTooltipForItemLevel(self)
             local gs, _, r, g, b = GearScore:GetItemScore(itemLink, ilvlAfterUpgrades)
             if (gs and gs > 1) then
                 self:AddLine("GearScore: " .. gs, r, g, b)
@@ -656,7 +656,7 @@ function TT:UpdateSlotItemInfo(unit, framePrefix)
             -- Item Level
             ResetItemLevelInfo(frame)
             local itemLink = GetInventoryItemLink(unit, slotId)
-            PaintItemLevelInfo(itemLink, frame)
+            PaintItemLevelInfo(itemLink, frame, unit, slotId, nil)
 
             -- Durability
             ResetDurabilityInfo(frame)
@@ -684,7 +684,7 @@ function TT:UpdateBagItemInfo()
                     if frame and frame.itemLevelText and frame.itemDurabilityText then
                         ResetItemLevelInfo(frame)
                         local itemLink = C_Container.GetContainerItemLink(bagID, slot)
-                        PaintItemLevelInfo(itemLink, frame)
+                        PaintItemLevelInfo(itemLink, frame, nil, slot, bagID)
 
                         ResetDurabilityInfo(frame)
                         local current, max = C_Container.GetContainerItemDurability(bagID, slot)
@@ -721,7 +721,7 @@ local function HookBagClicks(event)
                 if slot and slot.itemLevelText and slot.itemDurabilityText then
                     ResetItemLevelInfo(slot)
                     local itemLink = C_Container.GetContainerItemLink(bagID, i)
-                    PaintItemLevelInfo(itemLink, slot)
+                    PaintItemLevelInfo(itemLink, slot, nil, i, bagID)
 
                     ResetDurabilityInfo(slot)
                     local current, max = C_Container.GetContainerItemDurability(bagID, i)
@@ -841,12 +841,26 @@ function ResetDurabilityInfo(frame)
 end
 
 -- Show item level
-function PaintItemLevelInfo(itemLink, frame)
+function PaintItemLevelInfo(itemLink, frame, unit, slotId, bagID)
     if not TacoTipConfig.show_item_level then
         return
     end
     if itemLink and IsEquippableItem(itemLink) then
         local _, _, quality, ilvl, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+        if unit and slotId then
+            local currentItemLevel = TT_GS:GetCurrentItemLevel(unit, slotId, nil)
+            if currentItemLevel then
+                ilvl = currentItemLevel
+            end
+        end
+        if bagID and slotId then
+            if bagID ~= -1 then -- Excluded bank slots for now
+                local currentItemLevel = TT_GS:GetCurrentItemLevel(nil, slotId, bagID)
+                if currentItemLevel then
+                    ilvl = currentItemLevel
+                end
+            end
+        end
         if ilvl and itemEquipLoc ~= "INVTYPE_SHIRT" and itemEquipLoc ~= "INVTYPE_TABARD" then
             frame.itemLevelText:SetText(ilvl)
             local r, g, b = 1, 1, 1

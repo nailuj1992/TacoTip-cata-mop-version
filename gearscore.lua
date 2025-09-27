@@ -267,11 +267,13 @@ end
 function TT_GS:GetScore(unitorguid, useCallback)
     local guid = getPlayerGUID(unitorguid)
     if (guid) then
+        local target = "player"
         if (guid ~= UnitGUID("player")) then
             local _, invTime = CI:GetLastCacheTime(guid)
             if (invTime == 0) then
                 return 0, 0
             end
+            target = "target"
         end
 
         local PlayerClass, PlayerEnglishClass = GetPlayerInfoByGUID(guid)
@@ -345,7 +347,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
             end
             local TempScore, ItemLevel = TT_GS:GetItemScore(offHandLink)
             if CI:IsMop() then
-                local currentItemLevel = TT_GS:GetCurrentItemLevel(17)
+                local currentItemLevel = TT_GS:GetCurrentItemLevel(target, 17)
                 if currentItemLevel then
                     ItemLevel = currentItemLevel
                 end
@@ -368,7 +370,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
                 if (item) then
                     if (item:IsItemDataCached()) then
                         local TempScore, ItemLevel = TT_GS:GetItemScore(item:GetItemLink())
-                        local currentItemLevel = TT_GS:GetCurrentItemLevel(i)
+                        local currentItemLevel = TT_GS:GetCurrentItemLevel(target, i)
                         if currentItemLevel then
                             ItemLevel = currentItemLevel
                         end
@@ -409,33 +411,12 @@ function TT_GS:GetScore(unitorguid, useCallback)
     return 0, 0
 end
 
-function TT_GS:FindCurrentItemLevelAfterUpgrades(tooltip)
-    if CI:IsMop() then
-        for i = 1, tooltip:NumLines() do
-            local line = _G[tooltip:GetName() .. "TextLeft" .. i]
-            if line then
-                local text = line:GetText()
-                if text then
-                    -- look for something like "Item Level 484", "Nivel de objeto 484", etc.
-                    local ilvl = text:match("(%d+)$")
-                    if ilvl then
-                        return tonumber(ilvl)
-                    end
-                end
-            end
-        end
+function TT_GS:ScanTooltipForItemLevel(tooltip)
+    if not CI:IsMop() then
+        return nil;
     end
-
-    local _, itemLink = tooltip:GetItem()
-    if (itemLink and IsEquippableItem(itemLink) and (not TacoTipConfig.hide_in_combat or not InCombatLockdown())) then
-        return select(4, GetItemInfo(itemLink))
-    end
-    return nil
-end
-
-local function ScanTooltipForItemLevel(tooltip)
     local itemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
-    for i = 2, tooltip:NumLines() do -- skip name line
+    for i = 1, tooltip:NumLines() do
         local line = _G[tooltip:GetName() .. "TextLeft" .. i]
         if line then
             local text = line:GetText()
@@ -450,29 +431,38 @@ local function ScanTooltipForItemLevel(tooltip)
     return nil
 end
 
-function TT_GS:GetCurrentItemLevel(item)
+-- build tooltip off-screen
+if not TT_GS.ScanTooltip then
+    if not TT_GS.ScanTooltip then
+        TT_GS.ScanTooltip = CreateFrame("GameTooltip", "TTGSTempTooltip", nil, "GameTooltipTemplate")
+        TT_GS.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    end
+end
+
+
+function TT_GS:GetCurrentItemLevel(target, item, bagID)
     if not item then return nil end
 
-    -- build tooltip off-screen
-    local tooltip = CreateFrame("GameTooltip", "TTGSTempTooltip", nil, "GameTooltipTemplate")
-    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-
     if type(item) == "string" then
-        tooltip:SetHyperlink(item)               -- itemLink
+        TT_GS.ScanTooltip:SetHyperlink(item) -- itemLink
     elseif type(item) == "number" then
-        tooltip:SetInventoryItem("player", item) -- slot
+        if target then
+            TT_GS.ScanTooltip:SetInventoryItem(target, item) -- slot
+        end
+        if bagID then
+            TT_GS.ScanTooltip:SetBagItem(bagID, item) -- slot
+        end
     elseif item.GetItemLink then
-        tooltip:SetHyperlink(item:GetItemLink())
+        TT_GS.ScanTooltip:SetHyperlink(item:GetItemLink())
     end
 
-    local ilvl = ScanTooltipForItemLevel(tooltip)
-    tooltip:Hide()
+    local ilvl = TT_GS:ScanTooltipForItemLevel(TT_GS.ScanTooltip)
+
+    TT_GS.ScanTooltip:Hide()
+    TT_GS.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 
     if ilvl then
         return ilvl
-    else
-        -- fallback: base item level (not upgraded)
-        local _, _, _, baseIlvl = GetItemInfo(item:GetItemLink() or item)
-        return baseIlvl
     end
+    return nil
 end
