@@ -176,23 +176,26 @@ function TT_GS:GetQuality(ItemScore)
     for i = 0, 6 do
         if ((ItemScore > i * BRACKET_SIZE) and (ItemScore <= ((i + 1) * BRACKET_SIZE))) then
             local Red = GS_Quality[(i + 1) * BRACKET_SIZE].Red["A"] +
-            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Red["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["D"])
+                (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Red["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Red["D"])
             local Blue = GS_Quality[(i + 1) * BRACKET_SIZE].Green["A"] +
-            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Green["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["D"])
+                (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Green["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Green["D"])
             local Green = GS_Quality[(i + 1) * BRACKET_SIZE].Blue["A"] +
-            (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Blue["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["D"])
+                (((ItemScore - GS_Quality[(i + 1) * BRACKET_SIZE].Blue["B"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["C"]) * GS_Quality[(i + 1) * BRACKET_SIZE].Blue["D"])
             return Red, Green, Blue, GS_Quality[(i + 1) * BRACKET_SIZE].Description
         end
     end
     return 0.1, 0.1, 0.1, "Trash"
 end
 
-function TT_GS:GetItemScore(ItemLink)
+function TT_GS:GetItemScore(ItemLink, ilvlAfterUpgrades)
     if not (ItemLink) then
         return 0, 0, 0.1, 0.1, 0.1
     end
     local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
-    GetItemInfo(ItemLink)
+        GetItemInfo(ItemLink)
+    if ilvlAfterUpgrades then
+        ItemLevel = ilvlAfterUpgrades
+    end
     if (ItemLink and ItemRarity and ItemLevel and ItemEquipLoc and GS_ItemTypes[ItemEquipLoc]) then
         local Table
         local QualityScale = 1
@@ -218,9 +221,9 @@ function TT_GS:GetItemScore(ItemLink)
         end
         if ((ItemRarity >= 2) and (ItemRarity <= 4)) then
             local Red, Green, Blue = TT_GS:GetQuality((floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) * 1 * Scale)) *
-            11.25)
+                11.25)
             GearScore = floor(((ItemLevel - Table[ItemRarity].A) / Table[ItemRarity].B) *
-            GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
+                GS_ItemTypes[ItemEquipLoc].SlotMOD * Scale * QualityScale)
             if (ItemLevel == 187.05) then
                 ItemLevel = 0
             end
@@ -261,15 +264,16 @@ local function itemcacheCB(tbl, id)
     end
 end
 
-
 function TT_GS:GetScore(unitorguid, useCallback)
     local guid = getPlayerGUID(unitorguid)
     if (guid) then
+        local target = "player"
         if (guid ~= UnitGUID("player")) then
             local _, invTime = CI:GetLastCacheTime(guid)
             if (invTime == 0) then
                 return 0, 0
             end
+            target = "target"
         end
 
         local PlayerClass, PlayerEnglishClass = GetPlayerInfoByGUID(guid)
@@ -329,7 +333,7 @@ function TT_GS:GetScore(unitorguid, useCallback)
 
         if (mainHandLink and offHandLink) then
             local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
-            GetItemInfo(mainHandLink)
+                GetItemInfo(mainHandLink)
             if (ItemEquipLoc == "INVTYPE_2HWEAPON") then
                 TitanGrip = 0.5
             end
@@ -337,11 +341,17 @@ function TT_GS:GetScore(unitorguid, useCallback)
 
         if (offHandLink) then
             local ItemName, ItemLink, ItemRarity, ItemLevel, ItemMinLevel, ItemType, ItemSubType, ItemStackCount, ItemEquipLoc, ItemTexture =
-            GetItemInfo(offHandLink)
+                GetItemInfo(offHandLink)
             if (ItemEquipLoc == "INVTYPE_2HWEAPON") then
                 TitanGrip = 0.5
             end
             local TempScore, ItemLevel = TT_GS:GetItemScore(offHandLink)
+            if CI:IsMop() then
+                local currentItemLevel = TT_GS:GetCurrentItemLevel(target, 17)
+                if currentItemLevel then
+                    ItemLevel = currentItemLevel
+                end
+            end
             if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                 TempScore = TempScore * 0.3164
             end
@@ -360,6 +370,10 @@ function TT_GS:GetScore(unitorguid, useCallback)
                 if (item) then
                     if (item:IsItemDataCached()) then
                         local TempScore, ItemLevel = TT_GS:GetItemScore(item:GetItemLink())
+                        local currentItemLevel = TT_GS:GetCurrentItemLevel(target, i)
+                        if currentItemLevel then
+                            ItemLevel = currentItemLevel
+                        end
                         if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                             if (i == 16) then
                                 TempScore = TempScore * 0.3164
@@ -395,4 +409,60 @@ function TT_GS:GetScore(unitorguid, useCallback)
         end
     end
     return 0, 0
+end
+
+function TT_GS:ScanTooltipForItemLevel(tooltip)
+    if not CI:IsMop() then
+        return nil;
+    end
+    local itemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+    for i = 1, tooltip:NumLines() do
+        local line = _G[tooltip:GetName() .. "TextLeft" .. i]
+        if line then
+            local text = line:GetText()
+            if text then
+                local ilvl = text:match(itemLevelPattern)
+                if ilvl then
+                    return tonumber(ilvl)
+                end
+            end
+        end
+    end
+    return nil
+end
+
+-- build tooltip off-screen
+if not TT_GS.ScanTooltip then
+    if not TT_GS.ScanTooltip then
+        TT_GS.ScanTooltip = CreateFrame("GameTooltip", "TTGSTempTooltip", nil, "GameTooltipTemplate")
+        TT_GS.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    end
+end
+
+
+function TT_GS:GetCurrentItemLevel(target, item, bagID)
+    if not item then return nil end
+
+    if type(item) == "string" then
+        TT_GS.ScanTooltip:SetHyperlink(item) -- itemLink
+    elseif type(item) == "number" then
+        if target then
+            TT_GS.ScanTooltip:SetInventoryItem(target, item) -- slot
+        end
+        if bagID then
+            TT_GS.ScanTooltip:SetBagItem(bagID, item) -- slot
+        end
+    elseif item.GetItemLink then
+        TT_GS.ScanTooltip:SetHyperlink(item:GetItemLink())
+    end
+
+    local ilvl = TT_GS:ScanTooltipForItemLevel(TT_GS.ScanTooltip)
+
+    TT_GS.ScanTooltip:Hide()
+    TT_GS.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+
+    if ilvl then
+        return ilvl
+    end
+    return nil
 end
