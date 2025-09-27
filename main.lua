@@ -511,7 +511,8 @@ local function itemToolTipHook(self)
             end
         end
         if (TacoTipConfig.show_gs_items) then
-            local gs, _, r, g, b = GearScore:GetItemScore(itemLink)
+            local ilvlAfterUpgrades = TT_GS:FindCurrentItemLevelAfterUpgrades(self)
+            local gs, _, r, g, b = GearScore:GetItemScore(itemLink, ilvlAfterUpgrades)
             if (gs and gs > 1) then
                 self:AddLine("GearScore: " .. gs, r, g, b)
                 if (TacoTipConfig.show_gs_items_hs or IsModifierKeyDown() or playerClass == "HUNTER" or
