@@ -458,7 +458,7 @@ function TT_GS:GetCurrentItemLevel(target, item, bagID)
         if C_Item.DoesItemExist(itemLoc) then
             ilvl = C_Item.GetCurrentItemLevel(itemLoc)
         end
-    elseif target then
+    elseif target and target == "player" then
         local itemLoc = ItemLocation:CreateFromEquipmentSlot(item)
         if C_Item.DoesItemExist(itemLoc) then
             ilvl = C_Item.GetCurrentItemLevel(itemLoc)

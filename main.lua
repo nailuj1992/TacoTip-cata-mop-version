@@ -1145,10 +1145,8 @@ end
 
 local function onEvent(self, event, ...)
     if (event == "PLAYER_ENTERING_WORLD") then
-        if CI:IsMop() then
-            HookBagClicks(event)
-            TT:UpdateBagItemInfo()
-        end
+        HookBagClicks(event)
+        TT:UpdateBagItemInfo()
     elseif (event == "BAG_OPEN") then
         TT:UpdateBagItemInfo()
     elseif (event == "BAG_UPDATE") then
