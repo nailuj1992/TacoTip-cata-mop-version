@@ -80,7 +80,7 @@ local GS_ItemTypes = {
 
 if (CI:IsMop()) then
     GS_ItemTypes["INVTYPE_RANGED"] = { ["SlotMOD"] = 2.000, ["ItemSlot"] = 16, ["Enchantable"] = true }
-    GS_ItemTypes["INVTYPE_RANGEDRIGHT"] = { ["SlotMOD"] = 1.0000, ["ItemSlot"] = 16, ["Enchantable"] = false }
+    GS_ItemTypes["INVTYPE_RANGEDRIGHT"] = { ["SlotMOD"] = 2.0000, ["ItemSlot"] = 16, ["Enchantable"] = true }
 end
 
 local GS_Rarity = {
@@ -197,6 +197,14 @@ function TT_GS:GetItemScore(ItemLink, ilvlAfterUpgrades)
         ItemLevel = ilvlAfterUpgrades
     end
     if (ItemLink and ItemRarity and ItemLevel and ItemEquipLoc and GS_ItemTypes[ItemEquipLoc]) then
+        if CI:IsMop() and ItemEquipLoc == "INVTYPE_RANGEDRIGHT" then
+            local WAND = GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Wand)
+            if ItemSubType == WAND then -- Only for wands, which are one-handed weapons
+                GS_ItemTypes[ItemEquipLoc].SlotMOD = 1.0000
+            else
+                GS_ItemTypes[ItemEquipLoc].SlotMOD = 2.0000
+            end
+        end
         local Table
         local QualityScale = 1
         local GearScore = 0
@@ -439,30 +447,39 @@ if not TT_GS.ScanTooltip then
     end
 end
 
-
 function TT_GS:GetCurrentItemLevel(target, item, bagID)
     if not item then return nil end
 
-    if type(item) == "string" then
-        TT_GS.ScanTooltip:SetHyperlink(item) -- itemLink
-    elseif type(item) == "number" then
-        if target then
-            TT_GS.ScanTooltip:SetInventoryItem(target, item) -- slot
+    local ilvl
+
+    -- Try using C_Item API first (faster)
+    if bagID then
+        local itemLoc = ItemLocation:CreateFromBagAndSlot(bagID, item)
+        if C_Item.DoesItemExist(itemLoc) then
+            ilvl = C_Item.GetCurrentItemLevel(itemLoc)
         end
-        if bagID then
-            TT_GS.ScanTooltip:SetBagItem(bagID, item) -- slot
+    elseif target then
+        local itemLoc = ItemLocation:CreateFromEquipmentSlot(item)
+        if C_Item.DoesItemExist(itemLoc) then
+            ilvl = C_Item.GetCurrentItemLevel(itemLoc)
         end
-    elseif item.GetItemLink then
-        TT_GS.ScanTooltip:SetHyperlink(item:GetItemLink())
     end
 
-    local ilvl = TT_GS:ScanTooltipForItemLevel(TT_GS.ScanTooltip)
-
-    TT_GS.ScanTooltip:Hide()
-    TT_GS.ScanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-
-    if ilvl then
-        return ilvl
+    -- Fallback: scan tooltip
+    if not ilvl then
+        if type(item) == "string" then
+            TT_GS.ScanTooltip:SetHyperlink(item)
+        elseif type(item) == "number" then
+            if target then
+                TT_GS.ScanTooltip:SetInventoryItem(target, item)
+            elseif bagID then
+                TT_GS.ScanTooltip:SetBagItem(bagID, item)
+            end
+        elseif item.GetItemLink then
+            TT_GS.ScanTooltip:SetHyperlink(item:GetItemLink())
+        end
+        ilvl = TT_GS:ScanTooltipForItemLevel(TT_GS.ScanTooltip)
     end
-    return nil
+
+    return ilvl
 end
