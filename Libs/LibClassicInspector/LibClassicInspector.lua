@@ -3090,8 +3090,8 @@ local function addCacheUser(guid, inventory, talents, achievements, glyphs)
 		user.talents = talents
 	else
 		user.talents = {
-			[1] = { [1] = {}, [2] = {}, [3] = {} },
-			[2] = { [1] = {}, [2] = {}, [3] = {} },
+			[1] = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {} },
+			[2] = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {} },
 			["time"] = 0,
 			["active"] = 0
 		}
@@ -3164,11 +3164,11 @@ local function cacheUserTalents(unit)
 		return
 	end
 	local talents = {
-		[1] = { [1] = {}, [2] = {}, [3] = {} },
-		[2] = { [1] = {}, [2] = {}, [3] = {} },
+		[1] = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, ["specIndex"] = nil },
+		[2] = { [1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, ["specIndex"] = nil },
 		["time"] = time(),
 		["active"] = (isWotlk or isCata) and GetActiveTalentGroup(true, false) or
-		(isMop and C_SpecializationInfo.GetActiveSpecGroup(false)) or 1,
+			(isMop and C_SpecializationInfo.GetActiveSpecGroup(true)) or 1,
 		["inspect"] = true
 	}
 	if isWotlk or isCata then
@@ -3180,22 +3180,30 @@ local function cacheUserTalents(unit)
 			end
 		end
 	end
-	if (isMop) then
-		-- for talentTier = 1, #talents do
-		-- 	for talentColumn = 1, 3 do
-		-- 		local talentInfoQuery = {};
-		-- 		talentInfoQuery.groupIndex = _group;
-		-- 		talentInfoQuery.tier = talentTier;
-		-- 		talentInfoQuery.column = talentColumn;
-		-- 		talentInfoQuery.isInspect = false;
-		-- 		local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
-		-- 		local selected = talentInfo.selected
-		-- 		if selected then
-		-- 			talents[talentTier] = talentColumn
-		-- 			break
-		-- 		end
-		-- 	end
-		-- end
+	if isMop then
+		for x = 1, 1 do
+			local specIndexFound = C_SpecializationInfo.GetSpecialization(true, false, x)
+			if (specIndexFound) then
+				talents[x]["specIndex"] = -1--specIndexFound
+			end
+
+			for i = 1, 6 do
+				for j = 1, 3 do
+					local talentInfoQuery = {};
+					talentInfoQuery.tier = i;
+					talentInfoQuery.column = j;
+					talentInfoQuery.isInspect = true;
+					talentInfoQuery.target = unit;
+					talentInfoQuery.groupIndex = x;
+
+					local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
+					local selected = talentInfo.selected
+					if selected then
+						talents[x][i][1] = j
+					end
+				end
+			end
+		end
 	end
 	local user = getCacheUser(guid)
 	if (user) then
@@ -3441,7 +3449,7 @@ local function sendInfo()
 	if ((IsInGroup() or IsInGuild())) then
 		local s = "02-"
 		s = s ..
-		((isWotlk or isCata) and GetActiveTalentGroup(false, false) or (isMop and C_SpecializationInfo.GetActiveSpecGroup(false)) or 1)
+			((isWotlk or isCata) and GetActiveTalentGroup(false, false) or (isMop and C_SpecializationInfo.GetActiveSpecGroup(false)) or 1)
 		for x = 1, ((isWotlk or isCata or isMop) and 2 or 1) do
 			if isWotlk or isCata then
 				local maxTabs = 3
@@ -3726,13 +3734,16 @@ end
 --     @string specName            - specialization name e.g. "Retribution"
 --
 function lib:GetSpecializationName(class, tabIndex, localized)
+	if (tabIndex == -1) then
+		return ""
+	end
 	assert(
 		class == "WARRIOR" or class == "PALADIN" or class == "HUNTER" or class == "ROGUE" or class == "PRIEST" or
 		class == "SHAMAN" or
 		class == "MAGE" or class == "WARLOCK" or class == "DRUID" or
 		((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
 	local n = tonumber(tabIndex) or 0
-	assert(n > 0 and n < 4, "tabIndex is not a valid number (1-3)")
+	assert((n > 0 and n < 4) or (isMop and class == "DRUID" and n > 0 and n < 5), "tabIndex is not a valid number (1-3)")
 	return localized and spec_table_localized[class][tabIndex] or spec_table[class][tabIndex]
 end
 
@@ -3814,6 +3825,7 @@ function lib:GetSpecialization(unitorguid, _group)
 				talentInfoQuery.tier = talentTier;
 				talentInfoQuery.column = talentColumn;
 				talentInfoQuery.isInspect = false;
+				-- talentInfoQuery.target = guid;
 				local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
 				local talentId, name, texture, selected, available = talentInfo.talentID, talentInfo.name,
 					talentInfo.icon, talentInfo.selected, talentInfo.available
@@ -3826,14 +3838,30 @@ function lib:GetSpecialization(unitorguid, _group)
 	else
 		local user = getCacheUser2(guid)
 		if (user and user.talents.time ~= 0) then
-			for i = 1, 3 do -- GetNumTalentTabs
-				local points = 0
-				for _, v in ipairs(user.talents[group][i]) do
-					points = points + v
+			if not isMop then
+				for i = 1, 3 do -- GetNumTalentTabs
+					local points = 0
+					for _, v in ipairs(user.talents[group][i]) do
+						points = points + v
+					end
+					if (points > mostPoints) then
+						mostPoints = points
+						specIndex = i
+					end
 				end
-				if (points > mostPoints) then
-					mostPoints = points
-					specIndex = i
+			else
+				if (user.talents[group]["specIndex"] ~= nil) then
+					specIndex = user.talents[group]["specIndex"]
+				end
+
+				for i = 1, 6 do
+					local points = 0
+					for _, v in ipairs(user.talents[group][i]) do
+						points = points + v
+					end
+					if (points > mostPoints) then
+						mostPoints = points
+					end
 				end
 			end
 		end
@@ -3888,6 +3916,7 @@ function lib:GetTalentPoints(unitorguid, _group)
 				talentInfoQuery.tier = talentTier;
 				talentInfoQuery.column = talentColumn;
 				talentInfoQuery.isInspect = false;
+				-- talentInfoQuery.target = guid;
 				local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
 				local selected = talentInfo.selected
 				if selected then
@@ -3900,9 +3929,17 @@ function lib:GetTalentPoints(unitorguid, _group)
 	else
 		local user = getCacheUser2(guid)
 		if (user and user.talents.time ~= 0) then
-			for i = 1, 3 do -- GetNumTalentTabs
-				for _, v in ipairs(user.talents[group][i]) do
-					talents[i] = talents[i] + v
+			if not isMop then
+				for i = 1, 3 do -- GetNumTalentTabs
+					for _, v in ipairs(user.talents[group][i]) do
+						talents[i] = talents[i] + v
+					end
+				end
+			else
+				for i = 1, #talents do
+					for _, v in ipairs(user.talents[group][i]) do
+						talents[i] = talents[i] + v
+					end
 				end
 			end
 			return unpack(talents)
