@@ -33,7 +33,7 @@ local BRACKET_SIZE = 1000
 local SUPERIOR_ITEM_LEVEL = 120
 
 if (CI:IsMop()) then
-    BRACKET_SIZE = 3200
+    BRACKET_SIZE = 3300
     SUPERIOR_ITEM_LEVEL = 440
 elseif (CI:IsCata()) then
     BRACKET_SIZE = 2000

@@ -212,15 +212,23 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
         if (not TacoTipConfig.hide_in_combat or not InCombatLockdown()) then
             if (TacoTipConfig.show_talents) then
-                local x1, x2, x3 = 0, 0, 0
-                local y1, y2, y3 = 0, 0, 0
+                local x1, x2, x3, x4, x5, x6 = 0, 0, 0, 0, 0, 0
+                local y1, y2, y3, y4, y5, y6 = 0, 0, 0, 0, 0, 0
                 local spec1 = CI:GetSpecialization(guid, 1)
                 if (spec1) then
-                    x1, x2, x3 = CI:GetTalentPoints(guid, 1)
+                    if not CI:IsMop() then
+                        x1, x2, x3 = CI:GetTalentPoints(guid, 1)
+                    else
+                        x1, x2, x3, x4, x5, x6 = CI:GetTalentPoints(guid, 1)
+                    end
                 end
                 local spec2 = CI:GetSpecialization(guid, 2)
                 if (spec2) then
-                    y1, y2, y3 = CI:GetTalentPoints(guid, 2)
+                    if not CI:IsMop() then
+                        y1, y2, y3 = CI:GetTalentPoints(guid, 2)
+                    else
+                        y1, y2, y3, y4, y5, y6 = CI:GetTalentPoints(guid, 2)
+                    end
                 end
 
                 local active = CI:GetActiveTalentGroup(guid)
@@ -228,55 +236,91 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                 if (active == 2) then
                     if (spec2) then
                         if (wide_style) then
+                            local talents = string.format("%s [%d/%d/%d]",
+                                CI:GetSpecializationName(class, spec2, true), y1, y2, y3)
+                            if CI:IsMop() then
+                                talents = string.format("%s [%d/%d/%d/%d/%d/%d]",
+                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3, y4, y5, y6)
+                            end
                             tinsert(linesToAdd,
-                                { L["Talents"] .. ":", string.format("%s [%d/%d/%d]",
-                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3), NORMAL_FONT_COLOR.r,
+                                { L["Talents"] .. ":", talents, NORMAL_FONT_COLOR.r,
                                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r,
                                     HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b })
                         else
-                            tinsert(linesToAdd,
-                                { string.format("%s:|cFFFFFFFF %s [%d/%d/%d]|r", L["Talents"],
-                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3) })
+                            local talents = string.format("%s:|cFFFFFFFF %s [%d/%d/%d]|r", L["Talents"],
+                                CI:GetSpecializationName(class, spec2, true), y1, y2, y3)
+                            if CI:IsMop() then
+                                talents = string.format("%s:|cFFFFFFFF %s [%d/%d/%d/%d/%d/%d]|r", L["Talents"],
+                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3, y4, y5, y6)
+                            end
+                            tinsert(linesToAdd, { talents })
                         end
                     end
                     if (spec1) then
                         if (wide_style) then
+                            local talents = string.format("%s [%d/%d/%d]",
+                                CI:GetSpecializationName(class, spec1, true), x1, x2, x3)
+                            if CI:IsMop() then
+                                talents = string.format("%s [%d/%d/%d/%d/%d/%d]",
+                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3, x4, x5, x6)
+                            end
                             tinsert(linesToAdd,
-                                { (spec2 and " " or L["Talents"] .. ":"), string.format("%s [%d/%d/%d]",
-                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3), NORMAL_FONT_COLOR.r,
+                                { (spec2 and " " or L["Talents"] .. ":"), talents, NORMAL_FONT_COLOR.r,
                                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g,
                                     GRAY_FONT_COLOR.b })
                         elseif (not spec2) then
-                            tinsert(linesToAdd,
-                                { string.format("%s:|cFF808080 %s [%d/%d/%d]|r", L["Talents"],
-                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3) })
+                            local talents = string.format("%s:|cFF808080 %s [%d/%d/%d]|r", L["Talents"],
+                                CI:GetSpecializationName(class, spec1, true), x1, x2, x3)
+                            if CI:IsMop() then
+                                talents = string.format("%s:|cFF808080 %s [%d/%d/%d/%d/%d/%d]|r", L["Talents"],
+                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3, x4, x5, x6)
+                            end
+                            tinsert(linesToAdd, { talents })
                         end
                     end
                 elseif (active == 1) then
                     if (spec1) then
                         if (wide_style) then
+                            local talents = string.format("%s [%d/%d/%d]",
+                                CI:GetSpecializationName(class, spec1, true), x1, x2, x3)
+                            if CI:IsMop() then
+                                talents = string.format("%s [%d/%d/%d/%d/%d/%d]",
+                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3, x4, x5, x6)
+                            end
                             tinsert(linesToAdd,
-                                { L["Talents"] .. ":", string.format("%s [%d/%d/%d]",
-                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3), NORMAL_FONT_COLOR.r,
+                                { L["Talents"] .. ":", talents, NORMAL_FONT_COLOR.r,
                                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r,
                                     HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b })
                         else
-                            tinsert(linesToAdd,
-                                { string.format("%s:|cFFFFFFFF %s [%d/%d/%d]|r", L["Talents"],
-                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3) })
+                            local talents = string.format("%s:|cFFFFFFFF %s [%d/%d/%d]|r", L["Talents"],
+                                CI:GetSpecializationName(class, spec1, true), x1, x2, x3)
+                            if CI:IsMop() then
+                                talents = string.format("%s:|cFFFFFFFF %s [%d/%d/%d/%d/%d/%d]|r", L["Talents"],
+                                    CI:GetSpecializationName(class, spec1, true), x1, x2, x3, x4, x5, x6)
+                            end
+                            tinsert(linesToAdd, { talents })
                         end
                     end
                     if (spec2) then
                         if (wide_style) then
+                            local talents = string.format("%s [%d/%d/%d]",
+                                CI:GetSpecializationName(class, spec2, true), y1, y2, y3)
+                            if CI:IsMop() then
+                                talents = string.format("%s [%d/%d/%d/%d/%d/%d]",
+                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3, y4, y5, y6)
+                            end
                             tinsert(linesToAdd,
-                                { (spec1 and " " or L["Talents"] .. ":"), string.format("%s [%d/%d/%d]",
-                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3), NORMAL_FONT_COLOR.r,
+                                { (spec1 and " " or L["Talents"] .. ":"), talents, NORMAL_FONT_COLOR.r,
                                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g,
                                     GRAY_FONT_COLOR.b })
                         elseif (not spec1) then
-                            tinsert(linesToAdd,
-                                { string.format("%s:|cFF808080 %s [%d/%d/%d]|r", L["Talents"],
-                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3) })
+                            local talents = string.format("%s:|cFF808080 %s [%d/%d/%d]|r", L["Talents"],
+                                CI:GetSpecializationName(class, spec2, true), y1, y2, y3)
+                            if CI:IsMop() then
+                                talents = string.format("%s:|cFF808080 %s [%d/%d/%d/%d/%d/%d]|r", L["Talents"],
+                                    CI:GetSpecializationName(class, spec2, true), y1, y2, y3, y4, y5, y6)
+                            end
+                            tinsert(linesToAdd, { talents })
                         end
                     end
                 end
