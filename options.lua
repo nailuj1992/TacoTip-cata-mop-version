@@ -258,13 +258,18 @@ frame:SetScript("OnShow", function(frame)
                 options.exampleTooltip:AddLine("|cFF40FB40<Drunken Wrath>|r")
             end
         end
+        local level = 85
+        if CI:IsMop() then
+            level = 90
+        end
         if (TacoTipConfig.color_class) then
             options.exampleTooltip:AddLine(
-                string.format("%s 85 %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], L["Undead"], name_r * 255, name_g * 255,
+                string.format("%s %s %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], level, L["Undead"], name_r * 255,
+                    name_g * 255,
                     name_b * 255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
         else
             options.exampleTooltip:AddLine(
-                string.format("%s 85 %s %s (%s)", L["Level"], L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"],
+                string.format("%s %s %s %s (%s)", L["Level"], level, L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"],
                     L["Player"]),
                 1, 1, 1)
         end
@@ -285,50 +290,60 @@ frame:SetScript("OnShow", function(frame)
             end
         end
         if (TacoTipConfig.show_talents) then
-            if not CI:IsMop() then
-                if (wide_style) then
-                    options.exampleTooltip:AddDoubleLine(L["Talents"] .. ":",
-                        CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]", NORMAL_FONT_COLOR.r,
-                        NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
-                        HIGHLIGHT_FONT_COLOR.b)
-                    options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true) .. " [7/31/3]",
-                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
-                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                else
-                    options.exampleTooltip:AddLine(L["Talents"] ..
-                        ":|cFFFFFFFF " .. CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]")
+            if (wide_style) then
+                local talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]"
+                if CI:IsMop() then
+                    talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [2/3/1/3/2/2]"
                 end
+                options.exampleTooltip:AddDoubleLine(L["Talents"] .. ":",
+                    talents, NORMAL_FONT_COLOR.r,
+                    NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
+                    HIGHLIGHT_FONT_COLOR.b)
+                options.exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true) .. " [7/31/3]",
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
+                    GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
             else
-                TacoTipConfig.show_talents = false
+                local talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]"
+                if CI:IsMop() then
+                    talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [2/3/1/3/2/2]"
+                end
+                options.exampleTooltip:AddLine(L["Talents"] ..
+                    ":|cFFFFFFFF " .. talents)
             end
         end
         local miniText = ""
         if (TacoTipConfig.show_gs_player) then
-            local gs_r, gs_b, gs_g = GearScore:GetQuality(10405)
+            local gs, ilevel = 10405, 388
+            if CI:IsMop() then
+                gs = 13579
+                ilevel = 497
+            end
+            local gs_r, gs_b, gs_g = GearScore:GetQuality(gs)
             if (wide_style) then
                 if TacoTipConfig.gearscore_ilevel_style then
-                    options.exampleTooltip:AddDoubleLine("GearScore: 10405", "(iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b,
-                        gs_g)
+                    options.exampleTooltip:AddDoubleLine("GearScore: " .. gs, "(iLvl: " .. ilevel .. ")", gs_r, gs_b,
+                        gs_g, gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.gearscore_style then
-                    options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("GearScore: " .. gs, gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.ilevel_style then
-                    options.exampleTooltip:AddLine("iLvl: 388", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("iLvl: " .. ilevel, gs_r, gs_b, gs_g)
                 end
             elseif (mini_style) then
                 if TacoTipConfig.gearscore_ilevel_style then
-                    options.exampleTooltip:AddLine("GS: 10405 L: 388", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("GS: " .. gs .. " L: " .. ilevel, gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.gearscore_style then
-                    options.exampleTooltip:AddLine("GS: 10405", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("GS: " .. gs, gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.ilevel_style then
-                    options.exampleTooltip:AddLine("L: 388", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("L: " .. ilevel, gs_r, gs_b, gs_g)
                 end
             else
                 if TacoTipConfig.gearscore_ilevel_style then
-                    options.exampleTooltip:AddLine("GearScore: 10405 (iLvl: 388)", gs_r, gs_b, gs_g, gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("GearScore: " .. gs .. " (iLvl: " .. ilevel .. ")", gs_r, gs_b, gs_g,
+                        gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.gearscore_style then
-                    options.exampleTooltip:AddLine("GearScore: 10405", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("GearScore: " .. gs, gs_r, gs_b, gs_g)
                 elseif TacoTipConfig.ilevel_style then
-                    options.exampleTooltip:AddLine("iLvl: 388", gs_r, gs_b, gs_g)
+                    options.exampleTooltip:AddLine("iLvl: " .. ilevel, gs_r, gs_b, gs_g)
                 end
             end
         end
@@ -452,17 +467,15 @@ frame:SetScript("OnShow", function(frame)
     rankstylehint:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", 264, -23)
     rankstylehint:SetText(L["Style"])
 
-    if not CI:IsMop() then
-        options.showTalents = newCheckbox(
-            "Talents",
-            L["Talents"],
-            L["Show talents and specialization in tooltips"],
-            function(self, value)
-                TacoTipConfig.show_talents = value
-                showExampleTooltip()
-            end)
-        options.showTalents:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -60)
-    end
+    options.showTalents = newCheckbox(
+        "Talents",
+        L["Talents"],
+        L["Show talents and specialization in tooltips"],
+        function(self, value)
+            TacoTipConfig.show_talents = value
+            showExampleTooltip()
+        end)
+    options.showTalents:SetPoint("TOPLEFT", generalText, "BOTTOMLEFT", -2, -60)
 
     options.gearScorePlayer = newCheckbox(
         "GearScorePlayer",
@@ -856,9 +869,7 @@ frame:SetScript("OnShow", function(frame)
         options.showTitles:SetChecked(TacoTipConfig.show_titles)
         options.showGuildNames:SetChecked(TacoTipConfig.show_guild_name)
         options.showGuildRanks:SetChecked(TacoTipConfig.show_guild_rank)
-        if not CI:IsMop() then
-            options.showTalents:SetChecked(TacoTipConfig.show_talents)
-        end
+        options.showTalents:SetChecked(TacoTipConfig.show_talents)
         options.gearScorePlayer:SetChecked(TacoTipConfig.show_gs_player)
         options.gearScoreCharacter:SetChecked(TacoTipConfig.show_gs_character)
         options.gearScoreStyle1:SetChecked(TacoTipConfig.gearscore_ilevel_style)
