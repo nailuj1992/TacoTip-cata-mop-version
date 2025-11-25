@@ -3184,7 +3184,7 @@ local function cacheUserTalents(unit)
 		for x = 1, 1 do
 			local specIndexFound = C_SpecializationInfo.GetSpecialization(true, false, x)
 			if (specIndexFound) then
-				talents[x]["specIndex"] = -1--specIndexFound
+				talents[x]["specIndex"] = -1 --specIndexFound
 			end
 
 			for i = 1, 6 do
@@ -3197,6 +3197,9 @@ local function cacheUserTalents(unit)
 					talentInfoQuery.groupIndex = x;
 
 					local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
+					if talentInfo == nil then
+						break
+					end
 					local selected = talentInfo.selected
 					if selected then
 						talents[x][i][1] = j
@@ -3341,7 +3344,7 @@ function f:CHAT_MSG_ADDON(event, prefix, text, channelType, senderFullName, send
 			end
 		end
 		local glyphs
-		if ((isWotlk or isCata or isMop) and v == 50) then
+		if ((isWotlk or isCata) and v == 50) then
 			glyphs = { ["time"] = time() }
 			for x = 1, 12 do
 				y = y + 1
@@ -3827,6 +3830,9 @@ function lib:GetSpecialization(unitorguid, _group)
 				talentInfoQuery.isInspect = false;
 				-- talentInfoQuery.target = guid;
 				local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
+				if talentInfo == nil then
+					break
+				end
 				local talentId, name, texture, selected, available = talentInfo.talentID, talentInfo.name,
 					talentInfo.icon, talentInfo.selected, talentInfo.available
 				if (selected) then
@@ -3918,6 +3924,9 @@ function lib:GetTalentPoints(unitorguid, _group)
 				talentInfoQuery.isInspect = false;
 				-- talentInfoQuery.target = guid;
 				local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
+				if talentInfo == nil then
+					break
+				end
 				local selected = talentInfo.selected
 				if selected then
 					talents[talentTier] = talentColumn
