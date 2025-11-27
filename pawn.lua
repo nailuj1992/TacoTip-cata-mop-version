@@ -2,7 +2,7 @@
 
     TacoTip Pawn Score module by kebabstorm
     for Classic/TBC/WOTLK
-    
+
     Requires: Pawn 2.5.38+
 
 --]]
@@ -46,14 +46,14 @@ function TT_PAWN:GetItemScore(itemLink, class, specIndex)
     if (itemLink and class and specIndex) then
         local item = PawnGetItemData(itemLink)
         if (item) then
-            return tonumber(select(2,PawnGetSingleValueFromItem(item,"\"Classic\":"..class..specIndex))) or 0
+            return tonumber(select(2, PawnGetSingleValueFromItem(item, "\"Classic\":" .. class .. specIndex))) or 0
         end
     end
     return 0
 end
 
 local function itemcacheCB(tbl, id)
-    for i=1,#tbl.items do
+    for i = 1, #tbl.items do
         if (id == tbl.items[i]) then
             table.remove(tbl.items, i)
         end
@@ -69,7 +69,7 @@ function TT_PAWN:GetScore(unitorguid, useCallback)
     if (guid) then
         if (guid ~= UnitGUID("player")) then
             local _, invTime = CI:GetLastCacheTime(guid)
-            if(invTime == 0) then
+            if (invTime == 0) then
                 return 0, "", "|cffffffff"
             end
         end
@@ -80,19 +80,26 @@ function TT_PAWN:GetScore(unitorguid, useCallback)
         local IsReady = true
 
         if (spec and class) then
-            local scaleName = "\"Classic\":"..class..spec
-            local cb_table
-            
-            if (useCallback) then
-                cb_table = {["guid"] = guid, ["items"] = {}}
+            if CI:IsMop() and spec == -1 then
+                spec = 1
             end
-    
-            for i = 1, 18 do
+            local scaleName = "\"Classic\":" .. class .. spec
+            local cb_table
+
+            if (useCallback) then
+                cb_table = { ["guid"] = guid, ["items"] = {} }
+            end
+
+            local maxItems = 18
+            if CI:IsMop() then
+                maxItems = 17
+            end
+            for i = 1, maxItems do
                 if (i ~= 4) then
                     local item = CI:GetInventoryItemMixin(guid, i)
                     if (item) then
                         if (item:IsItemDataCached()) then
-                            local tempScore = TT_PAWN:GetItemScore(item:GetItemLink(),class,spec)
+                            local tempScore = TT_PAWN:GetItemScore(item:GetItemLink(), class, spec)
                             pawnScore = pawnScore + tempScore
                         else
                             IsReady = false
