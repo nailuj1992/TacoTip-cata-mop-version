@@ -408,14 +408,25 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                 local pawnScore, specName, specColor = TT_PAWN:GetScore(guid, not TacoTipConfig.show_gs_player)
                 if (pawnScore > 0) then
                     if (wide_style) then
-                        tinsert(linesToAdd,
-                            { string.format("Pawn: %s%.2f|r", specColor, pawnScore), string.format("%s(%s)|r", specColor,
-                                specName), 1, 1, 1, 1, 1, 1 })
+                        if not CI:IsMop() then
+                            tinsert(linesToAdd,
+                                { string.format("Pawn: %s%.2f|r", specColor, pawnScore), string.format("%s(%s)|r",
+                                    specColor,
+                                    specName), 1, 1, 1, 1, 1, 1 })
+                        else
+                            tinsert(linesToAdd,
+                                { string.format("Pawn: %s%.2f|r", specColor, pawnScore), 1, 1, 1 })
+                        end
                     elseif (mini_style) then
                         miniText = miniText .. string.format("P: %s%.1f|r", specColor, pawnScore)
                     else
-                        tinsert(linesToAdd,
-                            { string.format("Pawn: %s%.2f (%s)|r", specColor, pawnScore, specName), 1, 1, 1 })
+                        if not CI:IsMop() then
+                            tinsert(linesToAdd,
+                                { string.format("Pawn: %s%.2f (%s)|r", specColor, pawnScore, specName), 1, 1, 1 })
+                        else
+                            tinsert(linesToAdd,
+                                { string.format("Pawn: %s%.2f|r", specColor, pawnScore), 1, 1, 1 })
+                        end
                     end
                 end
             end

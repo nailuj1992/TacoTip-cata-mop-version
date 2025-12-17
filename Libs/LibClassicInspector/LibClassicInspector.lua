@@ -3862,8 +3862,10 @@ function lib:GetSpecialization(unitorguid, _group)
 
 				for i = 1, 6 do
 					local points = 0
-					for _, v in ipairs(user.talents[group][i]) do
-						points = points + v
+					if user.talents[group][i] ~= nil then
+						for _, v in ipairs(user.talents[group][i]) do
+							points = points + v
+						end
 					end
 					if (points > mostPoints) then
 						mostPoints = points
