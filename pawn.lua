@@ -46,7 +46,11 @@ function TT_PAWN:GetItemScore(itemLink, class, specIndex)
     if (itemLink and class and specIndex) then
         local item = PawnGetItemData(itemLink)
         if (item) then
-            return tonumber(select(2, PawnGetSingleValueFromItem(item, "\"Classic\":" .. class .. specIndex))) or 0
+            local scaleName = "\"Classic\":" .. class .. specIndex
+            local ok, _, value = pcall(PawnGetSingleValueFromItem, item, scaleName)
+            if (ok and value) then
+                return tonumber(value) or 0
+            end
         end
     end
     return 0
@@ -121,7 +125,8 @@ function TT_PAWN:GetScore(unitorguid, useCallback)
             if (not IsReady) then
                 pawnScore = 0
             end
-            return pawnScore, CI:GetSpecializationName(class, spec, true), PawnGetScaleColor(scaleName, true) or "|cffffffff"
+            local ok, color = pcall(PawnGetScaleColor, scaleName, true)
+            return pawnScore, CI:GetSpecializationName(class, spec, true), (ok and color) or "|cffffffff"
         end
     end
     return 0, "", "|cffffffff"

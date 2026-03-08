@@ -94,6 +94,8 @@ local GS_Rarity = {
     [7] = { Red = 0.90, Green = 0.80, Blue = 0.50 },
 }
 
+TT_GS.Rarity = GS_Rarity
+
 local GS_Formula = {
     ["A"] = {
         [4] = { ["A"] = 91.4500, ["B"] = 0.6500 },
@@ -272,7 +274,7 @@ local function itemcacheCB(tbl, id)
     end
 end
 
-function TT_GS:GetScore(unitorguid, useCallback)
+function TT_GS:GetScore(unitorguid, useCallback, unitToken)
     local guid = getPlayerGUID(unitorguid)
     if (guid) then
         local target = "player"
@@ -281,7 +283,13 @@ function TT_GS:GetScore(unitorguid, useCallback)
             if (invTime == 0) then
                 return 0, 0
             end
-            target = "target"
+            if unitToken then
+                target = unitToken
+            elseif UnitIsPlayer(unitorguid) and UnitGUID(unitorguid) == guid then
+                target = unitorguid
+            else
+                target = "target"
+            end
         end
 
         local PlayerClass, PlayerEnglishClass = GetPlayerInfoByGUID(guid)
@@ -413,7 +421,8 @@ function TT_GS:GetScore(unitorguid, useCallback)
             end
         end
         if (IsReady and GearScore > 0 and ItemCount > 0) then
-            return floor(GearScore), LevelTotal / ItemCount
+            local totalSlots = CI:IsMop() and 16 or 17
+            return floor(GearScore), LevelTotal / totalSlots
         end
     end
     return 0, 0

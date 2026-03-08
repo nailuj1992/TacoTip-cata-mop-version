@@ -1,0 +1,17 @@
+name: Release to CurseForge
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: BigWigsMods/packager@v2
+        with:
+          args: -p 1243220
+        env:
+          CF_API_KEY: ${{ secrets.CURSE_API_TOKEN }}
