@@ -14,4 +14,4 @@ jobs:
         with:
           args: -p 1243220
         env:
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          CF_API_KEY: ${{ secrets.CURSE_API_TOKEN }}
