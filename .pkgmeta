@@ -1,0 +1,8 @@
+package-as: TacoTip
+enable-nolib-creation: no
+
+ignore:
+  - .github
+  - .gitignore
+  - README.md
+  - LICENSE
