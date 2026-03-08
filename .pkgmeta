@@ -1,8 +1,14 @@
 package-as: TacoTip
+
 enable-nolib-creation: no
 
 ignore:
   - .github
+  - CHANGELOG.md
   - .gitignore
   - README.md
   - LICENSE
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
