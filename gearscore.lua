@@ -420,6 +420,20 @@ function TT_GS:GetScore(unitorguid, useCallback, unitToken)
                 end
             end
         end
+        -- A 2H weapon occupies both the main hand and off hand slots in the ilvl average.
+        -- If no off-hand item is present, count the 2H weapon's ilvl a second time.
+        if mainHandLink and not offHandLink then
+            local _, _, _, _, _, _, _, _, mainHandEquipLoc = GetItemInfo(mainHandLink)
+            if mainHandEquipLoc == "INVTYPE_2HWEAPON" then
+                local _, mainHandIlvl = TT_GS:GetItemScore(mainHandLink)
+                local currentIlvl = TT_GS:GetCurrentItemLevel(target, 16)
+                if currentIlvl then
+                    mainHandIlvl = currentIlvl
+                end
+                LevelTotal = LevelTotal + mainHandIlvl
+            end
+        end
+
         if (IsReady and GearScore > 0 and ItemCount > 0) then
             local totalSlots = CI:IsMop() and 16 or 17
             return floor(GearScore), LevelTotal / totalSlots

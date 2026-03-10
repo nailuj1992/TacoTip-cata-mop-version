@@ -1,5 +1,5 @@
 ## Interface: 50500,50501,50502,50503,50504
-## Version: 0.5.6
+## Version: 0.5.61
 ## Title: TacoTip
 ## Notes: TacoTip (GearScore & Talents)
 ## Author: kebabstorm
