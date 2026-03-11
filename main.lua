@@ -53,10 +53,21 @@ local EQUIP_SLOT_NAMES = {
 }
 
 local EQUIP_SLOT_IDS = {
-    HeadSlot = 1, NeckSlot = 2, ShoulderSlot = 3, BackSlot = 15,
-    ChestSlot = 5, WristSlot = 9, HandsSlot = 10, WaistSlot = 6,
-    LegsSlot = 7, FeetSlot = 8, Finger0Slot = 11, Finger1Slot = 12,
-    Trinket0Slot = 13, Trinket1Slot = 14, MainHandSlot = 16,
+    HeadSlot = 1,
+    NeckSlot = 2,
+    ShoulderSlot = 3,
+    BackSlot = 15,
+    ChestSlot = 5,
+    WristSlot = 9,
+    HandsSlot = 10,
+    WaistSlot = 6,
+    LegsSlot = 7,
+    FeetSlot = 8,
+    Finger0Slot = 11,
+    Finger1Slot = 12,
+    Trinket0Slot = 13,
+    Trinket1Slot = 14,
+    MainHandSlot = 16,
     SecondaryHandSlot = 17
 }
 
@@ -402,8 +413,11 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
                 local active = CI:GetActiveTalentGroup(guid)
                 if (not active or active == 0) then
-                    if (spec1) then active = 1
-                    elseif (spec2) then active = 2 end
+                    if (spec1) then
+                        active = 1
+                    elseif (spec2) then
+                        active = 2
+                    end
                 end
 
                 if (active == 2) then
@@ -772,7 +786,8 @@ local function itemToolTipHook(self)
         end
     elseif gs then
         if wide_style then
-            self:AddDoubleLine("GearScore:", gs, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, gs_r, gs_g, gs_b)
+            self:AddDoubleLine("GearScore:", gs, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, gs_r,
+                gs_g, gs_b)
         elseif mini_style then
             self:AddLine("GS: " .. gs, gs_r, gs_g, gs_b)
         else
@@ -780,7 +795,8 @@ local function itemToolTipHook(self)
         end
     elseif ilvl then
         if wide_style then
-            self:AddDoubleLine(L["Item Level"] .. ":", ilvl, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            self:AddDoubleLine(L["Item Level"] .. ":", ilvl, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g,
+                NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
         elseif mini_style then
             self:AddLine("L: " .. ilvl, 1, 1, 1)
         else
@@ -790,11 +806,12 @@ local function itemToolTipHook(self)
 
     if gs then
         if TacoTipConfig.show_gs_items_hs or IsModifierKeyDown() or playerClass == "HUNTER" or
-                (InspectFrame and InspectFrame:IsShown() and InspectFrame.unit and select(2, UnitClass(InspectFrame.unit)) == "HUNTER") then
+            (InspectFrame and InspectFrame:IsShown() and InspectFrame.unit and select(2, UnitClass(InspectFrame.unit)) == "HUNTER") then
             local hs, _, hr, hg, hb = GearScore:GetItemHunterScore(itemLink)
             if gs ~= hs and not CI:IsMop() then
                 if wide_style then
-                    self:AddDoubleLine("HunterScore:", hs, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, hr, hg, hb)
+                    self:AddDoubleLine("HunterScore:", hs, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b,
+                        hr, hg, hb)
                 elseif mini_style then
                     self:AddLine("HS: " .. hs, hr, hg, hb)
                 else
@@ -1159,6 +1176,94 @@ qcFrame:SetScript("OnEvent", function(self, event, ...)
         RefreshTooltipUnit()
     elseif event == "MODIFIER_STATE_CHANGED" then
         RefreshTooltipUnit()
+    elseif event == "ADDON_LOADED" then
+        local addon = ...
+        if (addon == addOnName) then
+            self:UnregisterEvent("ADDON_LOADED")
+            if (TacoTipConfig.custom_pos) then
+                TacoTip_CustomPosEnable(false)
+            end
+            if (TacoTipConfig.instant_fade) then
+                self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+                Detours:DetourHook(TT, GameTooltip, "FadeOut", function(self)
+                    self:Hide()
+                end)
+            end
+            if (CharacterModelScene and PaperDollFrame) then
+                TT:RefreshCharacterFrame()
+            end
+            local first_login = (TacoTipConfig.conf_version ~= addOnVersion)
+            if (first_login) then
+                for k, v in pairs(TT:GetDefaults()) do
+                    if (TacoTipConfig[k] == nil) then
+                        TacoTipConfig[k] = v
+                    end
+                end
+                TacoTipConfig.conf_version = addOnVersion
+            end
+            CAfter(3, function()
+                print("|cff59f0dcTacoTip v" .. addOnVersion .. " " .. L["TEXT_HELP_WELCOME"])
+                if (first_login) then
+                    print("|cff59f0dcTacoTip:|r " .. L["TEXT_HELP_FIRST_LOGIN"])
+                end
+            end)
+        end
+    elseif event == "UPDATE_MOUSEOVER_UNIT" then
+        if (GameTooltip:GetUnit()) then
+            CAfter(0, function()
+                if (not UnitExists("mouseover")) then
+                    GameTooltip:Hide()
+                end
+            end)
+        end
+    end
+end)
+
+local function CreateMouseAnchor()
+    TacoTipMouseAnchor = CreateFrame("Frame", nil, UIParent)
+    TacoTipMouseAnchor:EnableMouse(false)
+    TacoTipMouseAnchor:SetMovable(true)
+    TacoTipMouseAnchor:SetUserPlaced(false)
+    TacoTipMouseAnchor:SetClampedToScreen(true)
+    TacoTipMouseAnchor:SetSize(1, 1)
+    TacoTipMouseAnchor:SetPoint("CENTER", UIParent, "BOTTOMLEFT", 0, 0)
+    TacoTipMouseAnchor:SetScript("OnUpdate", function(self)
+        local cx, cy = GetCursorPosition()
+        local scale = UIParent:GetEffectiveScale()
+        TacoTipMouseAnchor:SetPoint("CENTER", UIParent, "BOTTOMLEFT", cx / scale, cy / scale)
+    end)
+end
+
+hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
+    if (TacoTipConfig.anchor_mouse_spells) then
+        local parentparent = parent and parent:GetParent()
+        if (parent.action or parent.spellId or (parentparent and parentparent.action) or (parentparent and parentparent.spellId)) then
+            if (parentparent == MultiBarBottomRight or parentparent == MultiBarRight or parentparent == MultiBarLeft) then
+                tooltip:SetOwner(parent, "ANCHOR_LEFT")
+            else
+                tooltip:SetOwner(parent, "ANCHOR_RIGHT")
+            end
+            return
+        end
+    end
+    if (TacoTipConfig.anchor_mouse) then
+        if (not TacoTipConfig.anchor_mouse_world or GetMouseFoci() == WorldFrame) then
+            if (not TacoTipMouseAnchor) then
+                CreateMouseAnchor()
+                CreateMouseAnchor = nil
+            end
+            tooltip:SetOwner(TacoTipMouseAnchor, "ANCHOR_NONE")
+            tooltip:ClearAllPoints(true)
+            tooltip:SetPoint("BOTTOMLEFT", TacoTipMouseAnchor, "CENTER", 10, 10)
+        end
+    else
+        if (TacoTipConfig.custom_pos) then
+            tooltip:SetOwner(TacoTipDragButton, "ANCHOR_NONE")
+            tooltip:ClearAllPoints(true)
+            tooltip:SetPoint(TacoTipConfig.custom_anchor or "TOPLEFT", TacoTipDragButton, "CENTER")
+        elseif (TacoTipConfig.show_hp_bar and TacoTipConfig.show_power_bar) then
+            tooltip:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X - 13, CONTAINER_OFFSET_Y + 9)
+        end
     end
 end)
 
@@ -1172,6 +1277,8 @@ qcFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 qcFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 qcFrame:RegisterEvent("UNIT_TARGET")
 qcFrame:RegisterEvent("MODIFIER_STATE_CHANGED")
+qcFrame:RegisterEvent("ADDON_LOADED")
+qcFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
 CI.RegisterCallback(addOnName .. "_QualityColors", "INVENTORY_READY", function(_, guid)
     HookInspectFrame()
@@ -1190,3 +1297,151 @@ CI.RegisterCallback(addOnName .. "_TalentsReady", "TALENTS_READY", function(_, g
         GameTooltip:SetUnit(ttUnit)
     end
 end)
+
+function TacoTip_CustomPosEnable(show)
+    if (not TacoTipDragButton) then
+        TacoTipDragButton = CreateFrame("Button", nil, UIParent)
+        TacoTipDragButton:SetFrameStrata("TOOLTIP")
+        TacoTipDragButton:SetFrameLevel(999)
+        TacoTipDragButton:EnableMouse(true)
+        TacoTipDragButton:SetMovable(true)
+        TacoTipDragButton:SetUserPlaced(false)
+        TacoTipDragButton:SetClampedToScreen(true)
+        TacoTipDragButton:SetSize(32, 32)
+        TacoTipDragButton:SetNormalTexture("Interface\\MINIMAP\\TempleofKotmogu_ball_green")
+        local pos = TacoTipConfig.custom_pos or { "TOPLEFT", "TOPLEFT", 0, 0 }
+        TacoTipDragButton:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
+        TacoTipDragButton:RegisterForDrag("LeftButton")
+        TacoTipDragButton:RegisterForClicks("MiddleButtonUp", "RightButtonUp")
+        TacoTipDragButton:SetScript("OnDragStart", TacoTipDragButton.StartMoving)
+        TacoTipDragButton:SetScript("OnDragStop", function(self)
+            self:StopMovingOrSizing()
+            local from, _, to, x, y = self:GetPoint()
+            TacoTipConfig.custom_pos = { from, to, x, y }
+        end)
+        TacoTipDragButton:SetScript("OnClick", function(self, button, down)
+            if (button == "MiddleButton") then
+                if (TacoTipConfig.custom_anchor == "TOPRIGHT") then
+                    TacoTipConfig.custom_anchor = "BOTTOMRIGHT"
+                elseif (TacoTipConfig.custom_anchor == "BOTTOMRIGHT") then
+                    TacoTipConfig.custom_anchor = "BOTTOMLEFT"
+                elseif (TacoTipConfig.custom_anchor == "BOTTOMLEFT") then
+                    TacoTipConfig.custom_anchor = "CENTER"
+                elseif (TacoTipConfig.custom_anchor == "CENTER") then
+                    TacoTipConfig.custom_anchor = "TOPLEFT"
+                else
+                    TacoTipConfig.custom_anchor = "TOPRIGHT"
+                end
+                TacoTipDragButton:ShowExample()
+            elseif (button == "RightButton") then
+                StaticPopupDialogs["_TacoTipDragButtonConfirm_"] = {
+                    ["whileDead"] = 1,
+                    ["hideOnEscape"] = 1,
+                    ["timeout"] = 0,
+                    ["exclusive"] = 1,
+                    ["enterClicksFirstButton"] = 1,
+                    ["text"] = L["TEXT_DLG_CUSTOM_POS_CONFIRM"],
+                    ["button1"] = SAVE,
+                    ["button2"] = CANCEL,
+                    ["button3"] = RESET,
+                    ["OnAccept"] = function() TacoTipDragButton:_Save() end,
+                    ["OnAlt"] = function() TacoTipDragButton:_Disable() end
+                }
+                StaticPopup_Show("_TacoTipDragButtonConfirm_")
+            end
+        end)
+        TacoTipDragButton:SetScript("OnShow", function(self)
+            if (self.ticker) then
+                self.ticker:Cancel()
+            end
+            self.ticker = NewTicker(1, function()
+                TacoTipDragButton:ShowExample()
+            end)
+            Detours:ScriptHook(TT, GameTooltip, "OnShow", function(self)
+                if (TacoTipDragButton:IsShown()) then
+                    local name, unit = self:GetUnit()
+                    if (not unit or not UnitIsUnit(unit, "player")) then
+                        TacoTipDragButton:ShowExample()
+                    end
+                end
+            end)
+            Detours:ScriptHook(TT, GameTooltip, "OnHide", function(self)
+                if (TacoTipDragButton:IsShown()) then
+                    TacoTipDragButton:ShowExample()
+                end
+            end)
+            TacoTipDragButton:ShowExample()
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_HELP_MOVER_SHOWN"])
+        end)
+        TacoTipDragButton:SetScript("OnHide", function(self)
+            if (self.ticker) then
+                self.ticker:Cancel()
+            end
+            Detours:ScriptUnhook(TT, GameTooltip, "OnShow")
+            Detours:ScriptUnhook(TT, GameTooltip, "OnHide")
+        end)
+        function TacoTipDragButton:ShowExample()
+            GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+            GameTooltip:SetUnit("player")
+            GameTooltip:AddDoubleLine(L["Left-Click"], L["Drag to Move"], 1, 1, 1)
+            GameTooltip:AddDoubleLine(L["Middle-Click"], L["Change Anchor"], 1, 1, 1)
+            GameTooltip:AddDoubleLine(L["Right-Click"], L["Save Position"], 1, 1, 1)
+            GameTooltip:Show()
+        end
+
+        function TacoTipDragButton:_Enable()
+            if (not TacoTipConfig.custom_pos) then
+                local from, _, to, x, y = TacoTipDragButton:GetPoint()
+                TacoTipConfig.custom_pos = { from, to, x, y }
+                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position enabled."])
+            end
+            if (TacoTipOptCheckBoxCustomPosition) then
+                TacoTipOptCheckBoxCustomPosition:SetChecked(true)
+            end
+            if (TacoTipOptButtonMover) then
+                TacoTipOptButtonMover:SetEnabled(true)
+            end
+            if (TacoTipOptCheckBoxAnchorMouse) then
+                TacoTipOptCheckBoxAnchorMouse:SetChecked(false)
+                TacoTipOptCheckBoxAnchorMouse:SetDisabled(true)
+            end
+            if (TacoTipOptCheckBoxAnchorMouseWorld) then
+                TacoTipOptCheckBoxAnchorMouseWorld:SetDisabled(true)
+            end
+            TacoTipConfig.anchor_mouse = false
+        end
+
+        function TacoTipDragButton:_Save()
+            TacoTipDragButton:Hide()
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_HELP_MOVER_SAVED"])
+        end
+
+        function TacoTipDragButton:_Disable()
+            TacoTipDragButton:Hide()
+            GameTooltip:Hide()
+            GameTooltip:ClearAllPoints()
+            if (TacoTipConfig.custom_pos) then
+                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position disabled."])
+            end
+            if (TacoTipOptCheckBoxCustomPosition) then
+                TacoTipOptCheckBoxCustomPosition:SetChecked(false)
+            end
+            if (TacoTipOptButtonMover) then
+                TacoTipOptButtonMover:SetEnabled(false)
+            end
+            if (TacoTipOptCheckBoxAnchorMouse) then
+                TacoTipOptCheckBoxAnchorMouse:SetDisabled(false)
+            end
+            TacoTipConfig.custom_pos = nil
+            TacoTipConfig.custom_anchor = nil
+        end
+
+        TacoTipDragButton:Hide()
+    end
+    TacoTipDragButton:_Enable()
+    if (show) then
+        TacoTipDragButton:Show()
+    else
+        TacoTipDragButton:Hide()
+    end
+end
