@@ -424,7 +424,7 @@ function TT_GS:GetScore(unitorguid, useCallback, unitToken)
         -- If no off-hand item is present, count the 2H weapon's ilvl a second time.
         if mainHandLink and not offHandLink then
             local _, _, _, _, _, _, _, _, mainHandEquipLoc = GetItemInfo(mainHandLink)
-            if mainHandEquipLoc == "INVTYPE_2HWEAPON" then
+            if mainHandEquipLoc == "INVTYPE_2HWEAPON" or CI:IsMop() and (mainHandEquipLoc == "INVTYPE_RANGEDRIGHT" or mainHandEquipLoc == "INVTYPE_RANGED") then
                 local _, mainHandIlvl = TT_GS:GetItemScore(mainHandLink)
                 local currentIlvl = TT_GS:GetCurrentItemLevel(target, 16)
                 if currentIlvl then
