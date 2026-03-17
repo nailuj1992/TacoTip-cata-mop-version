@@ -1,5 +1,5 @@
 ## Interface: 50500,50501,50502,50503,50504
-## Version: 0.5.62
+## Version: 0.5.63
 ## Title: TacoTip
 ## Notes: TacoTip (GearScore & Talents)
 ## Author: kebabstorm
@@ -10,6 +10,7 @@
 ## X-Min-Interface-Wrath: 30400
 ## X-Min-Interface-Cata: 40402
 ## X-Min-Interface-Mists: 50500
+## X-Curse-Project-ID: 1243220
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua

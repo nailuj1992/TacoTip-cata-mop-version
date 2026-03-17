@@ -1,3 +1,7 @@
+# V 0.5.63
+
+Fixed the same bug that was fixed in 0.5.61 for the hunter weapons (bows, crossbows, guns).
+
 # V 0.5.62
 
 Restored the functionality of the instant fade, and the tooltip custom movement options.
