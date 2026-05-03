@@ -12,10 +12,10 @@
 --]]
 
 local clientVersionString = GetBuildInfo()
-local clientBuildMajor = string.byte(clientVersionString, 1)
+local majorVersion = tonumber(string.match(clientVersionString, "^(%d+)%.?%d*"))
 -- load only on classic/tbc/wotlk/cata/mop
-if (clientBuildMajor < 49 or clientBuildMajor > 53) then -- or string.byte(clientVersionString, 2) ~= 46
-    return
+if (majorVersion < 1 or majorVersion > 5) then
+	return
 end
 
 assert(LibStub, "TacoTip requires LibStub")
@@ -33,7 +33,7 @@ local BRACKET_SIZE = 1000
 local SUPERIOR_ITEM_LEVEL = 120
 
 if (CI:IsMop()) then
-    BRACKET_SIZE = 3300
+    BRACKET_SIZE = 3200
     SUPERIOR_ITEM_LEVEL = 440
 elseif (CI:IsCata()) then
     BRACKET_SIZE = 2000
