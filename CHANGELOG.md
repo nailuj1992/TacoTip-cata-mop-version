@@ -1,3 +1,7 @@
+# V 0.5.64
+
+Increased version number to support last phase of MoP Classic.
+
 # V 0.5.63
 
 Fixed the same bug that was fixed in 0.5.61 for the hunter weapons (bows, crossbows, guns).

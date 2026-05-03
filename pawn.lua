@@ -8,10 +8,10 @@
 --]]
 
 local clientVersionString = GetBuildInfo()
-local clientBuildMajor = string.byte(clientVersionString, 1)
+local majorVersion = tonumber(string.match(clientVersionString, "^(%d+)%.?%d*"))
 -- load only on classic/tbc/wotlk/cata/mop
-if (clientBuildMajor < 49 or clientBuildMajor > 53) then -- or string.byte(clientVersionString, 2) ~= 46
-    return
+if (majorVersion < 1 or majorVersion > 5) then
+	return
 end
 
 -- local isPawnLoaded = PawnClassicLastUpdatedVersion and PawnClassicLastUpdatedVersion >= 2.0538

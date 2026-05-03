@@ -13,9 +13,9 @@
 local LCI_VERSION = 19
 
 local clientVersionString = GetBuildInfo()
-local clientBuildMajor = string.byte(clientVersionString, 1)
+local majorVersion = tonumber(string.match(clientVersionString, "^(%d+)%.?%d*"))
 -- load only on classic/tbc/wotlk/cata/mop
-if (clientBuildMajor < 49 or clientBuildMajor > 53) then -- or string.byte(clientVersionString, 2) ~= 46
+if (majorVersion < 1 or majorVersion > 5) then
 	return
 end
 
@@ -60,11 +60,11 @@ local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local NewTicker = C_Timer.NewTicker
 local GetNamePlates = C_NamePlate.GetNamePlates
 
-local isMop = clientBuildMajor == 53
-local isCata = clientBuildMajor == 52
-local isWotlk = clientBuildMajor == 51
-local isTBC = clientBuildMajor == 50
-local isClassic = clientBuildMajor == 49
+local isMop = majorVersion == 5
+local isCata = majorVersion == 4
+local isWotlk = majorVersion == 3
+local isTBC = majorVersion == 2
+local isClassic = majorVersion == 1
 
 local playerClass = select(2, UnitClass("player"))
 

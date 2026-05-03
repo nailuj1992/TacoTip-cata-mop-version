@@ -3,10 +3,10 @@ GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 local addOnVersion = GetAddOnMetadata(addOnName, "Version") or "0.0.1"
 
 local clientVersionString = GetBuildInfo()
-local clientBuildMajor = string.byte(clientVersionString, 1)
+local majorVersion = tonumber(string.match(clientVersionString, "^(%d+)%.?%d*"))
 -- load only on classic/tbc/wotlk/cata/mop
-if (clientBuildMajor < 49 or clientBuildMajor > 53) then -- or string.byte(clientVersionString, 2) ~= 46
-    return
+if (majorVersion < 1 or majorVersion > 5) then
+	return
 end
 assert(LibStub, "TacoTip requires LibStub")
 assert(LibStub:GetLibrary("LibClassicInspector", true), "TacoTip requires LibClassicInspector")
