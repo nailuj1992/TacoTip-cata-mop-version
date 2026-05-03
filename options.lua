@@ -202,37 +202,35 @@ local function Register()
         exampleTooltip:SetOwner(SettingsPanel, "ANCHOR_NONE")
         exampleTooltip:ClearAllPoints()
         exampleTooltip:SetPoint("TOPRIGHT", SettingsPanel, "TOPRIGHT", -20, -120)
-        local classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)["ROGUE"]
+        local classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)["PALADIN"]
         local name_r = TacoTipConfig.color_class and classc and classc.r or 0
         local name_g = TacoTipConfig.color_class and classc and classc.g or 0.6
         local name_b = TacoTipConfig.color_class and classc and classc.b or 0.1
-        local title = TacoTipConfig.show_titles and L[" the Kingslayer"] or ""
-        exampleTooltip:AddLine(string.format("|cFF%02x%02x%02xKebabstorm%s %s%s|r", name_r * 255, name_g * 255,
+        local title = TacoTipConfig.show_titles and L["EXAMPLE_TITLE"] or ""
+        exampleTooltip:AddLine(string.format("|cFF%02x%02x%02xNáiluj%s %s%s|r", name_r * 255, name_g * 255,
             name_b * 255, title, (TacoTipConfig.show_team and (HORDE_ICON .. " ") or ""),
             (TacoTipConfig.show_pvp_icon and PVP_FLAG_ICON or "")))
         if (TacoTipConfig.show_guild_name) then
             if (TacoTipConfig.show_guild_rank) then
                 if (TacoTipConfig.guild_rank_alt_style) then
-                    exampleTooltip:AddLine("|cFF40FB40<Drunken Wrath> (Officer)|r")
+                    exampleTooltip:AddLine("|cFF40FB40<Huellitas de Azeroth> (Pata de Esponja)|r")
                 else
                     exampleTooltip:AddLine(string.format("|cFF40FB40" .. L["FORMAT_GUILD_RANK_1"] .. "|r",
-                        "Officer", "Drunken Wrath"))
+                        "Pata de Esponja", "Huellitas de Azeroth"))
                 end
             else
-                exampleTooltip:AddLine("|cFF40FB40<Drunken Wrath>|r")
+                exampleTooltip:AddLine("|cFF40FB40<Huellitas de Azeroth>|r")
             end
         end
-        local level = 85
-        if CI:IsMop() then
-            level = 90
-        end
+        local level = 90
         if (TacoTipConfig.color_class) then
             exampleTooltip:AddLine(
-                string.format("%s %s %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], level, L["Undead"], name_r * 255,
-                    name_g * 255, name_b * 255, LOCALIZED_CLASS_NAMES_MALE["ROGUE"], L["Player"]), 1, 1, 1)
+                string.format("%s %s %s |cFF%02x%02x%02x%s|r (%s)", L["Level"], level, L["EXAMPLE_RACE"], name_r * 255,
+                    name_g * 255, name_b * 255, LOCALIZED_CLASS_NAMES_MALE["PALADIN"], L["Player"]), 1, 1, 1)
         else
             exampleTooltip:AddLine(
-                string.format("%s %s %s %s (%s)", L["Level"], level, L["Undead"], LOCALIZED_CLASS_NAMES_MALE["ROGUE"],
+                string.format("%s %s %s %s (%s)", L["Level"], level, L["EXAMPLE_RACE"],
+                    LOCALIZED_CLASS_NAMES_MALE["PALADIN"],
                     L["Player"]), 1, 1, 1)
         end
         if (not TacoTipConfig.show_pvp_icon) then
@@ -250,31 +248,33 @@ local function Register()
         end
         if (TacoTipConfig.show_talents) then
             if (wide_style) then
-                local talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]"
+                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [31/2/8]"
                 if CI:IsMop() then
-                    talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [2/3/1/3/2/2]"
+                    talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
                 end
                 exampleTooltip:AddDoubleLine(L["Talents"] .. ":", talents, NORMAL_FONT_COLOR.r,
                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
                     HIGHLIGHT_FONT_COLOR.b)
-                exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("ROGUE", 2, true) .. " [7/31/3]",
-                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
-                    GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                if not CI:IsMop() then
+                    exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("PALADIN", 3, true) .. " [7/31/3]",
+                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
+                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                else
+                    exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("PALADIN", 3, true) .. " [1/1/1/2/2/3]",
+                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
+                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+                end
             else
-                local talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [31/2/8]"
+                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [31/2/8]"
                 if CI:IsMop() then
-                    talents = CI:GetSpecializationName("ROGUE", 1, true) .. " [2/3/1/3/2/2]"
+                    talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
                 end
                 exampleTooltip:AddLine(L["Talents"] .. ":|cFFFFFFFF " .. talents)
             end
         end
         local miniText = ""
         if (TacoTipConfig.show_gs_player) then
-            local gs, ilevel = 10405, 388
-            if CI:IsMop() then
-                gs = 13579
-                ilevel = 497
-            end
+            local gs, ilevel = 14949, 531.9
             local gs_r, gs_b, gs_g = GearScore:GetQuality(gs)
             if (wide_style) then
                 if TacoTipConfig.gearscore_ilevel_style then
@@ -304,15 +304,16 @@ local function Register()
             end
         end
         if (isPawnLoaded and TacoTipConfig.show_pawn_player) then
-            local specColor = PawnGetScaleColor("\"Classic\":ROGUE1", true) or "|cffffffff"
+            local specColor = PawnGetScaleColor("\"Classic\":PALADIN1", true) or "|cffffffff"
             if (wide_style) then
                 exampleTooltip:AddDoubleLine(string.format("Pawn: %s1234.56|r", specColor),
-                    string.format("%s(%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1, 1, 1, 1, 1)
+                    string.format("%s(%s)|r", specColor, CI:GetSpecializationName("PALADIN", 2, true)), 1, 1, 1, 1, 1, 1)
             elseif (mini_style) then
                 miniText = miniText .. string.format("P: %s1234.5|r", specColor)
             else
                 exampleTooltip:AddLine(
-                    string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("ROGUE", 1, true)), 1, 1,
+                string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("PALADIN", 2, true)), 1,
+                    1,
                     1)
             end
         end
@@ -373,7 +374,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.color_class = v; showExampleTooltip()
         end,
-        desc = L["Color class names in tooltips"],
+        desc = L["TEXT_CLASS_COLOR_DESC"],
         parentSection = unitSection,
     })
 
@@ -386,7 +387,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_titles = v; showExampleTooltip()
         end,
-        desc = L["Show player's title in tooltips"],
+        desc = L["TEXT_TITLE_DESC"],
         parentSection = unitSection,
     })
 
@@ -401,7 +402,7 @@ local function Register()
             Settings.NotifyUpdate("TT_show_guild_rank")
             showExampleTooltip()
         end,
-        desc = L["Show guild name in tooltips"],
+        desc = L["TEXT_GUILD_NAME_DESC"],
         parentSection = unitSection,
     })
 
@@ -414,7 +415,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_guild_rank = v; showExampleTooltip()
         end,
-        desc = L["Show guild rank in tooltips"],
+        desc = L["TEXT_GUILD_RANK_DESC"],
         parentSection = unitSection,
         parent = guildNamesInit,
         parentCheck = function() return guildNamesSetting:GetValue() end,
@@ -449,7 +450,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_talents = v; showExampleTooltip()
         end,
-        desc = L["Show talents and specialization in tooltips"],
+        desc = L["TEXT_TALENTS_DESC"],
         parentSection = unitSection,
     })
 
@@ -462,7 +463,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_target = v; showExampleTooltip()
         end,
-        desc = L["Show unit's target in tooltips"],
+        desc = L["TEXT_TARGET_DESC"],
         parentSection = unitSection,
     })
 
@@ -475,7 +476,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_team = v; showExampleTooltip()
         end,
-        desc = L["Show player's faction icon (Horde/Alliance) in tooltips"],
+        desc = L["TEXT_FACTION_DESC"],
         parentSection = unitSection,
     })
 
@@ -488,7 +489,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_pvp_icon = v; showExampleTooltip()
         end,
-        desc = L["Show player's pvp flag status as icon instead of text"],
+        desc = L["TEXT_PVP_DESC"],
         parentSection = unitSection,
     })
 
@@ -501,7 +502,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_hp_bar = v; showExampleTooltip()
         end,
-        desc = L["Show unit's health bar under tooltip"],
+        desc = L["TEXT_HP_BAR_DESC"],
         parentSection = unitSection,
     })
 
@@ -514,7 +515,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_power_bar = v; showExampleTooltip()
         end,
-        desc = L["Show unit's power bar under tooltip"],
+        desc = L["TEXT_POWER_BAR_DESC"],
         parentSection = unitSection,
     })
 
@@ -527,7 +528,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_gs_player = v; showExampleTooltip()
         end,
-        desc = L["Show player's GearScore in tooltips"],
+        desc = L["TEXT_GS_PLAYER_DESC"],
         parentSection = unitSection,
     })
 
@@ -569,7 +570,7 @@ local function Register()
         set = function(v)
             TacoTipConfig.show_pawn_player = v; showExampleTooltip()
         end,
-        desc = L["Show player's PawnScore in tooltips (may affect performance)"],
+        desc = L["TEXT_PAWN_PLAYER_DESC"],
         parentSection = unitSection,
         isEnabled = isPawnLoaded,
     })
@@ -594,7 +595,7 @@ local function Register()
             if PaperDollFrame and PaperDollFrame:IsShown() then TT:RefreshCharacterFrame() end
             if InspectFrame and InspectFrame:IsShown() then TT:RefreshInspectFrame() end
         end,
-        desc = L["Show GearScore in character frame"],
+        desc = L["TEXT_GS_CHARACTER_DESC"],
         parentSection = characterSection,
     })
 
@@ -609,7 +610,7 @@ local function Register()
             if PaperDollFrame and PaperDollFrame:IsShown() then TT:RefreshCharacterFrame() end
             if InspectFrame and InspectFrame:IsShown() then TT:RefreshInspectFrame() end
         end,
-        desc = L["Show Average Item Level in character frame"],
+        desc = L["TEXT_AVG_ILVL_DESC"],
         parentSection = characterSection,
     })
 
@@ -624,7 +625,7 @@ local function Register()
             if PaperDollFrame and PaperDollFrame:IsShown() then TT:RefreshCharacterFrame() end
             if InspectFrame and InspectFrame:IsShown() then TT:RefreshInspectFrame() end
         end,
-        desc = L["Lock GearScore and Average Item Level positions in character frame"],
+        desc = L["TEXT_LOCK_POSITION_DESC"],
         parentSection = characterSection,
         isEnabled = function() return TacoTipConfig.show_gs_character or TacoTipConfig.show_avg_ilvl end,
     })
@@ -645,7 +646,7 @@ local function Register()
         default = TacoTipBaseConfig.show_item_level,
         get = function() return TacoTipConfig.show_item_level end,
         set = function(v) TacoTipConfig.show_item_level = v end,
-        desc = L["Display item level in the tooltip for certain items."],
+        desc = L["TEXT_ITEM_LEVEL_DESC"],
         parentSection = extraSection,
     })
 
@@ -656,7 +657,7 @@ local function Register()
         default = TacoTipBaseConfig.show_gs_items,
         get = function() return TacoTipConfig.show_gs_items end,
         set = function(v) TacoTipConfig.show_gs_items = v end,
-        desc = L["Show GearScore in item tooltips"],
+        desc = L["TEXT_GS_ITEMS_DESC"],
         parentSection = extraSection,
     })
 
@@ -668,7 +669,7 @@ local function Register()
             default = TacoTipBaseConfig.show_quality,
             get = function() return TacoTipConfig.show_quality end,
             set = function(v) TacoTipConfig.show_quality = v end,
-            desc = L["Display quality colors in the item icon for certain items."],
+            desc = L["TEXT_QUALITY_DESC"],
             parentSection = extraSection,
             parent = showItemLevelInit,
             parentCheck = function() return showItemLevelSetting:GetValue() end,
@@ -681,7 +682,7 @@ local function Register()
             default = TacoTipBaseConfig.show_durability,
             get = function() return TacoTipConfig.show_durability end,
             set = function(v) TacoTipConfig.show_durability = v end,
-            desc = L["Display durability in the item icon for certain items."],
+            desc = L["TEXT_DURABILITY_DESC"],
             parentSection = extraSection,
             parent = showItemLevelInit,
             parentCheck = function() return showItemLevelSetting:GetValue() end,
@@ -706,7 +707,7 @@ local function Register()
         default = TacoTipBaseConfig.hide_in_combat,
         get = function() return TacoTipConfig.hide_in_combat end,
         set = function(v) TacoTipConfig.hide_in_combat = v end,
-        desc = L["Disable gearscore & talents in combat"],
+        desc = L["TEXT_HIDE_IN_COMBAT_DESC"],
         parentSection = extraSection,
     })
 
@@ -717,7 +718,7 @@ local function Register()
         default = TacoTipBaseConfig.show_achievement_points,
         get = function() return TacoTipConfig.show_achievement_points end,
         set = function(v) TacoTipConfig.show_achievement_points = v end,
-        desc = L["Show total achievement points in tooltips"],
+        desc = L["TEXT_ACHIEVEMENT_DESC"],
         parentSection = extraSection,
     })
 
@@ -737,7 +738,7 @@ local function Register()
                 Detours:DetourUnhook(TT, GameTooltip, "FadeOut")
             end
         end,
-        desc = L["Fade out unit tooltips instantly"],
+        desc = L["TEXT_INSTANT_FADE_DESC"],
         parentSection = extraSection,
     })
 
@@ -748,10 +749,11 @@ local function Register()
         default = TacoTipBaseConfig.anchor_mouse_spells,
         get = function() return TacoTipConfig.anchor_mouse_spells end,
         set = function(v) TacoTipConfig.anchor_mouse_spells = v end,
-        desc = L["Anchor spell tooltips to mouse cursor"],
+        desc = L["TEXT_ANCHOR_SPELLS_DESC"],
         parentSection = extraSection,
     })
 
+    -- It seems that this options is working on this version -for now-
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
         key = "chat_class_colors",
@@ -759,7 +761,7 @@ local function Register()
         default = GetCVar("chatClassColorOverride") == "0",
         get = function() return GetCVar("chatClassColorOverride") == "0" end,
         set = function(v) SetCVar("chatClassColorOverride", v and "0" or "1") end,
-        desc = L["Color names by class in chat windows"],
+        desc = L["TEXT_CHAT_CLASS_COLORS_DESC"],
         parentSection = extraSection,
     })
 
@@ -779,7 +781,7 @@ local function Register()
                 TacoTipConfig.custom_anchor = nil
             end
         end,
-        desc = L["Set a custom position for tooltips"],
+        desc = L["TEXT_CUSTOM_POS_DESC"],
         buttonText = L["Mover"],
         buttonClick = function() TacoTip_CustomPosEnable(true) end,
         clickRequiresSet = true,
@@ -800,7 +802,7 @@ local function Register()
                 TacoTipConfig.custom_anchor = nil
             end
         end,
-        desc = L["Anchor tooltips to mouse cursor"],
+        desc = L["TEXT_ANCHOR_MOUSE_DESC"],
         parentSection = extraSection,
     })
 
@@ -811,7 +813,7 @@ local function Register()
         default = TacoTipBaseConfig.anchor_mouse_world,
         get = function() return TacoTipConfig.anchor_mouse_world end,
         set = function(v) TacoTipConfig.anchor_mouse_world = v end,
-        desc = L["Anchor to mouse only in WorldFrame\nSkips raid / party frames"],
+        desc = L["TEXT_ANCHOR_MOUSE_WORLD_DESC"],
         parentSection = extraSection,
         parent = anchorMouseInit,
         parentCheck = function() return anchorMouseSetting:GetValue() end,
@@ -822,7 +824,7 @@ local function Register()
     --------------------------------------------------------------------------------
     local styleSection = SettingsLib:CreateExpandableSection(category, {
         name = L["Tooltip Style"],
-        expanded = false,
+        expanded = true,
         colorizeTitle = false,
     })
 
@@ -848,11 +850,11 @@ local function Register()
     })
 
     SettingsLib:CreateText(category,
-        { name = L["FULL"] .. ": " .. L["Wide, Dual Spec, GearScore, Average iLvl"], parentSection = styleSection })
+        { name = L["FULL"] .. ": " .. L["TEXT_STYLE_FULL_DESC"], parentSection = styleSection })
     SettingsLib:CreateText(category,
-        { name = L["COMPACT"] .. ": " .. L["Narrow, Active Spec, GearScore"], parentSection = styleSection })
+        { name = L["COMPACT"] .. ": " .. L["TEXT_STYLE_COMPACT_DESC"], parentSection = styleSection })
     SettingsLib:CreateText(category,
-        { name = L["MINI"] .. ": " .. L["Narrow, Active Spec, GearScore, Average iLvl"], parentSection = styleSection })
+        { name = L["MINI"] .. ": " .. L["TEXT_STYLE_MINI_DESC"], parentSection = styleSection })
 
     --------------------------------------------------------------------------------
     -- RESET BUTTON
@@ -885,7 +887,7 @@ function SlashCmdList.TACOTIP(msg)
         TacoTip_CustomPosEnable(true)
     elseif (cmd == "default") then
         if (not TacoTipConfig.custom_pos) then
-            print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position disabled."])
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_POS_DISABLED"])
         end
         if (TacoTipDragButton) then
             TacoTipDragButton:_Disable()
@@ -897,7 +899,7 @@ function SlashCmdList.TACOTIP(msg)
         if (TacoTipOptions and TacoTipOptions:IsShown()) then
             TacoTipOptions:Refresh()
         end
-        print("|cff59f0dcTacoTip:|r " .. L["Configuration has been reset to default."])
+        print("|cff59f0dcTacoTip:|r " .. L["TEXT_RESET_DONE"])
     elseif (cmd == "save") then
         if (TacoTipDragButton and TacoTipDragButton:IsShown()) then
             TacoTipDragButton:_Save()
@@ -905,19 +907,19 @@ function SlashCmdList.TACOTIP(msg)
     elseif (strfind(cmd, "anchor")) then
         if (strfind(cmd, "topleft")) then
             TacoTipConfig.custom_anchor = "TOPLEFT"
-            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'TOPLEFT'")
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_ANCHOR_SET"] .. ": 'TOPLEFT'")
         elseif (strfind(cmd, "topright")) then
             TacoTipConfig.custom_anchor = "TOPRIGHT"
-            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'TOPRIGHT'")
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_ANCHOR_SET"] .. ": 'TOPRIGHT'")
         elseif (strfind(cmd, "bottomleft")) then
             TacoTipConfig.custom_anchor = "BOTTOMLEFT"
-            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'BOTTOMLEFT'")
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_ANCHOR_SET"] .. ": 'BOTTOMLEFT'")
         elseif (strfind(cmd, "bottomright")) then
             TacoTipConfig.custom_anchor = "BOTTOMRIGHT"
-            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'BOTTOMRIGHT'")
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_ANCHOR_SET"] .. ": 'BOTTOMRIGHT'")
         elseif (strfind(cmd, "center")) then
             TacoTipConfig.custom_anchor = "CENTER"
-            print("|cff59f0dcTacoTip:|r " .. L["Custom position anchor set"] .. ": 'CENTER'")
+            print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_ANCHOR_SET"] .. ": 'CENTER'")
         else
             print("|cff59f0dcTacoTip:|r " .. L["TEXT_HELP_ANCHOR"])
         end

@@ -1393,7 +1393,7 @@ function TacoTip_CustomPosEnable(show)
             if (not TacoTipConfig.custom_pos) then
                 local from, _, to, x, y = TacoTipDragButton:GetPoint()
                 TacoTipConfig.custom_pos = { from, to, x, y }
-                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position enabled."])
+                print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_POS_ENABLED"])
             end
             if (TacoTipOptCheckBoxCustomPosition) then
                 TacoTipOptCheckBoxCustomPosition:SetChecked(true)
@@ -1421,7 +1421,7 @@ function TacoTip_CustomPosEnable(show)
             GameTooltip:Hide()
             GameTooltip:ClearAllPoints()
             if (TacoTipConfig.custom_pos) then
-                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position disabled."])
+                print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_POS_DISABLED"])
             end
             if (TacoTipOptCheckBoxCustomPosition) then
                 TacoTipOptCheckBoxCustomPosition:SetChecked(false)
