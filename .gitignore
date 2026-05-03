@@ -1,2 +1,5 @@
 .vscode/
 .claude/
+Libs/*/
+!Libs/LibDetours-1.0/
+!Libs/LibClassicInspector/
