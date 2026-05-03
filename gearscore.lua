@@ -361,13 +361,8 @@ function TT_GS:GetScore(unitorguid, useCallback, unitToken)
             if (ItemEquipLoc == "INVTYPE_2HWEAPON") then
                 TitanGrip = 0.5
             end
-            local TempScore, ItemLevel = TT_GS:GetItemScore(offHandLink)
-            if CI:IsMop() then
-                local currentItemLevel = TT_GS:GetCurrentItemLevel(target, 17)
-                if currentItemLevel then
-                    ItemLevel = currentItemLevel
-                end
-            end
+            local currentItemLevel = TT_GS:GetCurrentItemLevel(target, 17)
+            local TempScore, ItemLevel = TT_GS:GetItemScore(offHandLink, currentItemLevel)
             if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                 TempScore = TempScore * 0.3164
             end
@@ -385,11 +380,8 @@ function TT_GS:GetScore(unitorguid, useCallback, unitToken)
                 local item = CI:GetInventoryItemMixin(guid, i)
                 if (item) then
                     if (item:IsItemDataCached()) then
-                        local TempScore, ItemLevel = TT_GS:GetItemScore(item:GetItemLink())
                         local currentItemLevel = TT_GS:GetCurrentItemLevel(target, i)
-                        if currentItemLevel then
-                            ItemLevel = currentItemLevel
-                        end
+                        local TempScore, ItemLevel = TT_GS:GetItemScore(item:GetItemLink(), currentItemLevel)
                         if (PlayerEnglishClass == "HUNTER" and not CI:IsMop()) then
                             if (i == 16) then
                                 TempScore = TempScore * 0.3164
