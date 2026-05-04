@@ -121,7 +121,7 @@ f:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadingUi)
     end
 end)
 
-local function resetCfg()
+local function ResetCfg()
     if (TacoTipDragButton) then
         TacoTipDragButton:_Disable()
     end
@@ -312,7 +312,7 @@ local function Register()
                 miniText = miniText .. string.format("P: %s1234.5|r", specColor)
             else
                 exampleTooltip:AddLine(
-                string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("PALADIN", 2, true)), 1,
+                    string.format("Pawn: %s1234.56 (%s)|r", specColor, CI:GetSpecializationName("PALADIN", 2, true)), 1,
                     1,
                     1)
             end
@@ -855,20 +855,47 @@ local function Register()
         { name = L["COMPACT"] .. ": " .. L["TEXT_STYLE_COMPACT_DESC"], parentSection = styleSection })
     SettingsLib:CreateText(category,
         { name = L["MINI"] .. ": " .. L["TEXT_STYLE_MINI_DESC"], parentSection = styleSection })
-
-    --------------------------------------------------------------------------------
-    -- RESET BUTTON
-    --------------------------------------------------------------------------------
-    SettingsLib:CreateButton(category, {
-        text = L["Reset configuration"],
-        click = function()
-            resetCfg()
-            showExampleTooltip()
-        end,
-    })
 end
 
 SettingsRegistrar:AddRegistrant(Register)
+
+hooksecurefunc(SettingsPanel, "DisplayCategory", function(self, category)
+    local header = SettingsPanel.Container.SettingsList.Header
+    if category:GetID() == Settings.TACOTIP_CATEGORY_ID then
+        if not header.TacoTip_ResetSettings then
+            header.TacoTip_ResetSettings = CreateFrame("Button", nil, header, "UIPanelButtonTemplate")
+            header.TacoTip_ResetSettings:SetPoint("LEFT", header.DefaultsButton, "LEFT", -100, 0)
+            header.TacoTip_ResetSettings:SetSize(header.DefaultsButton:GetWidth() * 2, header.DefaultsButton:GetHeight())
+            header.TacoTip_ResetSettings:SetText(L["Reset configuration"])
+            header.TacoTip_ResetSettings:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+                GameTooltip:ClearLines()
+                GameTooltip:SetText(L["Reset configuration"])
+                GameTooltip:Show()
+            end)
+            header.TacoTip_ResetSettings:SetScript("OnLeave", function(self)
+                GameTooltip:Hide()
+            end)
+            header.TacoTip_ResetSettings:SetScript("OnClick", function()
+                SettingsPanel:Hide()
+                ResetCfg()
+            end)
+        end
+
+        header.TacoTip_ResetSettings:Show()
+
+        if header.DefaultsButton:IsShown() then
+            header.DefaultsButton:Hide()
+        end
+    else
+        if header.TacoTip_ResetSettings then
+            header.TacoTip_ResetSettings:Hide()
+        end
+        if not header.DefaultsButton:IsShown() then
+            header.DefaultsButton:Show()
+        end
+    end
+end)
 
 -- for addon compartment (in .toc)
 function OpenTacoTipSettings()
@@ -895,7 +922,7 @@ function SlashCmdList.TACOTIP(msg)
         TacoTipConfig.custom_pos = nil
         TacoTipConfig.custom_anchor = nil
     elseif (cmd == "reset") then
-        resetCfg()
+        ResetCfg()
         if (TacoTipOptions and TacoTipOptions:IsShown()) then
             TacoTipOptions:Refresh()
         end
