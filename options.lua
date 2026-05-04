@@ -248,27 +248,15 @@ local function Register()
         end
         if (TacoTipConfig.show_talents) then
             if (wide_style) then
-                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [31/2/8]"
-                if CI:IsMop() then
-                    talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
-                end
+                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
                 exampleTooltip:AddDoubleLine(L["Talents"] .. ":", talents, NORMAL_FONT_COLOR.r,
                     NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
                     HIGHLIGHT_FONT_COLOR.b)
-                if not CI:IsMop() then
-                    exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("PALADIN", 3, true) .. " [7/31/3]",
-                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
-                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                else
-                    exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("PALADIN", 3, true) .. " [1/1/1/2/2/3]",
-                        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
-                        GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
-                end
+                exampleTooltip:AddDoubleLine(" ", CI:GetSpecializationName("PALADIN", 3, true) .. " [1/1/1/2/2/3]",
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, GRAY_FONT_COLOR.r,
+                    GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
             else
-                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [31/2/8]"
-                if CI:IsMop() then
-                    talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
-                end
+                local talents = CI:GetSpecializationName("PALADIN", 2, true) .. " [1/1/3/3/1/2]"
                 exampleTooltip:AddLine(L["Talents"] .. ":|cFFFFFFFF " .. talents)
             end
         end
