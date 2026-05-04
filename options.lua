@@ -661,33 +661,31 @@ local function Register()
         parentSection = extraSection,
     })
 
-    if CI:IsMop() then
-        SettingsLib:CreateCheckbox(category, {
-            prefix = "TT_",
-            key = "show_quality",
-            name = L["Show Quality Color"],
-            default = TacoTipBaseConfig.show_quality,
-            get = function() return TacoTipConfig.show_quality end,
-            set = function(v) TacoTipConfig.show_quality = v end,
-            desc = L["TEXT_QUALITY_DESC"],
-            parentSection = extraSection,
-            parent = showItemLevelInit,
-            parentCheck = function() return showItemLevelSetting:GetValue() end,
-        })
+    SettingsLib:CreateCheckbox(category, {
+        prefix = "TT_",
+        key = "show_quality",
+        name = L["Show Quality Color"],
+        default = TacoTipBaseConfig.show_quality,
+        get = function() return TacoTipConfig.show_quality end,
+        set = function(v) TacoTipConfig.show_quality = v end,
+        desc = L["TEXT_QUALITY_DESC"],
+        parentSection = extraSection,
+        parent = showItemLevelInit,
+        parentCheck = function() return showItemLevelSetting:GetValue() end,
+    })
 
-        SettingsLib:CreateCheckbox(category, {
-            prefix = "TT_",
-            key = "show_durability",
-            name = L["Show Durability"],
-            default = TacoTipBaseConfig.show_durability,
-            get = function() return TacoTipConfig.show_durability end,
-            set = function(v) TacoTipConfig.show_durability = v end,
-            desc = L["TEXT_DURABILITY_DESC"],
-            parentSection = extraSection,
-            parent = showItemLevelInit,
-            parentCheck = function() return showItemLevelSetting:GetValue() end,
-        })
-    end
+    SettingsLib:CreateCheckbox(category, {
+        prefix = "TT_",
+        key = "show_durability",
+        name = L["Show Durability"],
+        default = TacoTipBaseConfig.show_durability,
+        get = function() return TacoTipConfig.show_durability end,
+        set = function(v) TacoTipConfig.show_durability = v end,
+        desc = L["TEXT_DURABILITY_DESC"],
+        parentSection = extraSection,
+        parent = showItemLevelInit,
+        parentCheck = function() return showItemLevelSetting:GetValue() end,
+    })
 
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
