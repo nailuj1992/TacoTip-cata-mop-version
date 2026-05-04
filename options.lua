@@ -223,7 +223,7 @@ local function Register()
     local function showExampleTooltip()
         exampleTooltip:SetOwner(SettingsPanel, "ANCHOR_NONE")
         exampleTooltip:ClearAllPoints()
-        exampleTooltip:SetPoint("TOPLEFT", SettingsPanel, "TOPRIGHT", 10, -50)
+        exampleTooltip:SetPoint("TOPLEFT", SettingsPanel, "TOPRIGHT", 2, -120)
         local classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)["PALADIN"]
         local name_r = TacoTipConfig.color_class and classc and classc.r or 0
         local name_g = TacoTipConfig.color_class and classc and classc.g or 0.6
@@ -683,8 +683,6 @@ local function Register()
         set = function(v) TacoTipConfig.show_quality = v end,
         desc = L["TEXT_QUALITY_DESC"],
         parentSection = extraSection,
-        parent = showItemLevelInit,
-        parentCheck = function() return showItemLevelSetting:GetValue() end,
     })
 
     SettingsLib:CreateCheckbox(category, {
@@ -696,8 +694,6 @@ local function Register()
         set = function(v) TacoTipConfig.show_durability = v end,
         desc = L["TEXT_DURABILITY_DESC"],
         parentSection = extraSection,
-        parent = showItemLevelInit,
-        parentCheck = function() return showItemLevelSetting:GetValue() end,
     })
 
     SettingsLib:CreateCheckbox(category, {
@@ -840,7 +836,7 @@ local function Register()
     })
     InitializeText(category, L["TEXT_STYLE_DESC"], styleSection)
 
-    SettingsLib:CreateDropdown(category, {
+    local tipStyleInit = SettingsLib:CreateDropdown(category, {
         prefix = "TT_",
         key = "tip_style",
         name = L["Tooltip Style"],
@@ -861,12 +857,12 @@ local function Register()
         parentSection = styleSection,
     })
 
-    SettingsLib:CreateText(category,
-        { name = L["FULL"] .. ": " .. L["TEXT_STYLE_FULL_DESC"], parentSection = styleSection })
-    SettingsLib:CreateText(category,
-        { name = L["COMPACT"] .. ": " .. L["TEXT_STYLE_COMPACT_DESC"], parentSection = styleSection })
-    SettingsLib:CreateText(category,
-        { name = L["MINI"] .. ": " .. L["TEXT_STYLE_MINI_DESC"], parentSection = styleSection })
+    local fullText = L["FULL"] .. ": " .. L["TEXT_STYLE_FULL_DESC"]
+    local compactText = L["COMPACT"] .. ": " .. L["TEXT_STYLE_COMPACT_DESC"]
+    local miniText = L["MINI"] .. ": " .. L["TEXT_STYLE_MINI_DESC"]
+    local fullTextInit = SettingsLib:CreateText(category,
+        { name = "- " .. fullText .. "\n- " .. compactText .. "\n- " .. miniText, parentSection = styleSection, parent = tipStyleInit, parentCheck = function() return true end })
+    DisableInitializerMouse(fullTextInit)
 end
 
 SettingsRegistrar:AddRegistrant(Register)
