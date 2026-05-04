@@ -163,6 +163,14 @@ local function ResetCfg()
     --SetCVar("showItemLevel", "1")
 end
 
+local function DisableInitializerMouse(init)
+    local orig = init.InitFrame
+    function init:InitFrame(frame)
+        if orig then orig(self, frame) end
+        frame:EnableMouse(false)
+    end
+end
+
 local function Register()
     local category, layout = Settings.RegisterVerticalLayoutCategory(addOnTitle)
     Settings.TACOTIP_CATEGORY_ID = category:GetID()
@@ -174,12 +182,10 @@ local function Register()
     if SupportedExpansions[majorVersion] then
         name = name .. " for " .. SupportedExpansions[majorVersion]
     end
-    SettingsLib:CreateHeader(category, {
+    local headerInit = SettingsLib:CreateHeader(category, {
         name = name,
     })
-    SettingsLib:CreateText(category, {
-        name = L["TEXT_OPT_DESC"],
-    })
+    DisableInitializerMouse(headerInit)
 
     --------------------------------------------------------------------------------
     -- EXAMPLE TOOLTIP PREVIEW
@@ -201,7 +207,7 @@ local function Register()
     local function showExampleTooltip()
         exampleTooltip:SetOwner(SettingsPanel, "ANCHOR_NONE")
         exampleTooltip:ClearAllPoints()
-        exampleTooltip:SetPoint("TOPRIGHT", SettingsPanel, "TOPRIGHT", -20, -120)
+        exampleTooltip:SetPoint("TOPLEFT", SettingsPanel, "TOPRIGHT", 10, -50)
         local classc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)["PALADIN"]
         local name_r = TacoTipConfig.color_class and classc and classc.r or 0
         local name_g = TacoTipConfig.color_class and classc and classc.g or 0.6
@@ -213,13 +219,13 @@ local function Register()
         if (TacoTipConfig.show_guild_name) then
             if (TacoTipConfig.show_guild_rank) then
                 if (TacoTipConfig.guild_rank_alt_style) then
-                    exampleTooltip:AddLine("|cFF40FB40<Huellitas de Azeroth> (Pata de Esponja)|r")
+                    exampleTooltip:AddLine("|cFF40FB40<Las Huellitas de Azeroth> (Pata de Esponja)|r")
                 else
                     exampleTooltip:AddLine(string.format("|cFF40FB40" .. L["FORMAT_GUILD_RANK_1"] .. "|r",
-                        "Pata de Esponja", "Huellitas de Azeroth"))
+                        "Pata de Esponja", "Las Huellitas de Azeroth"))
                 end
             else
-                exampleTooltip:AddLine("|cFF40FB40<Huellitas de Azeroth>|r")
+                exampleTooltip:AddLine("|cFF40FB40<Las Huellitas de Azeroth>|r")
             end
         end
         local level = 90
@@ -349,9 +355,16 @@ local function Register()
     --------------------------------------------------------------------------------
     local unitSection = SettingsLib:CreateExpandableSection(category, {
         name = L["Unit Tooltips"],
-        expanded = false,
+        expanded = true,
         colorizeTitle = false,
     })
+
+    local descInit = SettingsLib:CreateText(category, {
+        name = L["TEXT_OPT_DESC"],
+        parentSection = unitSection,
+    })
+    descInit.GetExtent = function() return 46 end
+    DisableInitializerMouse(descInit)
 
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -571,6 +584,11 @@ local function Register()
         expanded = false,
         colorizeTitle = false,
     })
+    local charDescInit = SettingsLib:CreateText(category, {
+        name = L["TEXT_CHARACTER_FRAME_DESC"],
+        parentSection = characterSection,
+    })
+    DisableInitializerMouse(charDescInit)
 
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -626,6 +644,12 @@ local function Register()
         expanded = false,
         colorizeTitle = false,
     })
+    local extraDescInit = SettingsLib:CreateText(category, {
+        name = L["TEXT_EXTRA_DESC"],
+        parentSection = extraSection,
+    })
+    extraDescInit.GetExtent = function() return 46 end
+    DisableInitializerMouse(extraDescInit)
 
     local showItemLevelInit, showItemLevelSetting = SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -813,6 +837,12 @@ local function Register()
         expanded = true,
         colorizeTitle = false,
     })
+    local styleDescInit = SettingsLib:CreateText(category, {
+        name = L["TEXT_STYLE_DESC"],
+        parentSection = styleSection,
+    })
+    styleDescInit.GetExtent = function() return 46 end
+    DisableInitializerMouse(styleDescInit)
 
     SettingsLib:CreateDropdown(category, {
         prefix = "TT_",
