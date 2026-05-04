@@ -139,5 +139,9 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Here, you can configure the settings of the |cff87bbcaTacoTip|r addon.",
+["TEXT_OPT_DESC_2"] = "The |cff87bbcaTacoTip|r addon is a simple addon that displays the GearScore\nand the average item level of the player in the screen.",
+["TEXT_OPT_DESC_3"] = "The |cff87bbcaTacoTip|r addon is free and open source, you can find the source code on |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "If you have any questions or suggestions, please visit the |cff87bbcaTacoTip|r addon page on |cff00ff00CurseForge|r.",
 }
 end

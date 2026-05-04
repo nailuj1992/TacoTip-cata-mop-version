@@ -142,4 +142,8 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Ici, vous pouvez configurer les param\195\168tres de l'addon |cff87bbcaTacoTip|r.",
+["TEXT_OPT_DESC_2"] = "L'addon |cff87bbcaTacoTip|r est un addon simple qui affiche le GearScore\net le niveau d'objet moyen du joueur \195\160 l'\195\169cran.",
+["TEXT_OPT_DESC_3"] = "L'addon |cff87bbcaTacoTip|r est gratuit et open source, vous pouvez trouver le code source sur |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "Si vous avez des questions ou des suggestions, veuillez visiter la page de l'addon |cff87bbcaTacoTip|r sur |cff00ff00CurseForge|r.",
 }

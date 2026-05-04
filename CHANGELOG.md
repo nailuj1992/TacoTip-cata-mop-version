@@ -1,3 +1,7 @@
+# V 0.5.7
+
+Big rework on options UI, now it's more organized and easier to navigate through them.
+
 # V 0.5.64
 
 Increased version number to support last phase of MoP Classic.

@@ -142,4 +142,8 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Qui puoi configurare le impostazioni dell'addon |cff87bbcaTacoTip|r.",
+["TEXT_OPT_DESC_2"] = "L'addon |cff87bbcaTacoTip|r \195\168 un semplice addon che mostra il GearScore\ne il livello oggetto medio del giocatore sullo schermo.",
+["TEXT_OPT_DESC_3"] = "L'addon |cff87bbcaTacoTip|r \195\168 gratuito e open source, puoi trovare il codice sorgente su |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "Se hai domande o suggerimenti, visita la pagina dell'addon |cff87bbcaTacoTip|r su |cff00ff00CurseForge|r.",
 }

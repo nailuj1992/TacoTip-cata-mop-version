@@ -195,13 +195,10 @@ local function Register()
     })
     DisableInitializerMouse(headerInit)
 
-    InitializeText(category, "Here, you can configure the settings of the |cff87bbcaTacoTip|r addon.", nil)
-    InitializeText(category,
-        "The |cff87bbcaTacoTip|r addon is a simple addon that displays the GearScore \nand the average item level of the player in the screen.", nil)
-    InitializeText(category,
-    "The |cff87bbcaTacoTip|r addon is free and open source, you can find the source code on |cff00ff00Github|r.", nil)
-    InitializeText(category,
-        "If you have any questions or suggestions, please visit the |cff87bbcaTacoTip|r addon page on |cff00ff00CurseForge|r.", nil)
+    InitializeText(category, L["TEXT_OPT_DESC_1"], nil)
+    InitializeText(category, L["TEXT_OPT_DESC_2"], nil)
+    InitializeText(category, L["TEXT_OPT_DESC_3"], nil)
+    InitializeText(category, L["TEXT_OPT_DESC_4"], nil)
 
     --------------------------------------------------------------------------------
     -- EXAMPLE TOOLTIP PREVIEW

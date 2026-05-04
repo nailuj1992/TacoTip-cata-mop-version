@@ -85,156 +85,11 @@ lib.spec_table = lib.spec_table or {
 	["SHAMAN"] = { "Elemental", "Enhancement", "Restoration" },
 	["MAGE"] = { "Arcane", "Fire", "Frost" },
 	["WARLOCK"] = { "Affliction", "Demonology", "Destruction" },
-	["DRUID"] = { "Balance", "Feral Combat", "Restoration", "Guardian" }
+	["DRUID"] = { "Balance", "Feral Combat", "Guardian", "Restoration" }
 }
 
--- TODO: localization
-if (GetLocale() == "deDE") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Waffen", "Furor", "Schutz" },
-		["PALADIN"] = { "Heilig", "Schutz", "Vergeltung" },
-		["HUNTER"] = { "Tierherrschaft", "Treffsicherheit", "\195\156berleben" },
-		["ROGUE"] = { "Meucheln", "Kampf", "T\195\164uschung" },
-		["PRIEST"] = { "Disziplin", "Heilig", "Schatten" },
-		["DEATHKNIGHT"] = { "Blut", "Frost", "Unheilig" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "Elementar", "Verst\195\164rkung", "Wiederherstellung" },
-		["MAGE"] = { "Arkan", "Feuer", "Frost" },
-		["WARLOCK"] = { "Gebrechen", "D\195\164monologie", "Zerst\195\182rung" },
-		["DRUID"] = { "Gleichgewicht", "Wildheit", "Wiederherstellung", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "esES") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Armas", "Furia", "Protecci\195\179n" },
-		["PALADIN"] = { "Sagrado", "Protecci\195\179n", "Reprensi\195\179n" },
-		["HUNTER"] = { "Bestias", "Punter\195\173a", "Supervivencia" },
-		["ROGUE"] = { "Asesinato", "Combate", "Sutileza" },
-		["PRIEST"] = { "Disciplina", "Sagrado", "Sombra" },
-		["DEATHKNIGHT"] = { "Sangre", "Escarcha", "Profano" },
-		["MONK"] = { "Maestro Cervecero", "Tejedor de Niebla", "Viajero del Viento" },
-		["SHAMAN"] = { "Elemental", "Mejora", "Restauraci\195\179n" },
-		["MAGE"] = { "Arcano", "Fuego", "Escarcha" },
-		["WARLOCK"] = { "Aflicci\195\179n", "Demonolog\195\173a", "Destrucci\195\179n" },
-		["DRUID"] = { "Equilibrio", "Combate feral", "Restauraci\195\179n", "Guardian" }
-	}
-elseif (GetLocale() == "esMX") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Armas", "Furia", "Protecci\195\179n" },
-		["PALADIN"] = { "Sagrado", "Protecci\195\179n", "Reprensi\195\179n" },
-		["HUNTER"] = { "Bestias", "Punter\195\173a", "Supervivencia" },
-		["ROGUE"] = { "Asesinato", "Combate", "Sutileza" },
-		["PRIEST"] = { "Disciplina", "Sagrado", "Sombra" },
-		["DEATHKNIGHT"] = { "Sangre", "Escarcha", "Profano" },
-		["MONK"] = { "Maestro Cervecero", "Tejedor de Niebla", "Viajero del Viento" },
-		["SHAMAN"] = { "Elemental", "Mejora", "Restauraci\195\179n" },
-		["MAGE"] = { "Arcano", "Fuego", "Escarcha" },
-		["WARLOCK"] = { "Aflicci\195\179n", "Demonolog\195\173a", "Destrucci\195\179n" },
-		["DRUID"] = { "Equilibrio", "Combate feral", "Restauraci\195\179n", "Guardian" }
-	}
-elseif (GetLocale() == "frFR") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Arms", "Fury", "Protection" },
-		["PALADIN"] = { "Holy", "Protection", "Retribution" },
-		["HUNTER"] = { "Beast Mastery", "Marksmanship", "Survival" },
-		["ROGUE"] = { "Assassination", "Combat", "Subtlety" },
-		["PRIEST"] = { "Discipline", "Holy", "Shadow" },
-		["DEATHKNIGHT"] = { "Blood", "Frost", "Unholy" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "Elemental", "Enhancement", "Restoration" },
-		["MAGE"] = { "Arcane", "Fire", "Frost" },
-		["WARLOCK"] = { "Affliction", "Demonology", "Destruction" },
-		["DRUID"] = { "Balance", "Feral Combat", "Restoration", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "itIT") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Arms", "Fury", "Protection" },
-		["PALADIN"] = { "Holy", "Protection", "Retribution" },
-		["HUNTER"] = { "Beast Mastery", "Marksmanship", "Survival" },
-		["ROGUE"] = { "Assassination", "Combat", "Subtlety" },
-		["PRIEST"] = { "Discipline", "Holy", "Shadow" },
-		["DEATHKNIGHT"] = { "Blood", "Frost", "Unholy" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "Elemental", "Enhancement", "Restoration" },
-		["MAGE"] = { "Arcane", "Fire", "Frost" },
-		["WARLOCK"] = { "Affliction", "Demonology", "Destruction" },
-		["DRUID"] = { "Balance", "Feral Combat", "Restoration", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "koKR") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "\235\172\180\234\184\176", "\235\182\132\235\133\184", "\235\176\169\236\150\180" },
-		["PALADIN"] = { "\236\139\160\236\132\177", "\235\179\180\237\152\184", "\236\167\149\235\178\140" },
-		["HUNTER"] = { "\236\149\188\236\136\152", "\236\130\172\234\178\169", "\236\131\157\236\161\180" },
-		["ROGUE"] = { "\236\149\148\236\130\180", "\236\160\132\237\136\172", "\236\158\160\237\150\137" },
-		["PRIEST"] = { "\236\136\152\236\150\145", "\236\139\160\236\132\177", "\236\149\148\237\157\145" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["DEATHKNIGHT"] = { "\237\152\136\234\184\176", "\235\131\137\234\184\176", "\235\182\128\236\160\149" },
-		["SHAMAN"] = { "\236\160\149\234\184\176", "\234\179\160\236\150\145", "\237\154\140\235\179\181" },
-		["MAGE"] = { "\235\185\132\236\160\132", "\237\153\148\236\151\188", "\235\131\137\234\184\176" },
-		["WARLOCK"] = { "\234\179\160\237\134\181", "\236\149\133\235\167\136", "\237\140\140\234\180\180" },
-		["DRUID"] = { "\236\161\176\237\153\148", "\236\149\188\236\132\177", "\237\154\140\235\179\181", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "ruRU") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "\208\158\209\128\209\131\208\182\208\184\208\181", "\208\157\208\181\208\184\209\129\209\130\208\190\208\178\209\129\209\130\208\178\208\190", "\208\151\208\176\209\137\208\184\209\130\208\176" },
-		["PALADIN"] = { "\208\161\208\178\208\181\209\130", "\208\151\208\176\209\137\208\184\209\130\208\176", "\208\146\208\190\208\183\208\180\208\176\209\143\208\189\208\184\208\181" },
-		["HUNTER"] = { "\208\159\208\190\208\178\208\181\208\187\208\184\209\130\208\181\208\187\209\140 \208\183\208\178\208\181\209\128\208\181\208\185", "\208\161\209\130\209\128\208\181\208\187\209\140\208\177\208\176", "\208\146\209\139\208\182\208\184\208\178\208\176\208\189\208\184\208\181" },
-		["ROGUE"] = { "\208\155\208\184\208\186\208\178\208\184\208\180\208\176\209\134\208\184\209\143", "\208\145\208\190\208\185", "\208\161\208\186\209\128\209\139\209\130\208\189\208\190\209\129\209\130\209\140" },
-		["PRIEST"] = { "\208\159\208\190\209\129\208\187\209\131\209\136\208\176\208\189\208\184\208\181", "\208\161\208\178\208\181\209\130", "\208\162\209\140\208\188\208\176" },
-		["DEATHKNIGHT"] = { "\208\154\209\128\208\190\208\178\209\140", "\208\155\208\181\208\180", "\208\157\208\181\209\135\208\181\209\129\209\130\208\184\208\178\208\190\209\129\209\130\209\140" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "\208\161\209\130\208\184\209\133\208\184\208\184", "\208\161\208\190\208\178\208\181\209\128\209\136\208\181\208\189\209\129\209\130\208\178\208\190\208\178\208\176\208\189\208\184\208\181", "\208\146\208\190\209\129\209\129\209\130\208\176\208\189\208\190\208\178\208\187\208\181\208\189\208\184\208\181" },
-		["MAGE"] = { "\208\162\208\176\208\185\208\189\208\176\209\143 \208\188\208\176\208\179\208\184\209\143", "\208\158\208\179\208\190\208\189\209\140", "\208\155\208\181\208\180" },
-		["WARLOCK"] = { "\208\154\208\190\208\187\208\180\208\190\208\178\209\129\209\130\208\178\208\190", "\208\148\208\181\208\188\208\190\208\189\208\190\208\187\208\190\208\179\208\184\209\143", "\208\160\208\176\208\183\209\128\209\131\209\136\208\181\208\189\208\184\208\181" },
-		["DRUID"] = { "\208\145\208\176\208\187\208\176\208\189\209\129", "\208\161\208\184\208\187\208\176 \208\183\208\178\208\181\209\128\209\143", "\208\146\208\190\209\129\209\129\209\130\208\176\208\189\208\190\208\178\208\187\208\181\208\189\208\184\208\181", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "ptBR") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Arms", "Fury", "Protection" },
-		["PALADIN"] = { "Holy", "Protection", "Retribution" },
-		["HUNTER"] = { "Beast Mastery", "Marksmanship", "Survival" },
-		["ROGUE"] = { "Assassination", "Combat", "Subtlety" },
-		["PRIEST"] = { "Discipline", "Holy", "Shadow" },
-		["DEATHKNIGHT"] = { "Blood", "Frost", "Unholy" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "Elemental", "Enhancement", "Restoration" },
-		["MAGE"] = { "Arcane", "Fire", "Frost" },
-		["WARLOCK"] = { "Affliction", "Demonology", "Destruction" },
-		["DRUID"] = { "Balance", "Feral Combat", "Restoration", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "zhCN") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "\230\173\166\229\153\168", "\231\139\130\230\128\146", "\233\152\178\230\138\164" },
-		["PALADIN"] = { "\231\165\158\229\156\163", "\233\152\178\230\138\164", "\230\131\169\230\136\146" },
-		["HUNTER"] = { "\233\135\142\229\133\189\230\142\167\229\136\182", "\229\176\132\229\135\187", "\231\148\159\229\173\152" },
-		["ROGUE"] = { "\229\165\135\232\162\173", "\230\136\152\230\150\151", "\230\149\143\233\148\144" },
-		["PRIEST"] = { "\230\136\146\229\190\139", "\231\165\158\229\156\163", "\230\154\151\229\189\177" },
-		["DEATHKNIGHT"] = { "\233\178\156\232\161\128", "\229\134\176\233\156\156", "\233\130\170\230\129\182" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "\229\133\131\231\180\160", "\229\162\158\229\188\186", "\230\129\162\229\164\141" },
-		["MAGE"] = { "\229\165\165\230\156\175", "\231\129\171\231\132\176", "\229\134\176\233\156\156" },
-		["WARLOCK"] = { "\231\151\155\232\139\166", "\230\129\182\233\173\148\229\173\166\232\175\134", "\230\175\129\231\129\173" },
-		["DRUID"] = { "\229\185\179\232\161\161", "\233\135\142\230\128\167\230\136\152\230\150\151", "\230\129\162\229\164\141", "Guardian" } -- TODO Update this row with the right translation
-	}
-elseif (GetLocale() == "zhTW") then
-	lib.spec_table_localized = lib.spec_table_localized or {
-		["WARRIOR"] = { "Arms", "Fury", "Protection" },
-		["PALADIN"] = { "Holy", "Protection", "Retribution" },
-		["HUNTER"] = { "Beast Mastery", "Marksmanship", "Survival" },
-		["ROGUE"] = { "Assassination", "Combat", "Subtlety" },
-		["PRIEST"] = { "Discipline", "Holy", "Shadow" },
-		["DEATHKNIGHT"] = { "Blood", "Frost", "Unholy" },
-		["MONK"] = { "Brewmaster", "Mistweaver", "Windwalker" }, -- TODO Update this row with the right translation
-		["SHAMAN"] = { "Elemental", "Enhancement", "Restoration" },
-		["MAGE"] = { "Arcane", "Fire", "Frost" },
-		["WARLOCK"] = { "Affliction", "Demonology", "Destruction" },
-		["DRUID"] = { "Balance", "Feral Combat", "Restoration", "Guardian" } -- TODO Update this row with the right translation
-	}
-else                                                                   -- enUS / enGB
-	lib.spec_table_localized = lib.spec_table
-end
+lib.spec_table_localized = lib.spec_table_localized or (LCI_LOCALE and LCI_LOCALE.spec_table) or lib.spec_table
 
--- TODO: talent IDs
--- TODO: localization
 if (isMop) then
 	if (oldminor < 16) then
 		lib.glyphs_table = nil
@@ -3746,8 +3601,11 @@ function lib:GetSpecializationName(class, tabIndex, localized)
 		class == "MAGE" or class == "WARLOCK" or class == "DRUID" or
 		((isWotlk or isCata or isMop) and class == "DEATHKNIGHT") or ((isMop) and class == "MONK"), "invalid class")
 	local n = tonumber(tabIndex) or 0
-	assert((n > 0 and n < 4) or (isMop and class == "DRUID" and n > 0 and n < 5), "tabIndex is not a valid number (1-3)")
-	return localized and spec_table_localized[class][tabIndex] or spec_table[class][tabIndex]
+	local tbl = localized and spec_table_localized or spec_table
+	if n < 1 or not tbl[class] or not tbl[class][n] then
+		return ""
+	end
+	return tbl[class][n]
 end
 
 --------------------------------------------------------------------------

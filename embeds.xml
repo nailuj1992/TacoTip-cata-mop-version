@@ -6,6 +6,19 @@
 	<Include file="Libs\LibEQOL/LibEQOL.xml"/>
 	<Include file="libs\LibSharedMedia-3.0\lib.xml"/>
 	<Include file="Libs\LibChangelog\LibChangelog.xml"/>
+
+	<Script file="Locale\deDE.lua"/>
+	<Script file="Locale\esES.lua"/>
+	<Script file="Locale\esMX.lua"/>
+	<Script file="Locale\frFR.lua"/>
+	<Script file="Locale\itIT.lua"/>
+	<Script file="Locale\koKR.lua"/>
+	<Script file="Locale\ptBR.lua"/>
+	<Script file="Locale\ruRU.lua"/>
+	<Script file="Locale\zhCN.lua"/>
+	<Script file="Locale\zhTW.lua"/>
+	<Script file="Locale\enUS.lua"/>
+
 	<Script file="Libs\LibDetours-1.0\LibDetours-1.0.lua"/>
 	<Script file="Libs\LibClassicInspector\LibClassicInspector.lua"/>
 </Ui>

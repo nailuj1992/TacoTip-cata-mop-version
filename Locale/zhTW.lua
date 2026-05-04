@@ -143,4 +143,8 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "在這裡，您可以設定 |cff87bbcaTacoTip|r 插件的選項。",
+["TEXT_OPT_DESC_2"] = "|cff87bbcaTacoTip|r 是一個簡單的插件，用於在螢幕上顯示玩家的 GearScore\n和平均裝備等級。",
+["TEXT_OPT_DESC_3"] = "|cff87bbcaTacoTip|r 插件免費且開源，您可以在 |cff00ff00Github|r 上找到原始碼。",
+["TEXT_OPT_DESC_4"] = "如有任何問題或建議，請造訪 |cff00ff00CurseForge|r 上的 |cff87bbcaTacoTip|r 插件頁面。",
 }

@@ -143,4 +143,23 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Aqu\195\173 puedes configurar los ajustes del addon |cff87bbcaTacoTip|r.",
+["TEXT_OPT_DESC_2"] = "El addon |cff87bbcaTacoTip|r es un addon simple que muestra el GearScore\ny el nivel de objeto promedio del jugador en la pantalla.",
+["TEXT_OPT_DESC_3"] = "El addon |cff87bbcaTacoTip|r es gratuito y de c\195\179digo abierto, puedes encontrar el c\195\179digo fuente en |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "Si tienes alguna pregunta o sugerencia, visita la p\195\161gina del addon |cff87bbcaTacoTip|r en |cff00ff00CurseForge|r.",
+}
+
+LCI_LOCALE = LCI_LOCALE or {}
+LCI_LOCALE.spec_table = {
+	["WARRIOR"] = { "Armas", "Furia", "Protecci\195\179n" },
+	["PALADIN"] = { "Sagrado", "Protecci\195\179n", "Reprensi\195\179n" },
+	["HUNTER"] = { "Bestias", "Punter\195\173a", "Supervivencia" },
+	["ROGUE"] = { "Asesinato", "Combate", "Sutileza" },
+	["PRIEST"] = { "Disciplina", "Sagrado", "Sombra" },
+	["DEATHKNIGHT"] = { "Sangre", "Escarcha", "Profano" },
+	["MONK"] = { "Maestro Cervecero", "Tejedor de Niebla", "Viajero del Viento" },
+	["SHAMAN"] = { "Elemental", "Mejora", "Restauraci\195\179n" },
+	["MAGE"] = { "Arcano", "Fuego", "Escarcha" },
+	["WARLOCK"] = { "Aflicci\195\179n", "Demonolog\195\173a", "Destrucci\195\179n" },
+	["DRUID"] = { "Equilibrio", "Combate feral", "Guardi\195\161n", "Restauraci\195\179n" },
 }

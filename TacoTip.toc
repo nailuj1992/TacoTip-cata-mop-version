@@ -12,18 +12,6 @@
 embeds.xml
 #@end-no-lib-strip@
 
-Locale\deDE.lua
-Locale\esES.lua
-Locale\esMX.lua
-Locale\frFR.lua
-Locale\itIT.lua
-Locale\koKR.lua
-Locale\ptBR.lua
-Locale\ruRU.lua
-Locale\zhCN.lua
-Locale\zhTW.lua
-Locale\enUS.lua
-
 gearscore.lua
 pawn.lua
 options.lua

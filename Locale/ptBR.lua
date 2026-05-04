@@ -142,4 +142,8 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Aqui voc\195\170 pode configurar as defini\195\167\195\181es do addon |cff87bbcaTacoTip|r.",
+["TEXT_OPT_DESC_2"] = "O addon |cff87bbcaTacoTip|r \195\169 um addon simples que exibe o GearScore\ne o n\195\173vel de item m\195\169dio do jogador na tela.",
+["TEXT_OPT_DESC_3"] = "O addon |cff87bbcaTacoTip|r \195\169 gratuito e de c\195\179digo aberto, voc\195\170 pode encontrar o c\195\179digo-fonte no |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "Se tiver alguma d\195\186vida ou sugest\195\163o, visite a p\195\161gina do addon |cff87bbcaTacoTip|r no |cff00ff00CurseForge|r.",
 }

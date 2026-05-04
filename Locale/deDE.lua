@@ -143,4 +143,23 @@ TACOTIP_LOCALE = {
 ["INSPECT_FRAME_ILVL_VALUE_FONT_SIZE"] = 10,
 ["INSPECT_FRAME_ILVL_VALUE_XPOS"] = 275,
 ["INSPECT_FRAME_ILVL_VALUE_YPOS"] = 55,
+["TEXT_OPT_DESC_1"] = "Hier k\195\182nnen Sie die Einstellungen des |cff87bbcaTacoTip|r-Addons konfigurieren.",
+["TEXT_OPT_DESC_2"] = "Das |cff87bbcaTacoTip|r-Addon ist ein einfaches Addon, das den GearScore\nund den durchschnittlichen Gegenstandslevel des Spielers anzeigt.",
+["TEXT_OPT_DESC_3"] = "Das |cff87bbcaTacoTip|r-Addon ist kostenlos und Open Source. Den Quellcode finden Sie auf |cff00ff00Github|r.",
+["TEXT_OPT_DESC_4"] = "Bei Fragen oder Anregungen besuchen Sie bitte die |cff87bbcaTacoTip|r-Addon-Seite auf |cff00ff00CurseForge|r.",
+}
+
+LCI_LOCALE = LCI_LOCALE or {}
+LCI_LOCALE.spec_table = {
+	["WARRIOR"] = { "Waffen", "Furor", "Schutz" },
+	["PALADIN"] = { "Heilig", "Schutz", "Vergeltung" },
+	["HUNTER"] = { "Tierherrschaft", "Treffsicherheit", "\195\156berleben" },
+	["ROGUE"] = { "Meucheln", "Kampf", "T\195\164uschung" },
+	["PRIEST"] = { "Disziplin", "Heilig", "Schatten" },
+	["DEATHKNIGHT"] = { "Blut", "Frost", "Unheilig" },
+	["MONK"] = { "Braumeister", "Nebelwirker", "Windl\195\164ufer" },
+	["SHAMAN"] = { "Elementar", "Verst\195\164rkung", "Wiederherstellung" },
+	["MAGE"] = { "Arkan", "Feuer", "Frost" },
+	["WARLOCK"] = { "Gebrechen", "D\195\164monologie", "Zerst\195\182rung" },
+	["DRUID"] = { "Gleichgewicht", "Wildheit", "W\195\164chter", "Wiederherstellung" },
 }
