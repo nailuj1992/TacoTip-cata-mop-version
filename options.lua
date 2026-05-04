@@ -171,6 +171,14 @@ local function DisableInitializerMouse(init)
     end
 end
 
+local function InitializeText(category, string, parentSection)
+    local text = SettingsLib:CreateText(category, {
+        name = string,
+        parentSection = parentSection,
+    })
+    DisableInitializerMouse(text)
+end
+
 local function Register()
     local category, layout = Settings.RegisterVerticalLayoutCategory(addOnTitle)
     Settings.TACOTIP_CATEGORY_ID = category:GetID()
@@ -186,6 +194,14 @@ local function Register()
         name = name,
     })
     DisableInitializerMouse(headerInit)
+
+    InitializeText(category, "Here, you can configure the settings of the |cff87bbcaTacoTip|r addon.", nil)
+    InitializeText(category,
+        "The |cff87bbcaTacoTip|r addon is a simple addon that displays the GearScore \nand the average item level of the player in the screen.", nil)
+    InitializeText(category,
+    "The |cff87bbcaTacoTip|r addon is free and open source, you can find the source code on |cff00ff00Github|r.", nil)
+    InitializeText(category,
+        "If you have any questions or suggestions, please visit the |cff87bbcaTacoTip|r addon page on |cff00ff00CurseForge|r.", nil)
 
     --------------------------------------------------------------------------------
     -- EXAMPLE TOOLTIP PREVIEW
@@ -358,13 +374,7 @@ local function Register()
         expanded = true,
         colorizeTitle = false,
     })
-
-    local descInit = SettingsLib:CreateText(category, {
-        name = L["TEXT_OPT_DESC"],
-        parentSection = unitSection,
-    })
-    descInit.GetExtent = function() return 46 end
-    DisableInitializerMouse(descInit)
+    InitializeText(category, L["TEXT_OPT_DESC"], unitSection)
 
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -584,11 +594,7 @@ local function Register()
         expanded = false,
         colorizeTitle = false,
     })
-    local charDescInit = SettingsLib:CreateText(category, {
-        name = L["TEXT_CHARACTER_FRAME_DESC"],
-        parentSection = characterSection,
-    })
-    DisableInitializerMouse(charDescInit)
+    InitializeText(category, L["TEXT_CHARACTER_FRAME_DESC"], characterSection)
 
     SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -644,12 +650,7 @@ local function Register()
         expanded = false,
         colorizeTitle = false,
     })
-    local extraDescInit = SettingsLib:CreateText(category, {
-        name = L["TEXT_EXTRA_DESC"],
-        parentSection = extraSection,
-    })
-    extraDescInit.GetExtent = function() return 46 end
-    DisableInitializerMouse(extraDescInit)
+    InitializeText(category, L["TEXT_EXTRA_DESC"], extraSection)
 
     local showItemLevelInit, showItemLevelSetting = SettingsLib:CreateCheckbox(category, {
         prefix = "TT_",
@@ -837,12 +838,7 @@ local function Register()
         expanded = true,
         colorizeTitle = false,
     })
-    local styleDescInit = SettingsLib:CreateText(category, {
-        name = L["TEXT_STYLE_DESC"],
-        parentSection = styleSection,
-    })
-    styleDescInit.GetExtent = function() return 46 end
-    DisableInitializerMouse(styleDescInit)
+    InitializeText(category, L["TEXT_STYLE_DESC"], styleSection)
 
     SettingsLib:CreateDropdown(category, {
         prefix = "TT_",
