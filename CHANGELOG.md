@@ -1,4 +1,4 @@
-# V 0.5.7
+# V 0.5.7-beta
 
 Big rework on options UI, now it's more organized and easier to navigate through them.
 
