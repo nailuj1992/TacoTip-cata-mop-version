@@ -16,6 +16,9 @@ and this project adheres to a custom incremental versioning scheme.
 - Localized strings for new options and sections across all supported locales (deDE, enUS, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW).
 - A "Reset" button for restoring default option values.
 
+### Fixed
+- Pawn integration no longer throws `ScaleName must be the name of an existing scale` on characters that have not yet chosen a specialization. The Pawn lookup is now skipped when no valid spec is available or when the matching Pawn scale is not loaded.
+
 ### Removed
 - `IsMoP` conditional gates around the example tooltip and around the item quality/durability features, so these now work consistently regardless of the client version.
 - Bundled `CallbackHandler-1.0` and `LibStub` standalone copies (now resolved via embeds).
