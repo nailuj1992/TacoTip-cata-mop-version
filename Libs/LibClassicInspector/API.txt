@@ -1,9 +1,26 @@
 --------------------------------------------------------------------------
 --
 --  LibClassicInspector by kebabstorm
---  for Classic/TBC/WOTLK
+--  for Classic / TBC / WOTLK
+--  Adapted for Cataclysm and Mists of Pandaria by Nailuj1992
 --
---  API Version 9 (2022-12-11)
+--  API Version 19 (2025-01-24)
+--
+--  Supported clients
+--      - Classic Era / SoM   (1.x.x)
+--      - Burning Crusade     (2.x.x)
+--      - Wrath of the Lich King (3.x.x)
+--      - Cataclysm           (4.x.x)
+--      - Mists of Pandaria   (5.x.x)
+--
+--  Client-specific notes
+--      - DEATHKNIGHT class is available on WotLK, Cata and MoP.
+--      - MONK class is available on MoP only.
+--      - DRUID has 4 talent tabs on MoP (Balance / Feral / Guardian / Restoration).
+--        On all earlier clients every class has 3 tabs.
+--      - Achievements and glyphs require WotLK or later.
+--      - The Ranged inventory slot (18) does not exist on MoP — it was removed
+--        when hunters started using their main-hand weapon.
 --
 --------------------------------------------------------------------------
 
@@ -26,7 +43,7 @@
 --  Parameters
 --     @string   addOnName         - your addon unique name
 --     @string   event             - event name (e.g. "INVENTORY_READY")
---     @function callbackFunc      - your callback function     
+--     @function callbackFunc      - your callback function
 --
 --  Returns
 --     @string   event             - event name
@@ -46,17 +63,20 @@ local function glyphsReadyCallback(event, guid, isInspect, unit)
 --------------------------------------------------------------------------
 
 --------------------------------------------------------------------------
--- ClassicInspector:GetSpecializationName(class, tabIndex, localized)
+-- ClassicInspector:GetSpecializationName(class, tabIndex[, localized])
 --
 --  Parameters
---     @string class               - english class name in uppercase e.g. "WARRIOR"
---     @number tabIndex            - talent tab index (1-3)
---     @boolean localized          - return localized name instead of english name
+--     @string  class              - english class name in uppercase e.g. "WARRIOR"
+--     @number  tabIndex           - talent tab index
+--                                       1-3 on Classic/TBC/WotLK/Cata
+--                                       1-3 on MoP, plus 4 for DRUID (Restoration)
+--     @boolean [localized]        - if true, return the localized (client-language) name
+--                                   instead of the english name
 --
 --  Returns
---     @string specName            - specialization name e.g. "Retribution"
+--     @string  specName           - specialization name e.g. "Retribution"
 --
-function lib:GetSpecializationName(class, tabIndex)
+function lib:GetSpecializationName(class, tabIndex, localized)
     return specName
 
 --------------------------------------------------------------------------
@@ -64,7 +84,7 @@ function lib:GetSpecializationName(class, tabIndex)
 --
 --  Parameters
 --     @string class               - english class name in uppercase e.g. "WARRIOR"
---     @number tabIndex            - talent tab index (1-3)
+--     @number tabIndex            - talent tab index (see GetSpecializationName for valid ranges)
 --
 --  Returns
 --     @number numTalents          - number of talents in tab
@@ -80,7 +100,7 @@ function lib:GetNumTalentsByClass(class, tabIndex)
 --     @number [group]             - talent group or the current active talent group if nil
 --
 --  Returns
---     @number specIndex           - main specialization index (1-3)
+--     @number specIndex           - main specialization index (1-3, or 1-4 for MoP DRUID)
 --     @number pointsSpent         - talent points spent to the main spec
 --
 function lib:GetSpecialization(unitorguid, _group)
@@ -97,12 +117,17 @@ function lib:GetSpecialization(unitorguid, _group)
 --     @number pointsSpent1        - talent points spent to tab 1
 --     @number pointsSpent2        - talent points spent to tab 2
 --     @number pointsSpent3        - talent points spent to tab 3
+--     @number [pointsSpent4]      - talent points spent to tab 4 (MoP DRUID only)
 --
 function lib:GetTalentPoints(unitorguid, _group)
     return pointsSpent1, pointsSpent2, pointsSpent3
 
 --------------------------------------------------------------------------
 -- ClassicInspector:GetActiveTalentGroup(unitorguid)
+--
+--  Note
+--     Dual / multi spec is available on WotLK and later clients. On Classic
+--     and TBC this function always returns 1.
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
@@ -121,7 +146,7 @@ function lib:GetActiveTalentGroup(unitorguid)
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
---     @number tabIndex            - talent tab index (1-3)
+--     @number tabIndex            - talent tab index (see GetSpecializationName for valid ranges)
 --     @number talentIndex         - ranging from 1 to GetNumTalents(tabIndex). counted from left to right, top to bottom.
 --     @number [group]             - talent group or the current active talent group if nil
 --
@@ -147,7 +172,7 @@ function lib:GetTalentInfo(unitorguid, tabIndex, talentIndex, _group)
 --
 --  Parameters
 --     @string class               - english class name in uppercase e.g. "WARRIOR"
---     @number tabIndex            - talent tab index (1-3)
+--     @number tabIndex            - talent tab index (see GetSpecializationName for valid ranges)
 --     @number talentIndex         - ranging from 1 to GetNumTalents(tabIndex). counted from left to right, top to bottom.
 --
 --  Returns
@@ -169,7 +194,9 @@ function lib:GetTalentInfoByClass(class, tabIndex, talentIndex)
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
---     @number inventorySlot       - inventory slot (1-19)
+--     @number inventorySlot       - inventory slot ID
+--                                       1-19 on Classic / TBC / WotLK / Cata
+--                                       1-17 on MoP (no Ranged slot)
 --
 --  Returns
 --     @number itemID              - inventory item id
@@ -182,7 +209,7 @@ function lib:GetInventoryItemID(unitorguid, slot)
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
---     @number inventorySlot       - inventory slot (1-19)
+--     @number inventorySlot       - inventory slot ID (see GetInventoryItemID for valid ranges)
 --
 --  Returns
 --     @string itemLink            - inventory item link (can return nil if item is not cached yet)
@@ -195,7 +222,7 @@ function lib:GetInventoryItemLink(unitorguid, slot)
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
---     @number inventorySlot       - inventory slot (1-19)
+--     @number inventorySlot       - inventory slot ID (see GetInventoryItemID for valid ranges)
 --
 --  Returns
 --     @ItemMixin item             - inventory item ItemMixin
@@ -210,7 +237,8 @@ function lib:GetInventoryItemMixin(unitorguid, slot)
 --     @string unitorguid          - unit token or guid
 --
 --  Returns
---     @table  inventoryTable      - inventory item id table (1-19)
+--     @table  inventoryTable      - inventory item id table indexed by slot ID
+--                                   (see GetInventoryItemID for valid slot ranges)
 --
 function lib:GetInventoryItemIDTable(unitorguid)
     return inventoryTable
@@ -236,14 +264,14 @@ function lib:GetTalentRanksTable(unitorguid)
 --  Returns
 --     @number talentsTime         - time when talents were last cached or 0 if not found
 --     @number inventoryTime       - time when inventory was last cached or 0 if not found
---     @number achievementsTime    - time when achievements were last cached or 0 if not found
---     @number glyphsTime          - time when glyphs were last cached or 0 if not found
+--     @number achievementsTime    - time when achievements were last cached or 0 if not found (WotLK+)
+--     @number glyphsTime          - time when glyphs were last cached or 0 if not found (WotLK+)
 --
 function lib:GetLastCacheTime(unitorguid)
     return talentsTime, inventoryTime, achievementsTime, glyphsTime
 
 --------------------------------------------------------------------------
--- ClassicInspector:PlayerGUIDToUnitToken(unit)
+-- ClassicInspector:PlayerGUIDToUnitToken(guid)
 --
 --  Parameters
 --     @string guid                - player guid
@@ -258,7 +286,7 @@ function lib:PlayerGUIDToUnitToken(guid)
 -- ClassicInspector:IsClassic()
 --
 --  Returns
---     @boolean isClassic          - client version is Classic "Vanilla": Means Classic Era and its seasons like SoM (1.x.x)
+--     @boolean isClassic          - client version is Classic "Vanilla": Classic Era and its seasons like SoM (1.x.x)
 --
 function lib:IsClassic()
     return isClassic
@@ -276,7 +304,7 @@ function lib:IsTBC()
 -- ClassicInspector:IsWotlk()
 --
 --  Returns
---     @boolean isWotlk            - client version is Classic Wotlk (3.x.x)
+--     @boolean isWotlk            - client version is Classic WotLK (3.x.x)
 --
 function lib:IsWotlk()
     return isWotlk
@@ -285,7 +313,7 @@ function lib:IsWotlk()
 -- ClassicInspector:IsCata()
 --
 --  Returns
---     @boolean isCata            - client version is Classic Cata (4.x.x)
+--     @boolean isCata             - client version is Classic Cataclysm (4.x.x)
 --
 function lib:IsCata()
     return isCata
@@ -294,7 +322,7 @@ function lib:IsCata()
 -- ClassicInspector:IsMop()
 --
 --  Returns
---     @boolean isMop            - client version is Classic Mop (5.x.x)
+--     @boolean isMop              - client version is Classic Mists of Pandaria (5.x.x)
 --
 function lib:IsMop()
     return isMop
@@ -328,23 +356,23 @@ function lib:CanInspect(unitorguid)
 --  Returns
 --     @number status              - inspection status
 --                                   == 0 : target cannot be inspected
---                                   == 1 : instant inspection 
+--                                   == 1 : instant inspection
 --                                   == 2 : queued inspection
 --
 function lib:DoInspect(unitorguid)
     return status
-    
+
 --------------------------------------------------------------------------
 -- ClassicInspector:Version()
 --
 --  Returns
---     @number version             - library version
+--     @number version             - library version (currently 19)
 --
 function lib:Version()
     return version
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:GetTotalAchievementPoints(unitorguid)
 --
 --  Parameters
@@ -357,7 +385,7 @@ function lib:GetTotalAchievementPoints(unitorguid)
     return total_points
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:GetAchievementInfo(unitorguid, achievementID)
 --
 --  Parameters
@@ -374,7 +402,7 @@ function lib:GetAchievementInfo(unitorguid, achievementID)
     return completed, month, day, year
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:GetStatistic(unitorguid, achievementID)
 --
 --  Parameters
@@ -388,7 +416,7 @@ function lib:GetStatistic(unitorguid, achievementID)
     return value
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:AddTrackedAchievement(achievementID)
 --
 --  Note
@@ -406,12 +434,12 @@ function lib:AddTrackedAchievement(achievementID)
     return success, isStatistic
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:GetGlyphSocketInfo(unitorguid, socketID[, group])
 --
 --  Note
 --     iconFile is currently implemented only for the local player and returns 0 when requesting
---     info for other players
+--     info for other players.
 --
 --  Parameters
 --     @string unitorguid          - unit token or guid
@@ -428,7 +456,7 @@ function lib:GetGlyphSocketInfo(unitorguid, socketID, _group)
     return enabled, glyphType, glyphSpellID, iconFile
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:HasGlyph(unitorguid, glyphSpellID[, group])
 --
 --  Parameters
@@ -443,7 +471,7 @@ function lib:HasGlyph(unitorguid, glyphSpellID, _group)
     return enabled
 
 --------------------------------------------------------------------------
--- [WOTLK]
+-- [WOTLK+]  (WotLK, Cataclysm, Mists of Pandaria)
 -- ClassicInspector:GetGlyphs(unitorguid[, group])
 --
 --  Parameters
