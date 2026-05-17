@@ -43,13 +43,15 @@ local function getPlayerGUID(arg)
 end
 
 function TT_PAWN:GetItemScore(itemLink, class, specIndex)
-    if (itemLink and class and specIndex) then
+    if (itemLink and class and specIndex and specIndex > 0) then
         local item = PawnGetItemData(itemLink)
         if (item) then
             local scaleName = "\"Classic\":" .. class .. specIndex
-            local ok, _, value = pcall(PawnGetSingleValueFromItem, item, scaleName)
-            if (ok and value) then
-                return tonumber(value) or 0
+            if (PawnCommon and PawnCommon.Scales and PawnCommon.Scales[scaleName]) then
+                local ok, _, value = pcall(PawnGetSingleValueFromItem, item, scaleName)
+                if (ok and value) then
+                    return tonumber(value) or 0
+                end
             end
         end
     end
@@ -87,7 +89,13 @@ function TT_PAWN:GetScore(unitorguid, useCallback)
             if CI:IsMop() and spec == -1 then
                 spec = 1
             end
+            if (spec <= 0) then
+                return 0, "", "|cffffffff"
+            end
             local scaleName = "\"Classic\":" .. class .. spec
+            if (not (PawnCommon and PawnCommon.Scales and PawnCommon.Scales[scaleName])) then
+                return 0, CI:GetSpecializationName(class, spec, true) or "", "|cffffffff"
+            end
             local cb_table
 
             if (useCallback) then

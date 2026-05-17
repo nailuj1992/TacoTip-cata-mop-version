@@ -21,6 +21,11 @@ jobs:
         run: |
           git fetch --tags --force
 
+      - name: Install LibEQOL
+        uses: R41z0r/LibEQOL@v1.0.0
+        with:
+          destination: Libs
+
       - name: Create Package and release
         uses: BigWigsMods/packager@v2
         env:

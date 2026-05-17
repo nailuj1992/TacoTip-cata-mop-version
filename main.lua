@@ -828,9 +828,10 @@ local function itemToolTipHook(self)
             if CI:IsMop() and pSpec == -1 then
                 pSpec = 1
             end
+            if (pSpec > 0) then
             local scaleName = "\"Classic\":" .. pClass .. pSpec
             local pawnScore = TT_PAWN:GetItemScore(itemLink, pClass, pSpec)
-            if (pawnScore > 0) then
+            if (pawnScore > 0 and PawnCommon and PawnCommon.Scales and PawnCommon.Scales[scaleName]) then
                 local ok, specColor = pcall(PawnGetScaleColor, scaleName, true)
                 specColor = (ok and specColor) or "|cffffffff"
                 local specName = CI:GetSpecializationName(pClass, pSpec, true)
@@ -842,6 +843,7 @@ local function itemToolTipHook(self)
                 else
                     self:AddLine(string.format("Pawn: %s%.2f (%s)|r", specColor, pawnScore, specName), 1, 1, 1)
                 end
+            end
             end
         end
     end
@@ -1393,7 +1395,7 @@ function TacoTip_CustomPosEnable(show)
             if (not TacoTipConfig.custom_pos) then
                 local from, _, to, x, y = TacoTipDragButton:GetPoint()
                 TacoTipConfig.custom_pos = { from, to, x, y }
-                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position enabled."])
+                print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_POS_ENABLED"])
             end
             if (TacoTipOptCheckBoxCustomPosition) then
                 TacoTipOptCheckBoxCustomPosition:SetChecked(true)
@@ -1421,7 +1423,7 @@ function TacoTip_CustomPosEnable(show)
             GameTooltip:Hide()
             GameTooltip:ClearAllPoints()
             if (TacoTipConfig.custom_pos) then
-                print("|cff59f0dcTacoTip:|r " .. L["Custom tooltip position disabled."])
+                print("|cff59f0dcTacoTip:|r " .. L["TEXT_CUSTOM_POS_DISABLED"])
             end
             if (TacoTipOptCheckBoxCustomPosition) then
                 TacoTipOptCheckBoxCustomPosition:SetChecked(false)
