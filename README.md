@@ -126,7 +126,7 @@ Full reference: [`API.txt`](./Libs/LibClassicInspector/API.txt) — header lists
 
 ## Changelog
 
-See [`CHANGELOG.md`](./CHANGELOG.md) for the full release history. Latest: **0.5.7-beta**.
+See [`CHANGELOG.md`](./CHANGELOG.md) for the full release history. Latest: **0.5.7**.
 
 ---
 

@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to a custom incremental versioning scheme.
 
-## [0.5.7-beta]
+## [0.5.7]
 
 ### Changed
 - Reworked the addon options UI: settings are now grouped into clearer sections, making them easier to find and navigate.
