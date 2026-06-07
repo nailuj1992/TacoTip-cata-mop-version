@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to a custom incremental versioning scheme.
 
+## [0.5.8]
+
+### Fixed
+- `PlayerGUIDToUnitToken` no longer throws `bad argument #1 to 'UnitGUID'` with Plater nameplates. Plater frames expose `unitToken` instead of `namePlateUnitToken`, leaving the field nil; the lookup now falls back to `unitToken` and nil-checks the token before calling `UnitGUID`.
+
 ## [0.5.7]
 
 ### Changed
